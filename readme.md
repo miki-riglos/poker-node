@@ -11,6 +11,7 @@ Server
 Client
 ------
   * socket.io.js / WebSockets
+  * A Test Framework to define: jasmine, qunit
   * jQuery for DOM manipulation
   * A JS Framework to define: ko, backbone, etc for architecture
 
