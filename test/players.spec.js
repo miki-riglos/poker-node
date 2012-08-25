@@ -4,7 +4,7 @@ describe("Player class", function() {
 
   it("should create new instance", function() {
     var player = new Player("Phil", 10000);
-    expect( player ).toBeInstanceOf( Player );
+    player.should.be.an.instanceOf( Player );
   });
 
 });

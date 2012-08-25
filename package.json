@@ -7,9 +7,15 @@
     "url": "git://github.com/miki-riglos/poker-node.git"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "~1.4.0",
+    "should": "~1.1.0"
+  },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }
