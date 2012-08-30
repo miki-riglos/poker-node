@@ -1,16 +1,16 @@
-var Card = require("../lib/cards").Card,
-    Deck = require("../lib/cards").Deck;
+var Card = require("../lib/deck").Card,
+    Deck = require("../lib/deck").Deck;
 
 describe("Card class", function() {
 
   it("should create new instance", function() {
     var cardAceOfSpades  = new Card("A", "S");
-    cardAceOfSpades.should.be.an.instanceOf( Card );
+    cardAceOfSpades.should.be.an.instanceOf(Card);
   });
 
   it("should have a toString method", function() {
     var cardAceOfSpades  = new Card("A", "S");
-    cardAceOfSpades.toString().should.equal( "Ace of Spades" );
+    cardAceOfSpades.toString().should.equal("Ace of Spades");
   });
 
   it("should validate rank and suit", function() {
@@ -29,11 +29,11 @@ describe("Deck class", function() {
   });
 
   it("should create new instance", function() {
-    deck.should.be.an.instanceOf( Deck );
+    deck.should.be.an.instanceOf(Deck);
   });
 
   it("should inherit from array", function() {
-    deck.should.be.an.instanceOf( Array );
+    deck.should.be.an.instanceOf(Array);
   });
 
   it("should have 52 cards", function() {
@@ -52,7 +52,7 @@ describe("Deck class", function() {
     dealt = deck.deal();
     //console.log(dealt);
     //console.log(deck);
-    dealt.should.be.an.instanceOf( Card );
+    dealt.should.be.an.instanceOf(Card);
     deck.length.should.equal(51);
   });
 

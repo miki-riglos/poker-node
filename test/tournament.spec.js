@@ -1,4 +1,4 @@
-var Tournament = require("../lib/tournaments").Tournament;
+var Tournament = require("../lib/tournament").Tournament;
 
 describe("Tournament class", function() {
   var tournament;
@@ -8,7 +8,7 @@ describe("Tournament class", function() {
   });
 
   it("should create new instance", function() {
-    tournament.should.be.an.instanceOf( Tournament );
+    tournament.should.be.an.instanceOf(Tournament);
   });
 
   it("should have events", function(done) {
@@ -21,14 +21,14 @@ describe("Tournament class", function() {
   
   it("should accept options", function() {
     var tournamentWithOptions = new Tournament( {initialChips: 100} );
-    tournamentWithOptions.options.initialChips.should.equal( 100 );
+    tournamentWithOptions.options.initialChips.should.equal(100);
   });
   
   describe("Registration", function() {
     it("should allow players registration", function() {
       tournament.registerPlayer(1, "Sofia");
       tournament.registerPlayer(2, "Bianca");
-      Object.keys( tournament.players ).length.should.equal( 2 );
+      Object.keys( tournament.players ).length.should.equal(2);
     });  
 
     it("should validate position uniqueness", function() {
@@ -76,12 +76,12 @@ describe("Tournament class", function() {
     });
 
     it("should return active players", function() {
-      Object.keys( tournament.getActivePlayers() ).length.should.equal( 2 );
+      Object.keys( tournament.getActivePlayers() ).length.should.equal(2);
     });
 
     it("should exclude players with no chips", function() {
       tournament.players[2].chips = 0;
-      Object.keys( tournament.getActivePlayers() ).length.should.equal( 1 );
+      Object.keys( tournament.getActivePlayers() ).length.should.equal(1);
     });
   });
   

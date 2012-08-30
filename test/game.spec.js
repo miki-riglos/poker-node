@@ -1,4 +1,4 @@
-var Game = require("../lib/games").Game;
+var Game = require("../lib/game").Game;
 
 describe("Game class", function() {
   var game;
@@ -8,7 +8,7 @@ describe("Game class", function() {
   });
 
   it("should create new instance", function() {
-    game.should.be.an.instanceOf( Game );
+    game.should.be.an.instanceOf(Game);
   });
 
   it("should have events", function(done) {
