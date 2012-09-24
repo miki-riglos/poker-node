@@ -1,4 +1,5 @@
-var Tournament = require("../lib/tournament").Tournament;
+var Tournament = require("../lib/tournament").Tournament,
+    _          = require("underscore");
 
 describe("Tournament class", function() {
   var tournament;
@@ -28,7 +29,7 @@ describe("Tournament class", function() {
     it("should allow players registration", function() {
       tournament.registerPlayer(1, "Sofia");
       tournament.registerPlayer(2, "Bianca");
-      Object.keys( tournament.players ).length.should.equal(2);
+      _.size(tournament.players).should.equal(2);
     });  
 
     it("should validate position uniqueness", function() {
@@ -76,12 +77,12 @@ describe("Tournament class", function() {
     });
 
     it("should return active players", function() {
-      Object.keys( tournament.getActivePlayers() ).length.should.equal(2);
+      _.size(tournament.getActivePlayers()).should.equal(2);
     });
 
     it("should exclude players with no chips", function() {
       tournament.players[2].chips = 0;
-      Object.keys( tournament.getActivePlayers() ).length.should.equal(1);
+      _.size(tournament.getActivePlayers()).should.equal(1);
     });
   });
   
