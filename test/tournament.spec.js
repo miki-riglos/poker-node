@@ -26,63 +26,78 @@ describe("Tournament class", function() {
   });
   
   describe("Registration", function() {
+    it("should keep a property with registered players (object)", function() {
+      tournament.registerPlayer(1, "Sofia").errorMessage.should.be.empty;
+      tournament.registerPlayer(2, "Bianca").errorMessage.should.be.empty;
+      tournament.registeredPlayers.should.be.an.instanceOf(Object);
+    });  
+
     it("should allow players registration", function() {
-      tournament.registerPlayer(1, "Sofia");
-      tournament.registerPlayer(2, "Bianca");
-      _.size(tournament.players).should.equal(2);
+      tournament.registerPlayer(1, "Sofia").errorMessage.should.be.empty;
+      tournament.registerPlayer(2, "Bianca").errorMessage.should.be.empty;
+      _.size(tournament.registeredPlayers).should.equal(2);
     });  
 
     it("should validate position uniqueness", function() {
-      (function() { 
-        tournament.registerPlayer(1, "Sofia");
-        tournament.registerPlayer(1, "Bianca");
-      }).should.throwError("Position 1 already taken");
+      tournament.registerPlayer(1, "Sofia").errorMessage.should.be.empty;
+      tournament.registerPlayer(1, "Bianca").errorMessage.should.equal("Position 1 already taken");
     });  
 
     it("should validate position minimum and maximum", function() {
-      (function() { 
-        tournament.registerPlayer(0, "Sofia");
-      }).should.throwError();
-      (function() { 
-        tournament.registerPlayer(11, "Sofia");
-      }).should.throwError();
+      tournament.registerPlayer(0, "Sofia").errorMessage.should.not.be.empty;
+      tournament.registerPlayer(11, "Sofia").errorMessage.should.not.be.empty;
     });  
 
     it("should allow registration only if tournament has not started", function() {
-      (function() { 
-        tournament.registerPlayer(1, "Sofia");
-        tournament.registerPlayer(2, "Bianca");
+        tournament.registerPlayer(1, "Sofia").errorMessage.should.be.empty;
+        tournament.registerPlayer(2, "Bianca").errorMessage.should.be.empty;
         tournament.start();
-        tournament.registerPlayer(3, "Giovana");
-      }).should.throwError();
+        tournament.registerPlayer(3, "Giovana").errorMessage.should.not.be.empty;
     });  
     
-    it("should auto start when maximum number of players are registered", function() {
+    it("should not allow registration if maximum number of players are registered", function() {
       var i =0;
-      while (++i <= 10) {
+      while (++i <= tournament.options.maximumPlayers) {
         tournament.registerPlayer(i, "Player" + i);
       }
       
-      (function() { 
-        tournament.registerPlayer(11, "Player 11");
-      }).should.throwError();
+      tournament.registerPlayer(11, "Player 11").errorMessage.should.not.be.empty;
     });  
 
   });
 
-  describe("Active Players", function() {
+  describe("Get Active Players", function() {
     beforeEach(function() {
       tournament.registerPlayer(1, "Sofia");
       tournament.registerPlayer(2, "Bianca");
     });
 
-    it("should return active players", function() {
-      _.size(tournament.getActivePlayers()).should.equal(2);
+    it("should return an array of objects with position and player", function() {
+      var activePlayers = tournament.getActivePlayers();
+
+      activePlayers.should.be.an.instanceOf(Array);
+      activePlayers.length.should.equal(2);
+      
+      activePlayers[0].should.have.property("position");
+      activePlayers[0].should.have.property("player");
+
+      activePlayers[1].should.have.property("position");
+      activePlayers[1].should.have.property("player");
+    });
+
+    it("should return an array sorted by position", function() {
+      var activePlayers = tournament.getActivePlayers();
+      
+      activePlayers[0].position.should.equal(1);
+      activePlayers[0].player.name.should.equal("Sofia");
+      
+      activePlayers[1].position.should.equal(2);
+      activePlayers[1].player.name.should.equal("Bianca");
     });
 
     it("should exclude players with no chips", function() {
-      tournament.players[2].chips = 0;
-      _.size(tournament.getActivePlayers()).should.equal(1);
+      tournament.registeredPlayers[2].chips = 0;
+      tournament.getActivePlayers().length.should.equal(1);
     });
   });
   
@@ -104,8 +119,8 @@ describe("Tournament class", function() {
       tournament.on("game-start", function() {
         counter.game.start++;
         
-        tournament.players[2].chips -= 5000;
-        tournament.players[1].chips += 5000;
+        tournament.registeredPlayers[2].chips -= 5000;
+        tournament.registeredPlayers[1].chips += 5000;
         tournament.currentGame.end();
       });
       tournament.on("game-end", function() {
