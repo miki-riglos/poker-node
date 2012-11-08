@@ -56,7 +56,7 @@ describe("Tournament class", function() {
     });  
     
     it("should not allow registration if maximum number of players are registered", function() {
-      var i =0;
+      var i = 0;
       while (++i <= tournament.options.maximumPlayers) {
         tournament.registerPlayer(i, "Player" + i);
       }
