@@ -1,0 +1,5 @@
+- Tie, pot distribution
+- Define how blinds increase (when and how)
+- Multiple pots (all ins)
+- Player inactive, automatic checks/folds
+- Game status: all players are All in, show hands

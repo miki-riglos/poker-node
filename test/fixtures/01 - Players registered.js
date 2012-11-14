@@ -11,7 +11,7 @@ var tournament = {
     }
   },
   
-  state: 'open',  
+  status: 'open',  
   
   registeredPlayers: {
     '1': { name: 'Sofia',   chips: 10000},
@@ -29,4 +29,12 @@ var tournament = {
     big  : 25
   }
   
+};
+
+
+var game = {
+};
+
+
+var round = {
 };
