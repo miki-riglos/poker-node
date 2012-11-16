@@ -1,6 +1,18 @@
-// Game 1 ends, Player 1 (Miki) wins
+module.exports = {
+  name: 'Game 1 ends, Player 1 (Miki) wins',
 
-var tournament = {
+  forward: function(tournament) {
+    
+    return {
+      assert: function() {
+        throw new Error('Pending assert');
+      }
+    };
+  }
+};
+
+
+var stepTournament = {
 
   options: {
     initialChips  : 10000,
@@ -32,9 +44,9 @@ var tournament = {
 };
 
 
-var game = {
+var stepGame = {
 };
 
 
-var round = {
+var stepRound = {
 };

@@ -1,6 +1,18 @@
-// Player 3 (Sofia) folds
+module.exports = {
+  name: 'Player 3 (Sofia) folds',
 
-var tournament = {
+  forward: function(tournament) {
+    
+    return {
+      assert: function() {
+        throw new Error('Pending assert');
+      }
+    };
+  }
+};
+
+
+var stepTournament = {
 
   options: {
     initialChips  : 10000,
@@ -32,7 +44,7 @@ var tournament = {
 };
 
 
-var game = {
+var stepGame = {
 
   number: 1,
 
@@ -73,7 +85,7 @@ var game = {
 };
 
 
-var round = {
+var stepRound = {
   
   number: 2,    // 'flop'
 

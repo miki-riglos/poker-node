@@ -1,6 +1,18 @@
-// Player 3 (Sofia) checks
+module.exports = {
+  name: 'Player 3 (Sofia) calls',
 
-var tournament = {
+  forward: function(tournament) {
+    
+    return {
+      assert: function() {
+        throw new Error('Pending assert');
+      }
+    };
+  }
+};
+
+
+var stepTournament = {
 
   options: {
     initialChips  : 10000,
@@ -32,7 +44,7 @@ var tournament = {
 };
 
 
-var game = {
+var stepGame = {
 
   number: 1,
 
@@ -51,6 +63,11 @@ var game = {
     hand    : [ {rank: 'Q', suit: 'C'}, {rank: 'Q', suit: 'D'} ],
     folded  : false,
     totalBet: 1025
+  }, {
+    position: 4,
+    hand    : [ {rank: 'J', suit: 'C'}, {rank: 'J', suit: 'D'} ],
+    folded  : false,
+    totalBet: 25
   }],
 
   button: 1,
@@ -64,7 +81,7 @@ var game = {
   
   deck: [],
   
-  flop : [ {rank: 'A', suit: 'H'}, {rank: 'A', suit: 'S'}, {rank: '2', suit: 'C'}, {rank: '2', suit: 'C'} ],
+  flop : [],
   turn : {}, 
   river: {},
 
@@ -73,27 +90,31 @@ var game = {
 };
 
 
-var round = {
+var stepRound = {
   
-  number: 2,    // 'flop'
+  number: 1,    // 'preflop'
 
   players: [{
     position: 1,
-    actions : [],
-    bets    : []
+    actions : ['raise'],
+    bets    : [1025]
   },{
     position: 2,
-    actions : ['checks'],
-    bets    : [0]
+    actions : ['raise-sb', 'call'],
+    bets    : [10, 1015]
   },{
     position: 3,
-    actions : ['checks'],
-    bets    : [0]
+    actions : ['raise-bb', 'call'],
+    bets    : [25, 1000]
+  },{
+    position: 4,
+    actions : ['call'],
+    bets    : [25]
   }],
 
-  playerToAct: 1,
-  finalPlayer: 2,
+  playerToAct: 4,
+  finalPlayer: 1,
   
-  betToCall: 0
+  betToCall: 1025
   
 };

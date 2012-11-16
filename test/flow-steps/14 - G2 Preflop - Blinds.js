@@ -1,6 +1,20 @@
-// Player 2 (Giovana) calls
+module.exports = {
+  name: 'Game 2 starts',
 
-var tournament = {
+  forward: function(tournament) {
+    // Giovana is button now
+    // Bets of small and big blinds are placed
+    
+    return {
+      assert: function() {
+        throw new Error('Pending assert');
+      }
+    };
+  }
+};
+
+
+var stepTournament = {
 
   options: {
     initialChips  : 10000,
@@ -14,15 +28,15 @@ var tournament = {
   status: 'start',
   
   registeredPlayers: {
-    '1': { name: 'Miki',    chips:  8975 },
+    '1': { name: 'Miki',    chips: 12075 },
     '2': { name: 'Giovana', chips:  8975 },
-    '3': { name: 'Sofia',   chips:  9975 },
-    '4': { name: 'Bianca',  chips:  9975 }
+    '3': { name: 'Sofia',   chips:  8965 },
+    '4': { name: 'Bianca',  chips:  9950 }
   },
   
-  gameCounter: 1,  
+  gameCounter: 2,  
   
-  button: 1,
+  button: 2,
   
   blinds: {
     small: 10,
@@ -32,40 +46,40 @@ var tournament = {
 };
 
 
-var game = {
+var stepGame = {
 
-  number: 1,
+  number: 2,
 
   players: [{
     position: 1,
     hand    : [ {rank: 'A', suit: 'C'}, {rank: 'A', suit: 'D'} ],
     folded  : false,
-    totalBet: 1025
+    totalBet: 0
   },{
     position: 2,
     hand    : [ {rank: 'K', suit: 'C'}, {rank: 'K', suit: 'D'} ],
     folded  : false,
-    totalBet: 1025
+    totalBet: 0
   },{
     position: 3,
     hand    : [ {rank: 'Q', suit: 'C'}, {rank: 'Q', suit: 'D'} ],
     folded  : false,
-    totalBet: 25
-  }, {
+    totalBet: 10
+  },{
     position: 4,
     hand    : [ {rank: 'J', suit: 'C'}, {rank: 'J', suit: 'D'} ],
     folded  : false,
     totalBet: 25
   }],
 
-  button: 1,
+  button: 2,
   
   blinds: {
     small: 10,
     big  : 25
   },
   
-  pot: 2100,
+  pot: 35,
   
   deck: [],
   
@@ -78,31 +92,31 @@ var game = {
 };
 
 
-var round = {
+var stepRound = {
   
   number: 1,    // 'preflop'
 
   players: [{
     position: 1,
-    actions : ['raise'],
-    bets    : [1025]
+    actions : [],
+    bets    : []
   },{
     position: 2,
-    actions : ['raise-sb', 'call'],
-    bets    : [10, 1015]
+    actions : [],
+    bets    : []
   },{
     position: 3,
-    actions : ['raise-bb'],
-    bets    : [25]
+    actions : ['raise-sb'],
+    bets    : [10]
   },{
     position: 4,
-    actions : ['call'],
+    actions : ['raise-bb'],
     bets    : [25]
   }],
 
-  playerToAct: 3,
-  finalPlayer: 1,
+  playerToAct: 1,
+  finalPlayer: 4,
   
-  betToCall: 1025
+  betToCall: 25
   
 };

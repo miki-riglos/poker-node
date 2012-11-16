@@ -1,6 +1,18 @@
-// Player 1 (Miki) raises, call 25 and raise 1000
+module.exports = {
+  name: 'Player 3 (Sofia) checks',
 
-var tournament = {
+  forward: function(tournament) {
+    
+    return {
+      assert: function() {
+        throw new Error('Pending assert');
+      }
+    };
+  }
+};
+
+
+var stepTournament = {
 
   options: {
     initialChips  : 10000,
@@ -15,8 +27,8 @@ var tournament = {
   
   registeredPlayers: {
     '1': { name: 'Miki',    chips:  8975 },
-    '2': { name: 'Giovana', chips:  9990 },
-    '3': { name: 'Sofia',   chips:  9975 },
+    '2': { name: 'Giovana', chips:  8975 },
+    '3': { name: 'Sofia',   chips:  8975 },
     '4': { name: 'Bianca',  chips:  9975 }
   },
   
@@ -32,7 +44,7 @@ var tournament = {
 };
 
 
-var game = {
+var stepGame = {
 
   number: 1,
 
@@ -45,17 +57,12 @@ var game = {
     position: 2,
     hand    : [ {rank: 'K', suit: 'C'}, {rank: 'K', suit: 'D'} ],
     folded  : false,
-    totalBet: 10
+    totalBet: 1025
   },{
     position: 3,
     hand    : [ {rank: 'Q', suit: 'C'}, {rank: 'Q', suit: 'D'} ],
     folded  : false,
-    totalBet: 25
-  }, {
-    position: 4,
-    hand    : [ {rank: 'J', suit: 'C'}, {rank: 'J', suit: 'D'} ],
-    folded  : false,
-    totalBet: 25
+    totalBet: 1025
   }],
 
   button: 1,
@@ -65,11 +72,11 @@ var game = {
     big  : 25
   },
   
-  pot: 1085,
+  pot: 3100,
   
   deck: [],
   
-  flop : [],
+  flop : [ {rank: 'A', suit: 'H'}, {rank: 'A', suit: 'S'}, {rank: '2', suit: 'C'}, {rank: '2', suit: 'C'} ],
   turn : {}, 
   river: {},
 
@@ -78,31 +85,27 @@ var game = {
 };
 
 
-var round = {
+var stepRound = {
   
-  number: 1,    // 'preflop'
+  number: 2,    // 'flop'
 
   players: [{
     position: 1,
-    actions : ['raise'],
-    bets    : [1025]
+    actions : [],
+    bets    : []
   },{
     position: 2,
-    actions : ['raise-sb'],
-    bets    : [10]
+    actions : ['checks'],
+    bets    : [0]
   },{
     position: 3,
-    actions : ['raise-bb'],
-    bets    : [25]
-  },{
-    position: 4,
-    actions : ['call'],
-    bets    : [25]
+    actions : ['checks'],
+    bets    : [0]
   }],
 
-  playerToAct: 2,
-  finalPlayer: 1,
+  playerToAct: 1,
+  finalPlayer: 2,
   
-  betToCall: 1025
+  betToCall: 0
   
 };
