@@ -14,12 +14,11 @@ describe("Tournament flow", function() {
 
   var tournament = new Tournament();
 
-  //steps = [steps[0],steps[1]];
-  
   steps.forEach(function(step, index) {
-    //Synchronous tests - no done()
+    //Synchronous tests - no callback done
     it('Step ' + (index+1) + ': ' + step.name, function() {
-      step.forward(tournament).assert();
+      step.forward(tournament);
+      step.assert(tournament);
     });
   });
 

@@ -2,12 +2,10 @@ module.exports = {
   name: 'Player 2 (Giovana) calls',
 
   forward: function(tournament) {
-    
-    return {
-      assert: function() {
-        throw new Error('Pending assert');
-      }
-    };
+  },
+  
+  assert: function(tournament) {
+    throw new Error('Pending assert');
   }
 };
 

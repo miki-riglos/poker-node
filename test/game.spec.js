@@ -12,10 +12,7 @@ describe("Game class", function() {
   });
 
   it("should have events", function(done) {
-    game.on("event", function() {
-      game.should.be.ok;
-      done();
-    });    
+    game.on("event", done);    
     game.emit("event");
   });
 

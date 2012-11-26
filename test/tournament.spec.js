@@ -13,10 +13,7 @@ describe("Tournament class", function() {
   });
 
   it("should have events", function(done) {
-    tournament.on("event", function() {
-      tournament.should.be.ok;
-      done();
-    });    
+    tournament.on("event", done);    
     tournament.emit("event");
   });
   

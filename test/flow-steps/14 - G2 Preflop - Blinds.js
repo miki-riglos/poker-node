@@ -4,12 +4,10 @@ module.exports = {
   forward: function(tournament) {
     // Giovana is button now
     // Bets of small and big blinds are placed
-    
-    return {
-      assert: function() {
-        throw new Error('Pending assert');
-      }
-    };
+  },
+  
+  assert: function(tournament) {
+    throw new Error('Pending assert');
   }
 };
 

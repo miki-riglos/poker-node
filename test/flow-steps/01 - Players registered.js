@@ -2,17 +2,14 @@ module.exports = {
   name: 'Initial state after player registration',
 
   forward: function(tournament) {
-    
     tournament.registerPlayer(1, "Miki");
     tournament.registerPlayer(2, "Giovana");
     tournament.registerPlayer(3, "Sofia");
     tournament.registerPlayer(4, "Bianca");
+  },
 
-    return {
-      assert: function() {
-        tournament.registeredPlayers[1].name.should.equal( stepTournament.registeredPlayers[1].name );
-      }
-    };
+  assert: function(tournament) {
+    tournament.registeredPlayers[1].name.should.equal( stepTournament.registeredPlayers[1].name );
   }
 };
 
