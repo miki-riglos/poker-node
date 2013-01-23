@@ -1,0 +1,19 @@
+var Round = require("../lib/round").Round;
+
+describe("Round class", function() {
+  var round;
+
+  beforeEach(function() {
+    round = new Round([]);
+  });
+
+  it("should create new instance", function() {
+    round.should.be.an.instanceOf(Round);
+  });
+
+  it("should have events", function(done) {
+    round.on("event", done);
+    round.emit("event");
+  });
+
+});

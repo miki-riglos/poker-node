@@ -9,7 +9,10 @@ module.exports = {
   },
 
   assert: function(tournament) {
-    tournament.registeredPlayers[1].name.should.equal( stepTournament.registeredPlayers[1].name );
+    var tournamentJson     = JSON.stringify(tournament),
+        stepTournamentJson = JSON.stringify(stepTournament);
+
+    tournamentJson.should.equal(stepTournamentJson);
   }
 };
 
@@ -19,30 +22,28 @@ var stepTournament = {
   options: {
     initialChips  : 10000,
     maximumPlayers: 10,
-    initialBlinds: {
-      small: 10,
-      big  : 25
-    }
+    initialSmallBlind: 10,
+    initialBigBlind: 25
   },
-  
-  status: 'open',  
-  
+
+  status: 'open',
+
   registeredPlayers: {
     '1': { name: 'Miki',    chips: 10000},
     '2': { name: 'Giovana', chips: 10000},
     '3': { name: 'Sofia',   chips: 10000},
     '4': { name: 'Bianca',  chips: 10000}
   },
-  
-  gameCounter: 0,  
-  
-  button: 0, 
-  
+
+  gameCounter: 0,
+
+  button: null,
+
   blinds: {
     small: 10,
     big  : 25
   }
-  
+
 };
 
 

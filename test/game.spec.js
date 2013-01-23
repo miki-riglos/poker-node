@@ -4,7 +4,7 @@ describe("Game class", function() {
   var game;
 
   beforeEach(function() {
-    game = new Game();
+    game = new Game([]);
   });
 
   it("should create new instance", function() {
@@ -12,7 +12,7 @@ describe("Game class", function() {
   });
 
   it("should have events", function(done) {
-    game.on("event", done);    
+    game.on("event", done);
     game.emit("event");
   });
 

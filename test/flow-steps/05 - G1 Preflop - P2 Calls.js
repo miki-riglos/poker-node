@@ -3,7 +3,7 @@ module.exports = {
 
   forward: function(tournament) {
   },
-  
+
   assert: function(tournament) {
     throw new Error('Pending assert');
   }
@@ -15,30 +15,28 @@ var stepTournament = {
   options: {
     initialChips  : 10000,
     maximumPlayers: 10,
-    initialBlinds: {
-      small: 10,
-      big  : 25
-    }
+    initialSmallBlind: 10,
+    initialBigBlind: 25
   },
-  
+
   status: 'start',
-  
+
   registeredPlayers: {
     '1': { name: 'Miki',    chips:  8975 },
     '2': { name: 'Giovana', chips:  8975 },
     '3': { name: 'Sofia',   chips:  9975 },
     '4': { name: 'Bianca',  chips:  9975 }
   },
-  
-  gameCounter: 1,  
-  
+
+  gameCounter: 1,
+
   button: 1,
-  
+
   blinds: {
     small: 10,
     big  : 25
   }
-  
+
 };
 
 
@@ -69,18 +67,18 @@ var stepGame = {
   }],
 
   button: 1,
-  
+
   blinds: {
     small: 10,
     big  : 25
   },
-  
+
   pot: 2100,
-  
+
   deck: [],
-  
+
   flop : [],
-  turn : {}, 
+  turn : {},
   river: {},
 
   winners: []
@@ -89,7 +87,7 @@ var stepGame = {
 
 
 var stepRound = {
-  
+
   number: 1,    // 'preflop'
 
   players: [{
@@ -112,7 +110,7 @@ var stepRound = {
 
   playerToAct: 3,
   finalPlayer: 1,
-  
+
   betToCall: 1025
-  
+
 };

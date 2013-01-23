@@ -4,7 +4,7 @@ var fs   = require("fs"),
 var Tournament = require("../lib/tournament").Tournament;
 
 describe("Tournament flow", function() {
-  
+
   var stepsDir = path.join(__dirname, "flow-steps");
   var steps = fs.readdirSync(stepsDir)
                 .sort()
@@ -14,7 +14,7 @@ describe("Tournament flow", function() {
 
   var tournament = new Tournament();
 
-  steps.forEach(function(step, index) {
+  steps.slice(0, 2).forEach(function(step, index) {
     //Synchronous tests - no callback done
     it('Step ' + (index+1) + ': ' + step.name, function() {
       step.forward(tournament);
