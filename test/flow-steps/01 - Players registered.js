@@ -28,21 +28,21 @@ var stepTournament = {
 
   status: 'open',
 
-  registeredPlayers: {
+  button: null,
+
+  blinds: {
+    small: 10,
+    big  : 25
+  },
+
+registeredPlayers: {
     '1': { name: 'Miki',    chips: 10000},
     '2': { name: 'Giovana', chips: 10000},
     '3': { name: 'Sofia',   chips: 10000},
     '4': { name: 'Bianca',  chips: 10000}
   },
 
-  gameCounter: 0,
-
-  button: null,
-
-  blinds: {
-    small: 10,
-    big  : 25
-  }
+  gameCounter: 0
 
 };
 
