@@ -4,7 +4,7 @@ describe("Game class", function() {
   var game;
 
   beforeEach(function() {
-    game = new Game(1, 1, {}, []);
+    game = new Game(1, 1, {}, {}, []);
   });
 
   it("should create new instance", function() {

@@ -1,5 +1,25 @@
+GLOBAL.inspect = require("util").inspect;
+
 var fs   = require("fs"),
-    path = require("path");
+    path = require("path"),
+    inspect = require("util").inspect;
+
+// Helpers for testing/debugging
+Object.defineProperties(Object.prototype, {
+  "toInspect": {
+    value: function(message, showHidden, depth) {
+      console.log("\n", message ? message + "\n " : "", inspect(this, showHidden, depth, true /* colors */), "\n");
+    },
+    enumerable: false
+  },
+  "stringify": {
+    value: function(exclusions) {
+      exclusions = exclusions || [];
+      return JSON.stringify(this, function(key, value) { return exclusions.indexOf(key) != -1 ? undefined : value });
+    },
+    enumerable: false
+  }
+});
 
 var Tournament = require("../lib/tournament").Tournament;
 
@@ -16,7 +36,7 @@ describe("Tournament flow", function() {
 
   steps.slice(0, 2).forEach(function(step, index) {
     //Synchronous tests - no callback done
-    it('Step ' + (index+1) + ': ' + step.name, function() {
+    it('Step ' + (index + 1) + ': ' + step.name, function() {
       step.forward(tournament);
       step.assert(tournament);
     });

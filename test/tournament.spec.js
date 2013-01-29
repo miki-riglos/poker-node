@@ -63,46 +63,4 @@ describe("Tournament class", function() {
 
   });
 
-  //TODO: refactor ending game
-  describe.skip("Game cycles", function() {
-    beforeEach(function() {
-      tournament.registerPlayer(1, "Sofia");
-      tournament.registerPlayer(2, "Bianca");
-    });
-
-    it("should emit start and end events", function(done) {
-      var counter = {
-        tournament: {start: 0, end: 0},
-        game      : {start: 0, end: 0}
-      };
-
-      tournament.on("tournament-start", function() {
-        counter.tournament.start++;
-      });
-      tournament.on("game-start", function() {
-        counter.game.start++;
-
-        tournament.registeredPlayers[2].chips -= 5000;
-        tournament.registeredPlayers[1].chips += 5000;
-        tournament.currentGame.end();
-      });
-      tournament.on("game-end", function() {
-        counter.game.end++;
-      });
-      tournament.on("tournament-end", function() {
-        counter.tournament.end++;
-
-        counter.tournament.start.should.equal(1);
-        counter.game.start.should.equal(2);
-        counter.game.end.should.equal(2);
-        counter.tournament.end.should.equal(1);
-
-        done();
-      });
-
-      tournament.start();
-
-    });
-
-  });
 });

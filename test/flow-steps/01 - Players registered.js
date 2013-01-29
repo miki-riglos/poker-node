@@ -9,10 +9,7 @@ module.exports = {
   },
 
   assert: function(tournament) {
-    var tournamentJson     = JSON.stringify(tournament),
-        stepTournamentJson = JSON.stringify(stepTournament);
-
-    tournamentJson.should.equal(stepTournamentJson);
+    tournament.stringify().should.equal(stepTournament.stringify());
   }
 };
 

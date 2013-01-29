@@ -6,41 +6,31 @@ module.exports = {
   forward: function(tournament) {
     // First button was assigned (Miki), game 1 starts
     // Bets of small and big blinds are placed
+
+    tournament.on("tournament-first-button", function() {
+      tournament.button = 1;  // Reassign for testing
+    });
+    tournament.on("game-start", function() {
+      tournament.currentGame.deck = new Deck(); // Reassign for testing (not shuffled)
+    });
     tournament.start();
-    tournament.button = 1;  // Reassign for testing
-    tournament.currentGame.deck = new Deck(); // Reassign for testing
   },
 
   assert: function(tournament) {
-    var tournamentExclusion = function(key, value) { return ["players", "currentGame"].indexOf(key) != -1 ? undefined : value },
-        tournamentJson      = JSON.stringify(tournament, tournamentExclusion),
-        stepTournamentJson  = JSON.stringify(stepTournament, tournamentExclusion);
+    var tournamentExclusions = ["registeredPlayers", "currentGame", "_events"];
+    tournament.stringify(tournamentExclusions).should.equal( stepTournament.stringify(tournamentExclusions) );
 
-    var tournamentPlayersJson     = JSON.stringify(tournament.registeredPlayers),
-        stepTournamentPlayersJson = JSON.stringify(stepTournament.registeredPlayers);
+    tournament.registeredPlayers.stringify().should.equal( stepTournament.registeredPlayers.stringify() );
 
-    var gameExclusion      = function(key, value) { return ["players", "deck"].indexOf(key) != -1 ? undefined : value },
-        currentGameJson    = JSON.stringify(tournament.currentGame, gameExclusion),
-        stepGameJson       = JSON.stringify(stepGame, gameExclusion);
+    var gameExclusions = ["registeredPlayers", "gamePlayers", "deck", "currentRound", "_events"];
+    tournament.currentGame.stringify(gameExclusions).should.equal( stepGame.stringify(gameExclusions) );
 
-    var currentGamePlayersJson    = JSON.stringify(tournament.currentGame.players),
-        stepGamePlayersJson       = JSON.stringify(stepGame.players);
+    tournament.currentGame.gamePlayers.stringify().should.equal( stepGame.gamePlayers.stringify() );
 
-    describe("Step 2 Details", function() {
-      it("tournament -players -currentGame", function() {
-        tournamentJson.should.equal(stepTournamentJson);
-      });
-      it("tournament players", function() {
-        tournamentPlayersJson.should.equal(stepTournamentPlayersJson);
-      });
+    var roundExclusions = ["registeredPlayers", "gamePlayers", "roundPlayers", "_events"];
+    tournament.currentGame.currentRound.stringify(roundExclusions).should.equal( stepRound.stringify(roundExclusions) );
 
-      it("currentGame -players -deck", function() {
-        currentGameJson.should.equal(stepGameJson);
-      });
-      it("currentGame players", function() {
-        currentGamePlayersJson.should.equal(stepGamePlayersJson);
-      });
-    });
+    tournament.currentGame.currentRound.roundPlayers.stringify().should.equal( stepRound.roundPlayers.stringify() );
   }
 };
 
@@ -85,21 +75,19 @@ var stepGame = {
     big  : 25
   },
 
-  players: {
-    '1': { player  : stepTournament.registeredPlayers['1'],
-           hand    : [ {rank: 'A', suit: 'C'}, {rank: 'A', suit: 'D'} ],
+  registeredPlayers: stepTournament.registeredPlayers,
+
+  gamePlayers: {
+    '1': { hand    : [ {rank: '3', suit: 'C'}, {rank: '7', suit: 'C'} ],
            folded  : false,
            totalBet: 0 },
-    '2': { player  : stepTournament.registeredPlayers['2'],
-           hand    : [ {rank: 'K', suit: 'C'}, {rank: 'K', suit: 'D'} ],
+    '2': { hand    : [ {rank: '4', suit: 'C'}, {rank: '8', suit: 'C'} ],
            folded  : false,
            totalBet: 10 },
-    '3': { player  : stepTournament.registeredPlayers['3'],
-           hand    : [ {rank: 'Q', suit: 'C'}, {rank: 'Q', suit: 'D'} ],
+    '3': { hand    : [ {rank: '5', suit: 'C'}, {rank: '9', suit: 'C'} ],
            folded  : false,
            totalBet: 25 },
-    '4': { player  : stepTournament.registeredPlayers['4'],
-           hand    : [ {rank: 'J', suit: 'C'}, {rank: 'J', suit: 'D'} ],
+    '4': { hand    : [ {rank: '6', suit: 'C'}, {rank: '10', suit: 'C'} ],
            folded  : false,
            totalBet: 0 }
   },
@@ -112,7 +100,11 @@ var stepGame = {
   turn : {},
   river: {},
 
-  winners: []
+  burnt: [ {"rank":"2","suit":"C"} ],
+
+  winners: [],
+
+  roundCounter: 1
 
 };
 
@@ -121,30 +113,30 @@ var stepRound = {
 
   number: 1,    // 'preflop'
 
-  players: [{
-    position: 1,
-    player  : stepTournament.registeredPlayers['1'],
-    actions : [],
-    bets    : []
-  },{
-    position: 2,
-    player  : stepTournament.registeredPlayers['2'],
-    actions : ['raise-sb'],
-    bets    : [10]
-  },{
-    position: 3,
-    player  : stepTournament.registeredPlayers['3'],
-    actions : ['raise-bb'],
-    bets    : [25]
-  },{
-    position: 4,
-    player  : stepTournament.registeredPlayers['4'],
-    actions : [],
-    bets    : []
-  }],
+  button: 1,
 
-  playerToAct: 4,
-  finalPlayer: 3,
+  blinds: {
+    small: 10,
+    big  : 25
+  },
+
+  registeredPlayers: stepTournament.registeredPlayers,
+
+  gamePlayers: stepGame.gamePlayers,
+
+  roundPlayers: {
+    '1': { actions : [],
+           bets    : [] },
+    '2': { actions : ['raise-sb'],
+           bets    : [10] },
+    '3': { actions : ['raise-bb'],
+           bets    : [25] },
+    '4': { actions : [],
+           bets    : [] }
+  },
+
+  positionToAct: 4,
+  finalPosition: 3,
 
   betToCall: 25
 
