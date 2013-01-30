@@ -1,3 +1,8 @@
+- Deal flop
+- Step 13
+
+- Review API: raise, call, check, fold
+
 - Tie, pot distribution
 - Define how blinds increase (when and how)
 - Multiple pots (all ins)

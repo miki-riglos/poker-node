@@ -2,10 +2,24 @@ module.exports = {
   name: 'Player 3 (Sofia) folds',
 
   forward: function(tournament) {
+    tournament.currentGame.currentRound.fold(3);
   },
 
   assert: function(tournament) {
-    throw new Error('Pending assert');
+    var tournamentExclusions = ["registeredPlayers", "currentGame", "_events"];
+    tournament.stringify(tournamentExclusions).should.equal( stepTournament.stringify(tournamentExclusions) );
+
+    tournament.registeredPlayers.stringify().should.equal( stepTournament.registeredPlayers.stringify() );
+
+    var gameExclusions = ["registeredPlayers", "gamePlayers", "deck", "currentRound", "_events"];
+    tournament.currentGame.stringify(gameExclusions).should.equal( stepGame.stringify(gameExclusions) );
+
+    tournament.currentGame.gamePlayers.stringify().should.equal( stepGame.gamePlayers.stringify() );
+
+    var roundExclusions = ["registeredPlayers", "gamePlayers", "roundPlayers", "_events"];
+    tournament.currentGame.currentRound.stringify(roundExclusions).should.equal( stepRound.stringify(roundExclusions) );
+
+    tournament.currentGame.currentRound.roundPlayers.stringify().should.equal( stepRound.roundPlayers.stringify() );
   }
 };
 
@@ -21,6 +35,13 @@ var stepTournament = {
 
   status: 'start',
 
+  button: 1,
+
+  blinds: {
+    small: 10,
+    big  : 25
+  },
+
   registeredPlayers: {
     '1': { name: 'Miki',    chips:  0 },
     '2': { name: 'Giovana', chips:  8975 },
@@ -28,14 +49,7 @@ var stepTournament = {
     '4': { name: 'Bianca',  chips:  9975 }
   },
 
-  gameCounter: 1,
-
-  button: 1,
-
-  blinds: {
-    small: 10,
-    big  : 25
-  }
+  gameCounter: 1
 
 };
 
@@ -44,22 +58,50 @@ var stepGame = {
 
   number: 1,
 
-  players: [{
-    position: 1,
-    hand    : [ {rank: 'A', suit: 'C'}, {rank: 'A', suit: 'D'} ],
-    folded  : false,
-    totalBet: 10000
-  },{
-    position: 2,
-    hand    : [ {rank: 'K', suit: 'C'}, {rank: 'K', suit: 'D'} ],
-    folded  : true,
-    totalBet: 1025
-  },{
-    position: 3,
-    hand    : [ {rank: 'Q', suit: 'C'}, {rank: 'Q', suit: 'D'} ],
-    folded  : true,
-    totalBet: 1025
-  }],
+  button: 1,
+
+  blinds: {
+    small: 10,
+    big  : 25
+  },
+
+  registeredPlayers: stepTournament.registeredPlayers,
+
+  gamePlayers: {
+    '1': { hand    : [ {rank: '3', suit: 'C'}, {rank: '7', suit: 'C'} ],
+           folded  : false,
+           totalBet: 10000 },
+    '2': { hand    : [ {rank: '4', suit: 'C'}, {rank: '8', suit: 'C'} ],
+           folded  : true,
+           totalBet: 1025 },
+    '3': { hand    : [ {rank: '5', suit: 'C'}, {rank: '9', suit: 'C'} ],
+           folded  : true,
+           totalBet: 1025 },
+    '4': { hand    : [ {rank: '6', suit: 'C'}, {rank: '10', suit: 'C'} ],
+           folded  : true,
+           totalBet: 25 }
+  },
+
+  pot: 12075,
+
+  deck: [],
+
+  flop : [],
+  turn : {},
+  river: {},
+
+  burnt: [ {"rank":"2","suit":"C"} ],
+
+  winners: [],
+
+  roundCounter: 2
+
+};
+
+
+var stepRound = {
+
+  number: 2,    // 'preflop'
 
   button: 1,
 
@@ -68,39 +110,21 @@ var stepGame = {
     big  : 25
   },
 
-  pot: 12075,
+  registeredPlayers: stepTournament.registeredPlayers,
 
-  deck: [],
+  gamePlayers: stepGame.gamePlayers,
 
-  flop : [ {rank: 'A', suit: 'H'}, {rank: 'A', suit: 'S'}, {rank: '2', suit: 'C'}, {rank: '2', suit: 'C'} ],
-  turn : {},
-  river: {},
+  roundPlayers: {
+    '1': { actions : ['raise'],
+           bets    : [8975] },
+    '2': { actions : ['check', 'fold'],
+           bets    : [] },
+    '3': { actions : ['check', 'fold'],
+           bets    : [] }
+  },
 
-  winners: []
-
-};
-
-
-var stepRound = {
-
-  number: 2,    // 'flop'
-
-  players: [{
-    position: 1,
-    actions : ['raises-ai'],
-    bets    : [8975]
-  },{
-    position: 2,
-    actions : ['checks', 'fold'],
-    bets    : [0, 0]
-  },{
-    position: 3,
-    actions : ['checks', 'fold'],
-    bets    : [0, 0]
-  }],
-
-  playerToAct: 1,
-  finalPlayer: 1,
+  positionToAct: 1,
+  finalPosition: 1,
 
   betToCall: 8975
 
