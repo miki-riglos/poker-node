@@ -1,7 +1,8 @@
 - Deal flop
-- Step 13
+- Step 13 - run button
 
 - Review API: raise, call, check, fold
+- underscore dependency?
 
 - Tie, pot distribution
 - Define how blinds increase (when and how)

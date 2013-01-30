@@ -13,6 +13,7 @@ module.exports = {
   }
 };
 
+
 var stepTournament = {
 
   options: {
@@ -31,7 +32,7 @@ var stepTournament = {
     big  : 25
   },
 
-registeredPlayers: {
+  registeredPlayers: {
     '1': { name: 'Miki',    chips: 10000},
     '2': { name: 'Giovana', chips: 10000},
     '3': { name: 'Sofia',   chips: 10000},
