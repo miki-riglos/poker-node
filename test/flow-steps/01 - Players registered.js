@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'Initial state after player registration',
+  name: 'Initial state after players registration',
 
   forward: function(tournament) {
     tournament.registerPlayer(1, "Miki");
@@ -12,7 +12,6 @@ module.exports = {
     tournament.stringify().should.equal(stepTournament.stringify());
   }
 };
-
 
 var stepTournament = {
 
@@ -41,12 +40,4 @@ registeredPlayers: {
 
   gameCounter: 0
 
-};
-
-
-var stepGame = {
-};
-
-
-var stepRound = {
 };

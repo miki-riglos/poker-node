@@ -1,7 +1,7 @@
 var Deck  = require("../../lib/deck").Deck;
 
 module.exports = {
-  name: 'Tournament starts',
+  name: 'Tournament starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',
 
   forward: function(tournament) {
     // First button was assigned (Miki), game 1 starts
@@ -63,7 +63,6 @@ var stepTournament = {
 
 };
 
-
 var stepGame = {
 
   number: 1,
@@ -107,7 +106,6 @@ var stepGame = {
   roundCounter: 1
 
 };
-
 
 var stepRound = {
 

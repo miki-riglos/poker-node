@@ -42,7 +42,6 @@ describe("Deck class", function() {
 
   it("should have a shuffle method", function() {
     deck.shuffle();
-    //console.log(deck);
     deck.length.should.equal(52);
   });
 
@@ -50,8 +49,6 @@ describe("Deck class", function() {
     var dealt;
     deck.shuffle();
     dealt = deck.deal();
-    //console.log(dealt);
-    //console.log(deck);
     dealt.should.be.an.instanceOf(Card);
     deck.length.should.equal(51);
   });

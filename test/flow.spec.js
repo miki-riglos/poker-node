@@ -34,7 +34,7 @@ describe("Tournament flow", function() {
 
   var tournament = new Tournament();
 
-  steps.slice(0, 2).forEach(function(step, index) {
+  steps.slice(0, 8).forEach(function(step, index) {
     //Synchronous tests - no callback done
     it('Step ' + (index + 1) + ': ' + step.name, function() {
       step.forward(tournament);
