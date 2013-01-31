@@ -9,7 +9,8 @@ module.exports = {
   },
 
   assert: function(tournament) {
-    tournament.stringify().should.equal(stepTournament.stringify());
+    var tournamentExclusions = ["registeredPlayers", "currentGame", "_events"];
+    tournament.stringify(tournamentExclusions).should.equal( stepTournament.stringify(tournamentExclusions) );
   }
 };
 

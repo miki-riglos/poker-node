@@ -1,5 +1,10 @@
 - Deal flop
-- Step 13 - run button
+- Test Events sequence / doc events
+- TODOs
+
+- flow-steps
+  - turn, river
+  - end of tournament
 
 - Review API: raise, call, check, fold
 - underscore dependency?

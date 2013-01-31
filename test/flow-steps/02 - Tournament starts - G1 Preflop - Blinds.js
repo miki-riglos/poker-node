@@ -7,8 +7,10 @@ module.exports = {
     // First button was assigned (Miki), game 1 starts
     // Bets of small and big blinds are placed
 
-    tournament.on("tournament-first-button", function() {
-      tournament.button = 1;  // Reassign for testing
+    tournament.on("tournament-button", function() {
+      if (tournament.gameCounter === 1) {
+        tournament.button = 1;  // Reassign for testing
+      }
     });
     tournament.on("game-start", function() {
       tournament.currentGame.deck = new Deck(); // Reassign for testing (not shuffled)
