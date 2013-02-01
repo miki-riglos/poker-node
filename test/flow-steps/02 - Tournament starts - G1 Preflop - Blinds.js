@@ -1,4 +1,4 @@
-var Deck  = require("../../lib/deck").Deck;
+var Deck  = require('../../lib/deck').Deck;
 
 module.exports = {
   name: 'Tournament starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',
@@ -7,29 +7,29 @@ module.exports = {
     // First button was assigned (Miki), game 1 starts
     // Bets of small and big blinds are placed
 
-    tournament.on("tournament-button", function() {
+    tournament.on('tournament-button', function() {
       if (tournament.gameCounter === 1) {
         tournament.button = 1;  // Reassign for testing
       }
     });
-    tournament.on("game-start", function() {
+    tournament.on('game-start', function() {
       tournament.currentGame.deck = new Deck(); // Reassign for testing (not shuffled)
     });
     tournament.start();
   },
 
   assert: function(tournament) {
-    var tournamentExclusions = ["registeredPlayers", "currentGame", "_events"];
+    var tournamentExclusions = ['registeredPlayers', 'currentGame', '_events'];
     tournament.stringify(tournamentExclusions).should.equal( stepTournament.stringify(tournamentExclusions) );
 
     tournament.registeredPlayers.stringify().should.equal( stepTournament.registeredPlayers.stringify() );
 
-    var gameExclusions = ["registeredPlayers", "gamePlayers", "deck", "currentRound", "_events"];
+    var gameExclusions = ['registeredPlayers', 'gamePlayers', 'deck', 'currentRound', '_events'];
     tournament.currentGame.stringify(gameExclusions).should.equal( stepGame.stringify(gameExclusions) );
 
     tournament.currentGame.gamePlayers.stringify().should.equal( stepGame.gamePlayers.stringify() );
 
-    var roundExclusions = ["registeredPlayers", "gamePlayers", "roundPlayers", "_events"];
+    var roundExclusions = ['registeredPlayers', 'gamePlayers', 'roundPlayers', '_events'];
     tournament.currentGame.currentRound.stringify(roundExclusions).should.equal( stepRound.stringify(roundExclusions) );
 
     tournament.currentGame.currentRound.roundPlayers.stringify().should.equal( stepRound.roundPlayers.stringify() );
@@ -103,7 +103,7 @@ var stepGame = {
   turn : {},
   river: {},
 
-  burnt: [ {"rank":"2","suit":"C"} ],
+  burnt: [ {'rank':'2','suit':'C'} ],
 
   winners: [],
 

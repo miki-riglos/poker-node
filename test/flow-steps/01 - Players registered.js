@@ -2,14 +2,14 @@ module.exports = {
   name: 'Initial state after players registration',
 
   forward: function(tournament) {
-    tournament.registerPlayer(1, "Miki");
-    tournament.registerPlayer(2, "Giovana");
-    tournament.registerPlayer(3, "Sofia");
-    tournament.registerPlayer(4, "Bianca");
+    tournament.registerPlayer(1, 'Miki');
+    tournament.registerPlayer(2, 'Giovana');
+    tournament.registerPlayer(3, 'Sofia');
+    tournament.registerPlayer(4, 'Bianca');
   },
 
   assert: function(tournament) {
-    var tournamentExclusions = ["registeredPlayers", "currentGame", "_events"];
+    var tournamentExclusions = ['registeredPlayers', 'currentGame', '_events'];
     tournament.stringify(tournamentExclusions).should.equal( stepTournament.stringify(tournamentExclusions) );
   }
 };

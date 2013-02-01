@@ -1,6 +1,5 @@
-- Deal flop
 - Test Events sequence / doc events
-- TODOs
+- TODOs in code
 
 - flow-steps
   - turn, river

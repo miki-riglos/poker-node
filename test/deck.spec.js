@@ -1,51 +1,51 @@
-var Card = require("../lib/deck").Card,
-    Deck = require("../lib/deck").Deck;
+var Card = require('../lib/deck').Card,
+    Deck = require('../lib/deck').Deck;
 
-describe("Card class", function() {
+describe('Card class', function() {
 
-  it("should create new instance", function() {
-    var cardAceOfSpades  = new Card("A", "S");
+  it('should create new instance', function() {
+    var cardAceOfSpades  = new Card('A', 'S');
     cardAceOfSpades.should.be.an.instanceOf(Card);
   });
 
-  it("should have a toString method", function() {
-    var cardAceOfSpades  = new Card("A", "S");
-    cardAceOfSpades.toString().should.equal("Ace of Spades");
+  it('should have a toString method', function() {
+    var cardAceOfSpades  = new Card('A', 'S');
+    cardAceOfSpades.toString().should.equal('Ace of Spades');
   });
 
-  it("should validate rank and suit", function() {
-    ( function() { new Card("X", "S"); } ).should.throwError("Invalid Rank/Suit combination");
-    ( function() { new Card("A", "X"); } ).should.throwError("Invalid Rank/Suit combination");
-    ( function() { new Card("X", "X"); } ).should.throwError();
+  it('should validate rank and suit', function() {
+    ( function() { new Card('X', 'S'); } ).should.throwError('Invalid Rank/Suit combination');
+    ( function() { new Card('A', 'X'); } ).should.throwError('Invalid Rank/Suit combination');
+    ( function() { new Card('X', 'X'); } ).should.throwError();
   });
 
 });
 
-describe("Deck class", function() {
+describe('Deck class', function() {
   var deck;
 
   beforeEach(function() {
     deck = new Deck();
   });
 
-  it("should create new instance", function() {
+  it('should create new instance', function() {
     deck.should.be.an.instanceOf(Deck);
   });
 
-  it("should inherit from array", function() {
+  it('should inherit from array', function() {
     deck.should.be.an.instanceOf(Array);
   });
 
-  it("should have 52 cards", function() {
+  it('should have 52 cards', function() {
     deck.length.should.equal(52);
   });
 
-  it("should have a shuffle method", function() {
+  it('should have a shuffle method', function() {
     deck.shuffle();
     deck.length.should.equal(52);
   });
 
-  it("should have a deal method", function() {
+  it('should have a deal method', function() {
     var dealt;
     deck.shuffle();
     dealt = deck.deal();

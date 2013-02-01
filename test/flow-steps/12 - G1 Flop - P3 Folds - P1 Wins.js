@@ -6,17 +6,17 @@ module.exports = {
   },
 
   assert: function(tournament) {
-    var tournamentExclusions = ["registeredPlayers", "currentGame", "_events"];
+    var tournamentExclusions = ['registeredPlayers', 'currentGame', '_events'];
     tournament.stringify(tournamentExclusions).should.equal( stepTournament.stringify(tournamentExclusions) );
 
     tournament.registeredPlayers.stringify().should.equal( stepTournament.registeredPlayers.stringify() );
 
-    var gameExclusions = ["registeredPlayers", "gamePlayers", "deck", "currentRound", "_events"];
+    var gameExclusions = ['registeredPlayers', 'gamePlayers', 'deck', 'currentRound', '_events'];
     tournament.currentGame.stringify(gameExclusions).should.equal( stepGame.stringify(gameExclusions) );
 
     tournament.currentGame.gamePlayers.stringify().should.equal( stepGame.gamePlayers.stringify() );
 
-    var roundExclusions = ["registeredPlayers", "gamePlayers", "roundPlayers", "_events"];
+    var roundExclusions = ['registeredPlayers', 'gamePlayers', 'roundPlayers', '_events'];
     tournament.currentGame.currentRound.stringify(roundExclusions).should.equal( stepRound.stringify(roundExclusions) );
 
     tournament.currentGame.currentRound.roundPlayers.stringify().should.equal( stepRound.roundPlayers.stringify() );
@@ -86,11 +86,11 @@ var stepGame = {
 
   deck: [],
 
-  flop : [],
+  flop : [ {rank: 'J', suit: 'C'}, {rank: 'Q', suit: 'C'}, {rank: 'K', suit: 'C'} ],
   turn : {},
   river: {},
 
-  burnt: [ {"rank":"2","suit":"C"} ],
+  burnt: [ {'rank':'2','suit':'C'} ],
 
   winners: [1],
 

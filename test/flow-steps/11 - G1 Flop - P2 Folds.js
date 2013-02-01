@@ -86,7 +86,7 @@ var stepGame = {
 
   deck: [],
 
-  flop : [],
+  flop : [ {rank: 'J', suit: 'C'}, {rank: 'Q', suit: 'C'}, {rank: 'K', suit: 'C'} ],
   turn : {},
   river: {},
 
