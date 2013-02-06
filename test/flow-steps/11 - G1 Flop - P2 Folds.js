@@ -2,7 +2,8 @@ module.exports = {
   name: 'Player 2 (Giovana) folds',
 
   forward: function(tournament) {
-    tournament.currentGame.currentRound.fold(2);
+    //tournament.currentGame.currentRound.fold(2);
+    tournament.registeredPlayers[2].folds();
   },
 
   assert: function(tournament) {

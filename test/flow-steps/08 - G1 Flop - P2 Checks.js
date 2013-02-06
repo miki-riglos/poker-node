@@ -3,7 +3,8 @@ module.exports = {
 
   forward: function(tournament) {
     // Player 2 (Giovana) checks
-    tournament.currentGame.currentRound.check(2);
+    //tournament.currentGame.currentRound.check(2);
+    tournament.registeredPlayers[2].checks();
   },
 
   assert: function(tournament) {

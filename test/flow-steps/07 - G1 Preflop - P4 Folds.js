@@ -2,7 +2,8 @@ module.exports = {
   name: 'Player 4 (Bianca) folds, preflop round ends',
 
   forward: function(tournament) {
-    tournament.currentGame.currentRound.fold(4);
+    //tournament.currentGame.currentRound.fold(4);
+    tournament.registeredPlayers[4].folds();
   },
 
   assert: function(tournament) {

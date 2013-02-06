@@ -2,7 +2,8 @@ module.exports = {
   name: 'Player 1 (Miki) raises 1025',
 
   forward: function(tournament) {
-    tournament.currentGame.currentRound.raise(1, 1025);
+    //tournament.currentGame.currentRound.raise(1, 1025);
+    tournament.registeredPlayers[1].raises(1025);
   },
 
   assert: function(tournament) {

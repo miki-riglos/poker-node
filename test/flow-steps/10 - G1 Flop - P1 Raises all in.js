@@ -2,7 +2,8 @@ module.exports = {
   name: 'Player 1 (Miki) raises (all in)',
 
   forward: function(tournament) {
-    tournament.currentGame.currentRound.raise(1, tournament.registeredPlayers[1].chips);
+    //tournament.currentGame.currentRound.raise(1, tournament.registeredPlayers[1].chips);
+    tournament.registeredPlayers[1].raises( tournament.registeredPlayers[1].chips );
   },
 
   assert: function(tournament) {

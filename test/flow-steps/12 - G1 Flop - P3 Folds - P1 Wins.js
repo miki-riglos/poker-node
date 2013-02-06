@@ -2,7 +2,8 @@ module.exports = {
   name: 'Player 3 (Sofia) folds, flop round and game ends, Player 1 (Miki) wins',
 
   forward: function(tournament) {
-    tournament.currentGame.currentRound.fold(3);
+    //tournament.currentGame.currentRound.fold(3);
+    tournament.registeredPlayers[3].folds();
   },
 
   assert: function(tournament) {

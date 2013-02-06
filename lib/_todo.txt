@@ -1,6 +1,4 @@
 - TODOs in code
-- Review API: raise, call, check, fold
-    - tournament.registeredPlayers[1].folds
 
 - flow-steps
   - turn, river
