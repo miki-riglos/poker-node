@@ -1,0 +1,37 @@
+Round
+-----
+emit('start')
+emit('error') //TODO
+emit('raise', {position: position, amount: amount, type: type})
+emit('call' , {position: position, amount: amount});
+emit('check', {position: position});
+emit('fold' , {position: position});
+emit('end'  )
+
+Game
+----
+emit('start')
+emit('round-start')
+emit('round-error') //TODO
+emit('round-raise', evt);
+emit('round-call' , evt);
+emit('round-check', evt);
+emit('round-fold' , evt);
+emit('round-end';
+emit('end'  )
+
+Tournament
+----------
+emit('tournament-start' , this);
+emit('tournament-error' , this);
+emit('tournament-button', this)
+emit('game-start'       , this)
+emit('round-start'      , this)
+emit('round-error'      , this) //TODO
+emit('round-raise'      , this, evt);
+emit('round-call'       , this, evt);
+emit('round-check'      , this, evt);
+emit('round-fold'       , this, evt);
+emit('round-end'        , this)
+emit('game-end'         , this)
+emit('tournament-end'   , this);
