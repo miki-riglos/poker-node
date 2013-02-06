@@ -1,11 +1,14 @@
 - TODOs in code
+- Review API: raise, call, check, fold
+    - tournament.registeredPlayers[1].folds
 
 - flow-steps
   - turn, river
   - end of tournament
 
-- Review API: raise, call, check, fold
 - underscore dependency?
+    .merge
+    .size
 
 - Tie, pot distribution
 - Define how blinds increase (when and how)

@@ -55,7 +55,6 @@ describe('Tournament flow', function() {
   });
 
   it('Events in order', function() {
-    tournament.end();
     var expectedCounter  = {
             tournament: {start: 1, error: 0, button: 2, end: 1},
             game      : {start: 2, end: 1},
@@ -72,6 +71,7 @@ describe('Tournament flow', function() {
                                 'round-start|2.1',
                             'tournament-end'];
 
+    tournament.end(); //TODO: will be eventually in the last step
     actualCounter.stringify().should.equal( expectedCounter.stringify() );
     actualSequence.stringify().should.equal( expectedSequence.stringify() );
   });
