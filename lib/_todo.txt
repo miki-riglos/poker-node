@@ -1,12 +1,16 @@
-- TODOs in code
+- web server, validate API
+  - return error | emit error event <- TODOs
 
 - flow-steps
   - turn, river
   - end of tournament
 
+- Save/Load game state to resume
+
 - underscore dependency?
-    .merge
-    .size
+    _.merge
+    _.size
+    _.groupBy? -> handEval
 
 - Tie, pot distribution
 - Define how blinds increase (when and how)
