@@ -13,7 +13,7 @@ module.exports = {
       }
     });
     tournament.on('game-start', function() {
-      tournament.currentGame.deck = new Deck(); // Reassign for testing (not shuffled)
+      tournament.currentGame.deck = Deck(); // Reassign for testing (not shuffled)
     });
     tournament.start();
   },

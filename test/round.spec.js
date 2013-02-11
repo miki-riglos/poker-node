@@ -4,7 +4,7 @@ describe('Round class', function() {
   var round;
 
   beforeEach(function() {
-    round = new Round(1, 1, {}, {}, {}, []);
+    round = Round(1, 1, {}, {}, {}, []);
   });
 
   it('should create new instance', function() {

@@ -5,7 +5,7 @@ describe('Tournament class', function() {
   var tournament;
 
   beforeEach(function() {
-    tournament = new Tournament();
+    tournament = Tournament();
   });
 
   it('should create new instance', function() {
@@ -18,7 +18,7 @@ describe('Tournament class', function() {
   });
 
   it('should accept options', function() {
-    var tournamentWithOptions = new Tournament( {initialChips: 100} );
+    var tournamentWithOptions = Tournament( {initialChips: 100} );
     tournamentWithOptions.options.initialChips.should.equal(100);
   });
 

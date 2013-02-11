@@ -4,19 +4,19 @@ var Card = require('../lib/deck').Card,
 describe('Card class', function() {
 
   it('should create new instance', function() {
-    var cardAceOfSpades  = new Card('A', 'S');
+    var cardAceOfSpades  = Card('A', 'S');
     cardAceOfSpades.should.be.an.instanceOf(Card);
   });
 
   it('should have a toString method', function() {
-    var cardAceOfSpades  = new Card('A', 'S');
+    var cardAceOfSpades  = Card('A', 'S');
     cardAceOfSpades.toString().should.equal('Ace of Spades');
   });
 
   it('should validate rank and suit', function() {
-    ( function() { new Card('X', 'S'); } ).should.throwError('Invalid Rank/Suit combination');
-    ( function() { new Card('A', 'X'); } ).should.throwError('Invalid Rank/Suit combination');
-    ( function() { new Card('X', 'X'); } ).should.throwError();
+    ( function() { Card('X', 'S'); } ).should.throwError('Invalid Rank/Suit combination');
+    ( function() { Card('A', 'X'); } ).should.throwError('Invalid Rank/Suit combination');
+    ( function() { Card('X', 'X'); } ).should.throwError();
   });
 
 });
@@ -25,7 +25,7 @@ describe('Deck class', function() {
   var deck;
 
   beforeEach(function() {
-    deck = new Deck();
+    deck = Deck();
   });
 
   it('should create new instance', function() {
