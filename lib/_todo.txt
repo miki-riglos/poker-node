@@ -1,9 +1,10 @@
 - web server, validate API
-  - return error | emit error event <- TODOs
+  - return error || emit error event <- TODOs
 
 - flow-steps
   - turn, river
   - end of tournament
+  - all events
 
 - Save/Load game state to resume
 
@@ -11,6 +12,8 @@
     _.merge
     _.size
     _.groupBy? -> handEval
+    - use _.size instead of [].length?
+    - use _.keys instead of Objecy.keys?
 
 - Tie, pot distribution
 - Define how blinds increase (when and how)
