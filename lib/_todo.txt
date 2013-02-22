@@ -20,3 +20,5 @@
 - Multiple pots (all ins)
 - Player inactive, automatic checks/folds
 - Game status: all players are All in, show hands
+
+- Client session, reconnections

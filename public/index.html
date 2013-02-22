@@ -6,8 +6,22 @@
     </head>
     <body>
       <h1>Poker Node</h1>
-      <p>Welcome to Poker Node</p>
 
+      <!-- Login -->
+      <div>
+        <form data-bind='visible: !loggedIn(), submit: login'>
+          Player Name:
+          <input data-bind='value: name, valueUpdate: "afterkeydown"' />
+          <button type='submit' data-bind='enable: name().length > 0'>Login</button>
+        </form>
+        <div style='display: none;' data-bind='visible: loggedIn()'>
+          Player Name: <span data-bind='text: name'></span>
+        </div>
+      </div>
+      <hr/>
+
+  <ul data-bind="foreach: tables">
+    <li>
       <!-- Table -->
       <div>
         <!-- Header -->
@@ -23,6 +37,8 @@
           </li>
         </ul>
       </div>
+    </li>
+  </ul>
 
       <script data-main="js/main" src="js/ext/require.js"></script>
     </body>

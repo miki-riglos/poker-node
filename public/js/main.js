@@ -8,13 +8,33 @@ require.config({
 
 require(['io', 'knockout', 'jquery', 'table'], function(io, ko, $, Table) {
   var socket = io.connect();
-  socket.on('news', function (data) {
+  socket.on('news', function(data) {
     console.log(data);
     socket.emit('my other event', { my: 'data' });
   });
 
-  var table = Table('miki');
-  table.addPlayer('miki', 10000);
+  var playerInfo = {
+    name: ko.observable(''),
+    loggedIn: ko.observable(false),
+    login: function() {
+      this.loggedIn(true);
+      socket.emit('login', this.name(), function(data) {
+        console.log(data);
+      });
+    },
 
-  ko.applyBindings(table);
+    tables: ko.observableArray([])
+  };
+
+  var table1 = Table('host1');
+  table1.addPlayer('player1 of table1', 10000);
+  table1.addPlayer('player2 of table1', 10000);
+  playerInfo.tables.push(table1);
+
+  var table2 = Table('host2');
+  table2.addPlayer('player1 of table2', 10000);
+  table2.addPlayer('player2 of table2', 10000);
+  playerInfo.tables.push(table2);
+
+  ko.applyBindings(playerInfo);
 });

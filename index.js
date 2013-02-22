@@ -1,7 +1,7 @@
 var http    = require('http'),
     express = require('express'),
     app     = express(),
-    routes  = require('./routes'),
+//    routes  = require('./routes'),
     server  = http.createServer(app),
     io      = require('socket.io').listen(server);
 
@@ -11,10 +11,10 @@ app.configure(function() {
   app.set('view engine', 'jade');
   app.use(express.favicon());
   app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser('key-secret'));
-  app.use(express.cookieSession());
+//  app.use(express.bodyParser());
+//  app.use(express.methodOverride());
+//  app.use(express.cookieParser('key-secret'));
+//  app.use(express.cookieSession());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -33,9 +33,9 @@ app.get('/', function(req, res) {
 });
 
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
+  socket.on('login', function(name, cb) {
+    // Get player's active tables/tournaments and send it back to the client
+    cb( {name: name, tables: []} );
   });
 });
 
