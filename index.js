@@ -1,8 +1,9 @@
-var express = require('express'),
-    http    = require('http'),
+var http    = require('http'),
+    express = require('express'),
     app     = express(),
     routes  = require('./routes'),
-    server  = http.createServer(app);
+    server  = http.createServer(app),
+    io      = require('socket.io').listen(server);
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
@@ -31,6 +32,12 @@ app.get('/', function(req, res) {
  res.sendfile(__dirname + '/public/index.html') ;
 });
 
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
 
 server.listen(app.get('port'), function() {
   console.log("Express server listening on port " + app.get('port'));
