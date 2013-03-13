@@ -1,3 +1,7 @@
+- /register <-- modal form?
+- /login    <-- modal form?
+- /logout
+
 - web server, validate API
   - return error || emit error event <- TODOs
 

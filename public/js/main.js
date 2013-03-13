@@ -8,17 +8,14 @@ require.config({
 
 require(['io', 'knockout', 'jquery', 'table'], function(io, ko, $, Table) {
   var socket = io.connect();
-  socket.on('news', function(data) {
-    console.log(data);
-    socket.emit('my other event', { my: 'data' });
-  });
 
   var playerInfo = {
     name: ko.observable(''),
     loggedIn: ko.observable(false),
     login: function() {
-      this.loggedIn(true);
+      var self = this;
       socket.emit('login', this.name(), function(data) {
+        self.loggedIn(true);
         console.log(data);
       });
     },

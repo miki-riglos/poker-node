@@ -11,10 +11,10 @@ app.configure(function() {
   app.set('view engine', 'jade');
   app.use(express.favicon());
   app.use(express.logger('dev'));
-//  app.use(express.bodyParser());
-//  app.use(express.methodOverride());
-//  app.use(express.cookieParser('key-secret'));
-//  app.use(express.cookieSession());
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.cookieParser('key-secret'));
+  app.use(express.cookieSession());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });

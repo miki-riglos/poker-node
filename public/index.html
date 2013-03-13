@@ -20,25 +20,26 @@
       </div>
       <hr/>
 
-  <ul data-bind="foreach: tables">
-    <li>
-      <!-- Table -->
-      <div>
-        <!-- Header -->
-        <div>
-          <div>Table Host: <span data-bind="text: host"></span> </div>
-          <div>Players: <span data-bind='text: players().length'> </div>
-        <div>
-        <!-- Players -->
-        <ul data-bind="foreach: players">
-          <li>
-            <span data-bind="text: name"></span>
-            <span data-bind="text: chips"></span>
-          </li>
-        </ul>
-      </div>
-    </li>
-  </ul>
+      <!-- Tables -->
+      <ul data-bind="foreach: tables">
+        <li>
+          <!-- Table -->
+          <div>
+            <!-- Header -->
+            <div>
+              <div>Table Host: <span data-bind="text: host"></span> </div>
+              <div>Players: <span data-bind='text: players().length'> </div>
+            <div>
+            <!-- Players -->
+            <ul data-bind="foreach: players">
+              <li>
+                <span data-bind="text: name"></span>
+                <span data-bind="text: chips"></span>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
 
       <script data-main="js/main" src="js/ext/require.js"></script>
     </body>
