@@ -14,7 +14,7 @@ function add(name, password, cb) {
     users[name] = userToAdd;
     save(userToAdd, cb);
   } else {
-    cb(new Error('User name already exist.'));
+    if (cb) cb(new Error('User name already exist.'));
   }
 }
 

@@ -9,13 +9,17 @@
 
       <!-- Login -->
       <div>
+        <!-- Not logged in -->
         <form data-bind='visible: !loggedIn(), submit: login'>
           Player Name:
           <input data-bind='value: name, valueUpdate: "afterkeydown"' />
-          <button type='submit' data-bind='enable: name().length > 0'>Login</button>
+          <button type='submit' data-bind='enable: name().length'>Login</button>
+          <span data-bind='text: message'></span>
         </form>
+        <!-- Logged in -->
         <div style='display: none;' data-bind='visible: loggedIn()'>
           Player Name: <span data-bind='text: name'></span>
+          <button data-bind="click: logout">Logout</button>
         </div>
       </div>
       <hr/>

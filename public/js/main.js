@@ -7,18 +7,51 @@ require.config({
 });
 
 require(['io', 'knockout', 'jquery', 'table'], function(io, ko, $, Table) {
-  var socket = io.connect();
+  //var socket = io.connect();
 
   var playerInfo = {
-    name: ko.observable(''),
+    name    : ko.observable(''),
+    message : ko.observable(''),
     loggedIn: ko.observable(false),
+
     login: function() {
       var self = this;
-      socket.emit('login', this.name(), function(data) {
-        self.loggedIn(true);
-        console.log(data);
+      $.ajax({
+        type: 'POST',
+        url : '/login',
+        data: {username: self.name(), password: 'pass'}
+      }).done(function(res) {
+        if (res.success) {
+          self.loggedIn(true);
+          self.message('');
+        } else {
+          self.loggedIn(false);
+          self.message(res.message);
+          setTimeout(function() {
+            self.message('');
+          }, 2000);
+        }
       });
     },
+
+    logout: function() {
+      var self = this;
+      $.ajax({
+        type: 'GET',
+        url : '/logout',
+      }).done(function(res) {
+        self.name('');
+        self.loggedIn(!res.success);
+      });
+    },
+
+//    io_login: function() {
+//      var self = this;
+//      socket.emit('login', self.name(), function(data) {
+//        self.loggedIn(true);
+//        console.log(data);
+//      });
+//    },
 
     tables: ko.observableArray([])
   };

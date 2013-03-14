@@ -1,9 +1,17 @@
 var http    = require('http'),
     express = require('express'),
     app     = express(),
-//    routes  = require('./routes'),
     server  = http.createServer(app),
     io      = require('socket.io').listen(server);
+
+var routesConfig  = require('./routes/config'),
+    socketsEvents = require('./sockets/events');
+
+var sessionSettings = {
+  secret: 'secret',
+  key: 'sid',
+  store: new express.session.MemoryStore()
+};
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
@@ -13,8 +21,8 @@ app.configure(function() {
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('key-secret'));
-  app.use(express.cookieSession());
+  app.use(express.cookieParser());
+  app.use(express.session(sessionSettings));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -27,17 +35,8 @@ app.configure('production', function() {
   app.use(express.errorHandler());
 });
 
-//app.get('/', routes.index);
-app.get('/', function(req, res) {
- res.sendfile(__dirname + '/public/index.html') ;
-});
-
-io.sockets.on('connection', function (socket) {
-  socket.on('login', function(name, cb) {
-    // Get player's active tables/tournaments and send it back to the client
-    cb( {name: name, tables: []} );
-  });
-});
+routesConfig(app);
+socketsEvents(io);
 
 server.listen(app.get('port'), function() {
   console.log("Express server listening on port " + app.get('port'));
