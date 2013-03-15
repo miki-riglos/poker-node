@@ -1,6 +1,7 @@
 - /register <-- modal form?
-- /login    <-- modal form?
+- /login, pass    <-- modal form?
 - /logout
+- Get initial user?
 
 - web server, validate API
   - return error || emit error event <- TODOs
@@ -26,3 +27,6 @@
 - Game status: all players are All in, show hands
 
 - Client session, reconnections
+
+- Remove views
+  - jade dependency
