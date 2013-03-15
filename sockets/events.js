@@ -1,10 +1,29 @@
+var users = require('../data/users');
+
 function events(io) {
 
   io.sockets.on('connection', function (socket) {
-    socket.on('login', function(name, cb) {
-      // Get player's active tables/tournaments and send it back to the client
-      cb( {name: name, tables: []} );
+
+    socket.on('login', function(data, cb) {
+      if (users.authenticate(data.name, data.password)) {
+        // Save name in socket
+        socket.set('user', {name: data.name, loggedIn: true}, function() {
+          cb({success: true});
+        });
+      } else {
+        cb({success: false, message:'Invalid credentials'});
+      }
     });
+
+    socket.on('logout', function(data, cb) {
+      socket.set('user', {name: '', loggedIn: false}, function() {
+        cb({success: true});
+      });
+    });
+
+    //TODO
+    socket.emit('new-room', {host: 'server'});
+
   });
 
 }

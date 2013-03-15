@@ -1,7 +1,25 @@
-- /register <-- modal form?
-- /login, pass    <-- modal form?
-- /logout
-- Get initial user?
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+DOING
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Replacing AJAX login with socket.io
+Experimenting using only socket.io for all server/client communication.
+  Removing ajax calls in main.js
+  Commeting out unneccesary Express middleware
+
+Home
+- Show active rooms, generate server data
++ Show option to login
+- When logged in
+  - Mark rooms where user is in
+  - Enable button to activate new room
+  - Rooms with open tournament (not start)
+    - Enable button to join
+    - Game flow
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+TODO
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 - web server, validate API
   - return error || emit error event <- TODOs
@@ -28,5 +46,5 @@
 
 - Client session, reconnections
 
-- Remove views
+- Remove views?
   - jade dependency

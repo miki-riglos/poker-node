@@ -7,14 +7,15 @@
     <body>
       <h1>Poker Node</h1>
 
-      <!-- Login -->
-      <div>
+      <!-- User -->
+      <div id='user'>
         <!-- Not logged in -->
         <form data-bind='visible: !loggedIn(), submit: login'>
           Player Name:
           <input data-bind='value: name, valueUpdate: "afterkeydown"' />
+          Password:
+          <input type='password' data-bind='value: password' />
           <button type='submit' data-bind='enable: name().length'>Login</button>
-          <span data-bind='text: message'></span>
         </form>
         <!-- Logged in -->
         <div style='display: none;' data-bind='visible: loggedIn()'>
@@ -24,8 +25,8 @@
       </div>
       <hr/>
 
-      <!-- Tables -->
-      <ul data-bind="foreach: tables">
+      <!-- Rooms -->
+      <ul id='rooms' data-bind="foreach: $data">
         <li>
           <!-- Table -->
           <div>

@@ -7,11 +7,11 @@ var http    = require('http'),
 var routesConfig  = require('./routes/config'),
     socketsEvents = require('./sockets/events');
 
-var sessionSettings = {
-  secret: 'secret',
-  key: 'sid',
-  store: new express.session.MemoryStore()
-};
+//var sessionSettings = {
+//  secret: 'secret',
+//  key: 'sid',
+//  store: new express.session.MemoryStore()
+//};
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
@@ -19,10 +19,10 @@ app.configure(function() {
   app.set('view engine', 'jade');
   app.use(express.favicon());
   app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser());
-  app.use(express.session(sessionSettings));
+//  app.use(express.bodyParser());
+//  app.use(express.methodOverride());
+//  app.use(express.cookieParser());
+//  app.use(express.session(sessionSettings));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
