@@ -1,11 +1,13 @@
-var users = require('../data/users');
+var UserManager = require('../infrastructure/user-mgr').UserManager;
+
+var userMgr = UserManager;
 
 function events(io) {
 
   io.sockets.on('connection', function (socket) {
 
     socket.on('login', function(data, cb) {
-      if (users.authenticate(data.name, data.password)) {
+      if (userMgr.authenticate(data.name, data.password)) {
         // Save name in socket
         socket.set('username', name, function() {
           cb({success: true});

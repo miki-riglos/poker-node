@@ -1,6 +1,8 @@
 var path = require('path');
 
-var users = require('../data/users');
+var UserManager = require('../infrastructure/user-mgr').UserManager;
+
+var userMgr = UserManager;
 
 function config(app) {
 
@@ -11,7 +13,7 @@ function config(app) {
 
   // POST login
   app.post('/login', function(req, res){
-    if (users.authenticate(req.body.username, req.body.password)) {
+    if (userMgr.authenticate(req.body.username, req.body.password)) {
       req.session.regenerate(function() {
         req.session.user = req.body.username;
         res.send( {success: true} );

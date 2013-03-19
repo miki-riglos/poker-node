@@ -8,10 +8,10 @@ var Player     = require('./player').Player,
     buttonDraw = require('./button-draw');
 
 var defaultOptions = {
-  initialChips  : 10000,
-  maximumPlayers: 10,
+  initialChips     : 10000,
+  maximumPlayers   : 10,
   initialSmallBlind: 10,
-  initialBigBlind: 25
+  initialBigBlind  : 25
 };
 
 // Tournament class
