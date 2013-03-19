@@ -7,7 +7,7 @@ function events(io) {
     socket.on('login', function(data, cb) {
       if (users.authenticate(data.name, data.password)) {
         // Save name in socket
-        socket.set('user', {name: data.name, loggedIn: true}, function() {
+        socket.set('username', name, function() {
           cb({success: true});
         });
       } else {
@@ -16,7 +16,7 @@ function events(io) {
     });
 
     socket.on('logout', function(data, cb) {
-      socket.set('user', {name: '', loggedIn: false}, function() {
+      socket.set('username', '', function() {
         cb({success: true});
       });
     });

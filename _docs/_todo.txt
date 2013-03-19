@@ -1,7 +1,7 @@
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 DOING
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-Replacing AJAX login with socket.io
+Replacing ajax login with socket.io
 Experimenting using only socket.io for all server/client communication.
   Removing ajax calls in main.js
   Commeting out unneccesary Express middleware
