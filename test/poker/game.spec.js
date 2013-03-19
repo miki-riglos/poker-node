@@ -1,4 +1,4 @@
-var Game = require('../lib/game').Game;
+var Game = require('../../poker/game').Game;
 
 describe('Game class', function() {
   var game;

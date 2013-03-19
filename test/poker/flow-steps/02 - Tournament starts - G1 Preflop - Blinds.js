@@ -1,4 +1,4 @@
-var Deck  = require('../../lib/deck').Deck;
+var Deck  = require('../../../poker/deck').Deck;
 
 module.exports = {
   name: 'Tournament starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',

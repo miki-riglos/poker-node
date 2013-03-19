@@ -1,5 +1,5 @@
-var Card = require('../lib/deck').Card,
-    Deck = require('../lib/deck').Deck;
+var Card = require('../../poker/deck').Card,
+    Deck = require('../../poker/deck').Deck;
 
 describe('Card class', function() {
 

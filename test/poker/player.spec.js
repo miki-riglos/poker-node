@@ -1,4 +1,4 @@
-var Player = require('../lib/player').Player;
+var Player = require('../../poker/player').Player;
 
 describe('Player class', function() {
 

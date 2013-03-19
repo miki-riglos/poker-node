@@ -1,6 +1,6 @@
-var buttonDraw = require('../lib/button-draw'),
-    Card = require('../lib/deck').Card,
-    Deck = require('../lib/deck').Deck;
+var buttonDraw = require('../../poker/button-draw'),
+    Card = require('../../poker/deck').Card,
+    Deck = require('../../poker/deck').Deck;
 
 describe('buttonDraw function', function() {
   var deck;

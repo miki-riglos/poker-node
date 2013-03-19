@@ -21,6 +21,6 @@
     "node": "*"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test/poker"
   }
 }

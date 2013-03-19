@@ -1,4 +1,4 @@
-var Round = require('../lib/round').Round;
+var Round = require('../../poker/round').Round;
 
 describe('Round class', function() {
   var round;
