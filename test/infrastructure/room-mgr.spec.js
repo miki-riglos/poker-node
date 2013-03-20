@@ -67,4 +67,38 @@ describe('RoomManager class', function() {
 
   });
 
+  describe('getting array of rooms', function() {
+    var room1, room2;
+
+    beforeEach(function(done) {
+      roomMgr.add('giovana', function(err, firstRoomAdded) {
+        room1 = firstRoomAdded;
+        room1.tournament.registerPlayer(1, 'giovana');
+        room1.tournament.registerPlayer(2, 'sofia');
+        roomMgr.add('miki', function(err, secondRoomAdded) {
+          room2 = secondRoomAdded;
+          room2.tournament.registerPlayer(1, 'miki');
+          room2.tournament.registerPlayer(2, 'sofia');
+          done();
+        });
+      });
+    });
+
+    it('should return all rooms', function() {
+      var allRooms = roomMgr.getAllRooms();
+      allRooms.should.be.instanceOf(Array);
+      allRooms.should.have.length(2);
+    });
+
+    it('should return rooms of a given player', function() {
+      var roomsOfSofia = roomMgr.getRoomsPlayedBy('sofia');
+      roomsOfSofia.should.be.instanceOf(Array);
+      roomsOfSofia.should.have.length(2);
+
+      roomMgr.getRoomsPlayedBy('giovana').should.have.length(1);
+      roomMgr.getRoomsPlayedBy('miki').should.have.length(1);
+    });
+
+  });
+
 });

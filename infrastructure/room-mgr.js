@@ -13,6 +13,7 @@ function Room(host) {
   this.started = Date.now();
   this.tournament = new Tournament();
 }
+
 Room.prototype.id = function() {
   return this.host + this.started;
 };
@@ -59,12 +60,44 @@ RoomManager.prototype.save = function(roomTouched, cb) {
   });
 };
 
-RoomManager.prototype.playedBy = function(player) {
-  var playerRooms = [];
-  //TODO
+RoomManager.prototype.getAllRooms = function() {
+  var allRooms = [],
+      self     = this;
+  Object.keys(this.rooms).forEach(function(key) {
+    allRooms.push(getRoomDTO(self.rooms[key]));
+  });
+  return allRooms;
+};
+
+RoomManager.prototype.getRoomsPlayedBy = function(playerName) {
+  var playerRooms = [],
+      self        = this;
+  Object.keys(this.rooms).forEach(function(key) {
+    var allPlayerNames = Object.keys(self.rooms[key].tournament.registeredPlayers).map(function(position) {
+      return self.rooms[key].tournament.registeredPlayers[position].name;
+    });
+    if (allPlayerNames.indexOf(playerName) !== -1) {
+      playerRooms.push(getRoomDTO(self.rooms[key]));
+    }
+  });
   return playerRooms;
 };
 
+// Private
+function getRoomDTO(room) {
+  var roomDTO = {
+    id        : room.id(),
+    host      : room.host,
+    started   : room.started,
+    tournament: {
+      status     : room.tournament.status,
+      players    : room.tournament.registeredPlayers,
+      gameCounter: room.tournament.gameCounter,
+    }
+  };
+
+  return roomDTO;
+}
 
 // Exports
 module.exports = {

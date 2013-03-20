@@ -16,6 +16,7 @@ Home
     - Enable button to join
     - Game flow
 
+- UserManager: remove room when its tournament's status is not open or start
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO

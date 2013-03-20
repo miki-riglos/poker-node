@@ -1,6 +1,6 @@
 var UserManager = require('../infrastructure/user-mgr').UserManager;
 
-var userMgr = UserManager;
+var userMgr = UserManager();
 
 function events(io) {
 
