@@ -1,2 +1,5 @@
 node_modules
 .c9revisions
+
+infrastructure/db/users.json
+infrastructure/db/rooms.json

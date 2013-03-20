@@ -40,7 +40,9 @@ UserManager.prototype.remove = function(name, cb) {
 };
 
 UserManager.prototype.load = function() {
-  this.users = require(DATA_FILE);
+  if (fs.existsSync(DATA_FILE)) {
+    this.users = require(DATA_FILE);
+  }
 };
 
 UserManager.prototype.save = function(userTouched, cb) {

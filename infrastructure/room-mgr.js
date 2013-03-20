@@ -47,7 +47,9 @@ RoomManager.prototype.remove = function(room, cb) {
 };
 
 RoomManager.prototype.load = function() {
-  this.rooms = require(DATA_FILE);
+  if (fs.existsSync(DATA_FILE)) {
+    this.rooms = require(DATA_FILE);
+  }
 };
 
 RoomManager.prototype.save = function(roomTouched, cb) {

@@ -9,7 +9,7 @@ function events(io) {
     socket.on('login', function(data, cb) {
       if (userMgr.authenticate(data.name, data.password)) {
         // Save name in socket
-        socket.set('username', name, function() {
+        socket.set('username', data.name, function() {
           cb({success: true});
         });
       } else {
