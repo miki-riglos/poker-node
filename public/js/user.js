@@ -1,4 +1,4 @@
-define(['knockout', 'socket'], function(ko, socket) {
+define(['knockout', 'socket', 'registration'], function(ko, socket, registration) {
 
   var user = {
     name    : ko.observable(''),
@@ -7,33 +7,44 @@ define(['knockout', 'socket'], function(ko, socket) {
 
     login: function() {
       var self = this;
-      var data = {
+      var loginData = {
         name    : self.name(),
         password: self.password()
       };
 
-      socket.emit('login', data, function(data) {
-        if (data.success) {
+      socket.emit('login', loginData, function(loginResp) {
+        if (loginResp.success) {
           self.loggedIn(true);
         } else {
           //TODO: replace alert
-          alert(data.message);
+          alert(loginResp.message);
         }
       });
     },
 
     logout: function() {
       var self = this;
-      socket.emit('logout', {}, function(data) {
-        if (data.success) {
+      socket.emit('logout', {}, function(logoutResp) {
+        if (logoutResp.success) {
           self.loggedIn(false);
+          //Reset values
           self.name('');
           self.password('');
         }
       });
     },
 
+    registration: registration
+
   };
+
+  user.registration.user = {
+    name    : user.name,
+    password: user.password,
+    loggedIn: user.loggedIn
+  };
+
+window.user = user;
 
   return user;
 });

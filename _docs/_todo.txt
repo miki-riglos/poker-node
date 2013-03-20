@@ -7,8 +7,12 @@ Experimenting using only socket.io for all server/client communication.
   Commeting out unneccesary Express middleware
 
 Home
-- Show active rooms, generate server data
+- Show active rooms
+  + generate server data
 + Show option to login
+- Registration
+  - Sync observables instead of nested/coupled viewmodels
+  - Organize views
 - When logged in
   - Mark rooms where user is in
   - Enable button to activate new room

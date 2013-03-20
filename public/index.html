@@ -16,7 +16,21 @@
           Password:
           <input type='password' data-bind='value: password' />
           <button type='submit' data-bind='enable: name().length'>Login</button>
+          <!-- ko with: registration -->
+          <button data-bind="click: start">Register</button>
+          <!-- /ko -->
         </form>
+        <!-- Registration -->
+          <!-- ko with: registration -->
+          <form style='display: none;' data-bind='visible: inProgress, submit: register'>
+            Player Name:
+            <input data-bind='value: name, valueUpdate: "afterkeydown"' />
+            Password:
+            <input type='password' data-bind='value: password1' />
+            <input type='password' data-bind='value: password2' />
+            <button type='submit' data-bind='enable: name().length'>Register</button>
+          </form>
+          <!-- /ko -->
         <!-- Logged in -->
         <div style='display: none;' data-bind='visible: loggedIn()'>
           Player Name: <span data-bind='text: name'></span>

@@ -6,10 +6,10 @@ function events(io) {
 
   io.sockets.on('connection', function (socket) {
 
-    socket.on('login', function(data, cb) {
-      if (userMgr.authenticate(data.name, data.password)) {
+    socket.on('login', function(login, cb) {
+      if (userMgr.authenticate(login.name, login.password)) {
         // Save name in socket
-        socket.set('username', data.name, function() {
+        socket.set('username', login.name, function() {
           cb({success: true});
         });
       } else {
@@ -17,9 +17,22 @@ function events(io) {
       }
     });
 
-    socket.on('logout', function(data, cb) {
+    socket.on('logout', function(logout, cb) {
       socket.set('username', '', function() {
         cb({success: true});
+      });
+    });
+
+    socket.on('register', function(register, cb) {
+      userMgr.add(register.name, register.password, function(err, newUser) {
+        if (err) {
+          cb({success: false, message: err.message});
+        } else {
+          // Save name in socket
+          socket.set('username', register.name, function() {
+            cb({success: true});
+          });
+        }
       });
     });
 
