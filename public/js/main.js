@@ -6,9 +6,9 @@ require.config({
     }
 });
 
-require(['knockout', 'jquery', 'user', 'rooms'], function(ko, $, user, rooms) {
+require(['knockout', 'jquery', 'userviews-mgr', 'room-list', 'rooms'], function(ko, $, userViewsMgr, roomList, rooms) {
 
-  ko.applyBindings(user, document.getElementById('user'));
+  ko.applyBindings(userViewsMgr, document.getElementById('userView'));
   ko.applyBindings(rooms, document.getElementById('rooms'));
-
+window.roomList = roomList;
 });

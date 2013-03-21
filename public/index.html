@@ -7,38 +7,68 @@
     <body>
       <h1>Poker Node</h1>
 
-      <!-- User -->
-      <div id='user'>
-        <!-- Not logged in -->
-        <form data-bind='visible: !loggedIn(), submit: login'>
+      <!-- user view -->
+      <div id='userView'>
+        <div data-bind='foreach: actions'>
+          <button data-bind='text: name, click:action, enable: enable'></button>
+        </div>
+        <hr/>
+        <div data-bind='with: activeView'>
+          <div data-bind='template: {name: templateId, data: viewModel}'></div>
+        </div>
+      </div>
+
+      <!-- login template -->
+      <div id='loginTmpl' style='display: none;'>
+        <form data-bind='submit: login'>
           Player Name:
           <input data-bind='value: name, valueUpdate: "afterkeydown"' />
           Password:
           <input type='password' data-bind='value: password' />
-          <button type='submit' data-bind='enable: name().length'>Login</button>
-          <!-- ko with: registration -->
-          <button data-bind="click: start">Register</button>
-          <!-- /ko -->
+          <button type='submit' data-bind='enable: name().length'>Submit</button>
         </form>
-        <!-- Registration -->
-          <!-- ko with: registration -->
-          <form style='display: none;' data-bind='visible: inProgress, submit: register'>
-            Player Name:
-            <input data-bind='value: name, valueUpdate: "afterkeydown"' />
-            Password:
-            <input type='password' data-bind='value: password1' />
-            <input type='password' data-bind='value: password2' />
-            <button type='submit' data-bind='enable: name().length'>Register</button>
-          </form>
-          <!-- /ko -->
-        <!-- Logged in -->
-        <div style='display: none;' data-bind='visible: loggedIn()'>
+      </div>
+      <!-- register template -->
+      <div id='registerTmpl' style='display: none;' >
+        <form data-bind='submit: register'>
+          Player Name:
+          <input data-bind='value: name, valueUpdate: "afterkeydown"' />
+          Password:
+          <input type='password' data-bind='value: password1' />
+          <input type='password' data-bind='value: password2' />
+          <button type='submit' data-bind='enable: name().length'>Submit</button>
+        </form>
+      </div>
+      <!-- Logged in template -->
+      <div id='loggedinTmpl' style='display: none;'>
+        <div>
           Player Name: <span data-bind='text: name'></span>
-          <button data-bind="click: logout">Logout</button>
         </div>
       </div>
+
       <hr/>
 
+      <!-- room list view -->
+      <div id='roomListView'>
+        <table>
+          <thead>
+            <tr>
+              <td>Id</td>
+              <td>Host</td>
+            </tr>
+          </thead>
+          <tbody data-bind='foreach: roomsToShow'>
+            <tr>
+              <td data-bind='text: id'></td>
+              <td data-bind='text: host'></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr/>
+
+      <!-- TODO -->
       <!-- Rooms -->
       <ul id='rooms' data-bind="foreach: $data">
         <li>

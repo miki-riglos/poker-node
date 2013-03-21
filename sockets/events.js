@@ -1,11 +1,11 @@
-var UserManager = require('../infrastructure/user-mgr').UserManager;
-
-var userMgr = UserManager();
+var userMgr = require('../infrastructure/user-mgr').UserManager(),
+    roomMgr = require('../infrastructure/room-mgr').RoomManager();
 
 function events(io) {
 
   io.sockets.on('connection', function (socket) {
 
+    // User events
     socket.on('login', function(login, cb) {
       if (userMgr.authenticate(login.name, login.password)) {
         // Save name in socket
@@ -36,8 +36,20 @@ function events(io) {
       });
     });
 
-    //TODO
-    socket.emit('new-room', {host: 'server'});
+    // Room List events
+    socket.emit('room-list', roomMgr.getAllRooms());
+
+    socket.on('room-new', function(newRoom, cb) {
+      roomMgr.add(newRoom.host, function(err, roomAdded) {
+        if (err) {
+          cb({success: false, message: err.message});
+        } else {
+          cb({success: true, roomAdded: roomAdded});
+          // Notify the others
+          socket.broadcast.emit(roomAdded);
+        }
+      });
+    });
 
   });
 

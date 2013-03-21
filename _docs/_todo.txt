@@ -10,17 +10,17 @@ Home
 - Show active rooms
   + generate server data
 + Show option to login
-- Registration
-  - Sync observables instead of nested/coupled viewmodels
-  - Organize views
++ Registration
 - When logged in
   - Mark rooms where user is in
+  - Filter rooms of the user/player, move logic to client
   - Enable button to activate new room
   - Rooms with open tournament (not start)
     - Enable button to join
     - Game flow
+- Decouple socket.io events for testing
 
-- UserManager: remove room when its tournament's status is not open or start
+- infrastructure/user-mgr: remove room when its tournament's status is not open or start
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
