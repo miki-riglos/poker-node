@@ -18,9 +18,18 @@ Home
   - Rooms with open tournament (not start)
     - Enable button to join
     - Game flow
-- Decouple socket.io events for testing
 
-- infrastructure/user-mgr: remove room when its tournament's status is not open or start
+- Decouple socket.io events for better testing
+  - It should not hit the FS
+
+- Standarize parameters/arguments names
+
+- infrastructure/room-mgr: Room[] is loaded as Object[]
+  - include in tests?
+  - Consistency when sending out data: RoomDTO vs Room
+  - Deserialize nested classes of Tournament
+
+- infrastructure/room-mgr: remove room when its tournament's status is not open or start
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO

@@ -39,14 +39,14 @@ function events(io) {
     // Room List events
     socket.emit('room-list', roomMgr.getAllRooms());
 
-    socket.on('room-new', function(newRoom, cb) {
-      roomMgr.add(newRoom.host, function(err, roomAdded) {
+    socket.on('room-new', function(host, cb) {
+      roomMgr.add(host, function(err, roomAdded) {
         if (err) {
           cb({success: false, message: err.message});
         } else {
           cb({success: true, roomAdded: roomAdded});
           // Notify the others
-          socket.broadcast.emit(roomAdded);
+          socket.broadcast.emit('room-added', roomAdded);
         }
       });
     });

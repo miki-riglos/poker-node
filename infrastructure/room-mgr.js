@@ -48,7 +48,16 @@ RoomManager.prototype.remove = function(room, cb) {
 
 RoomManager.prototype.load = function() {
   if (fs.existsSync(DATA_FILE)) {
-    this.rooms = require(DATA_FILE);
+    // Convert json object to Room
+    var self = this,
+        roomObjs = require(DATA_FILE);
+    this.rooms = {};
+    Object.keys(roomObjs).forEach(function(roomObjKey) {
+      self.rooms[roomObjKey] = new Room( roomObjs[roomObjKey].host );
+      _.extend(self.rooms[roomObjKey], roomObjs[roomObjKey]);
+      _.extend(self.rooms[roomObjKey].tournament, roomObjs[roomObjKey].tournament);
+      //TODO: other nestes classes
+    });
   }
 };
 
