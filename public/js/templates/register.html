@@ -1,0 +1,8 @@
+<form data-bind='submit: register'>
+  Player Name:
+  <input data-bind='value: name, valueUpdate: "afterkeydown"' />
+  Password:
+  <input type='password' data-bind='value: password1' />
+  <input type='password' data-bind='value: password2' />
+  <button type='submit' data-bind='enable: name().length'>Submit</button>
+</form>

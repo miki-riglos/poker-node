@@ -18,34 +18,6 @@
         </div>
       </div>
 
-      <!-- login template -->
-      <div id='loginTmpl' style='display: none;'>
-        <form data-bind='submit: login'>
-          Player Name:
-          <input data-bind='value: name, valueUpdate: "afterkeydown"' />
-          Password:
-          <input type='password' data-bind='value: password' />
-          <button type='submit' data-bind='enable: name().length'>Submit</button>
-        </form>
-      </div>
-      <!-- register template -->
-      <div id='registerTmpl' style='display: none;' >
-        <form data-bind='submit: register'>
-          Player Name:
-          <input data-bind='value: name, valueUpdate: "afterkeydown"' />
-          Password:
-          <input type='password' data-bind='value: password1' />
-          <input type='password' data-bind='value: password2' />
-          <button type='submit' data-bind='enable: name().length'>Submit</button>
-        </form>
-      </div>
-      <!-- Logged in template -->
-      <div id='loggedinTmpl' style='display: none;'>
-        <div>
-          Player Name: <span data-bind='text: name'></span>
-        </div>
-      </div>
-
       <hr/>
 
       <!-- room list view -->
