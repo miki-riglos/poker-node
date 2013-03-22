@@ -10,7 +10,34 @@ var port        = process.env.PORT || 3000,
 
 io.set("log level", 0);
 
-socketsEvents(io);
+// Override load and save methods for UserManager
+var UserManager     = require('../../infrastructure/user-mgr').UserManager,
+    overrideUserMgr = {
+      load: function() {
+        this.users = {"miki": {"name": "miki", "password": "pass"} };
+      },
+      save: function(userTouched, cb) {
+        if (cb) cb(null, userTouched);
+      }
+    };
+
+var RoomManager = require('../../infrastructure/room-mgr').RoomManager,
+    overrideRoomMgr = {
+      load: function() {
+        this.rooms = {};
+      },
+      save: function(roomTouched, cb) {
+        if (cb) cb(null, roomTouched);
+      }
+    };
+
+var override = {
+  userMgr: UserManager(overrideUserMgr),
+  roomMgr: RoomManager(overrideRoomMgr),
+};
+
+// Config events
+socketsEvents(io, override);
 
 describe('Socket events', function() {
   var socket;
@@ -25,17 +52,16 @@ describe('Socket events', function() {
   describe('User events', function() {
 
     it('should respond to valid login', function(done) {
-      socket.emit('login', {name: 'miki', password: 'pass'}, function(loginResp) {
-        loginResp.success.should.be.true;
+      socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+        loginRet.success.should.be.true;
         done();
       });
-      socket.should.be.an.instanceOf(Object);
     });
 
     it('should respond to invalid login', function(done) {
-      socket.emit('login', {name: '', password: ''}, function(loginResp) {
-        loginResp.success.should.be.false;
-        loginResp.should.have.property('message');
+      socket.emit('login', {name: '', password: ''}, function(loginRet) {
+        loginRet.success.should.be.false;
+        loginRet.should.have.property('message');
         done();
       });
     });
@@ -57,21 +83,22 @@ describe('Socket events', function() {
           roomAddedInCallback,
           roomAddedInEvent;
 
-      targetSocket.on('room-added', function(roomAddedDn) {
-        roomAddedDn.should.be.an.instanceOf(Object);
-        roomAddedInEvent = roomAddedDn;
+      socket.emit('room-new', 'host-name', function(roomNewRet) {
+        roomNewRet.success.should.be.true;
+        roomNewRet.roomAdded.should.be.an.instanceOf(Object);
+        roomAddedInCallback = roomNewRet.roomAdded;
         ++counter;
-        if (counter === 2) lastAssert();
-      });
-      socket.emit('room-new', 'host-is-miki', function(roomAddedDn) {
-        roomAddedDn.success.should.be.true;
-        roomAddedDn.roomAdded.should.be.an.instanceOf(Object);
-        roomAddedInCallback = roomAddedDn.roomAdded;
-        ++counter;
-        if (counter === 2) lastAssert();
+        if (counter === 2) EmittedAndNotified();
       });
 
-      function lastAssert() {
+      targetSocket.on('room-added', function(roomAdded) {
+        roomAdded.should.be.an.instanceOf(Object);
+        roomAddedInEvent = roomAdded;
+        ++counter;
+        if (counter === 2) EmittedAndNotified();
+      });
+
+      function EmittedAndNotified() {
         roomAddedInCallback.host.should.equal(roomAddedInEvent.host);
         done();
       }

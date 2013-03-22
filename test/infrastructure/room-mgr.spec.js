@@ -2,7 +2,7 @@ var RoomManager = require('../../infrastructure/room-mgr').RoomManager;
 
 describe('RoomManager class', function() {
   var roomMgr;
-  var options = {
+  var override = {
     load: function() {
       this.rooms = {};
     },
@@ -13,7 +13,7 @@ describe('RoomManager class', function() {
   var roomAdded;
 
   beforeEach(function() {
-    roomMgr = RoomManager(options); // Overwrite load and save methods
+    roomMgr = RoomManager(override); // Override load and save methods
   });
 
   describe('adding rooms', function() {

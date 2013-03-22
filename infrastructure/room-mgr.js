@@ -19,9 +19,9 @@ Room.prototype.id = function() {
 };
 
 // RoomManager Class
-function RoomManager(options) {
-  if (!(this instanceof RoomManager)) return new RoomManager(options);
-  _.extend(this, options);
+function RoomManager(override) {
+  if (!(this instanceof RoomManager)) return new RoomManager(override);
+  _.extend(this, override);
   this.rooms = {};
   this.load();
 }

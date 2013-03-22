@@ -2,7 +2,7 @@ var UserManager = require('../../infrastructure/user-mgr').UserManager;
 
 describe('UserManager class', function() {
   var roomMgr;
-  var options = {
+  var override = {
     load: function() {
       this.users = {};
     },
@@ -13,7 +13,7 @@ describe('UserManager class', function() {
   var userAdded;
 
   beforeEach(function() {
-    roomMgr = UserManager(options); // Overwrite load and save methods
+    roomMgr = UserManager(override); // Override load and save methods
   });
 
   describe('adding users', function() {

@@ -5,9 +5,9 @@ var fs   = require('fs'),
 var DATA_FILE = path.join(__dirname, 'db', 'users.json');
 
 // UserManager Class
-function UserManager(options) {
-  if (!(this instanceof UserManager)) return new UserManager(options);
-  _.extend(this, options);
+function UserManager(override) {
+  if (!(this instanceof UserManager)) return new UserManager(override);
+  _.extend(this, override);
   this.users = {};
   this.load();
 }

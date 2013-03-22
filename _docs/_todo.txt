@@ -19,10 +19,11 @@ Home
     - Enable button to join
     - Game flow
 
-- Decouple socket.io events for better testing
-  - It should not hit the FS
+- sockets/events
+  - 'room-new' only if logged in?
 
-- Standarize parameters/arguments names
+- usr-mgr & room-mgr test
+  - assert fake db is modified
 
 - infrastructure/room-mgr: Room[] is loaded as Object[]
   - include in tests?
@@ -52,13 +53,16 @@ TODO
     - use _.size instead of [].length?
     - use _.keys instead of Objecy.keys?
 
-- Tie, pot distribution
-- Define how blinds increase (when and how)
-- Multiple pots (all ins)
-- Player inactive, automatic checks/folds
-- Game status: all players are All in, show hands
+- Poker
+  - Tie, pot distribution
+  - Define how blinds increase (when and how)
+  - Multiple pots (all ins)
+  - Player inactive, automatic checks/folds
+  - Game status: all players are All in, show hands
 
 - Client session, reconnections
 
-- Remove views?
+- Remove views? routes?
   - jade dependency
+
+- Acceptance test / automate browser

@@ -2,9 +2,9 @@ var path = require('path');
 
 var UserManager = require('../infrastructure/user-mgr').UserManager;
 
-var userMgr = UserManager();
-
 function config(app) {
+  //TODO: implement override
+  var userMgr = UserManager();
 
   // GET home
   app.get('/', function(req, res) {
