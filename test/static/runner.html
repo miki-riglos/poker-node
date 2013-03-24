@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Static Tests</title>
+    <link rel="stylesheet" href="../../node_modules/mocha/mocha.css"/>
+  </head>
+
+  <body>
+    <div id="mocha"></div>
+
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script src="js/ext/chai.js"></script>
+
+    <script>
+      window.mocha.setup('bdd');
+      window.chai.should();   // should assertion style
+    </script>
+
+    <script data-main="js/main" src="../../public/js/ext/require.js"></script>
+  </body>
+</html>

@@ -19,6 +19,11 @@ Home
     - Enable button to join
     - Game flow
 
+- Templates in file
+  - requirejs plugin to inject templates
+    - config: template folder, extension, id suffix
+  + static html/js test
+
 - sockets/events
   - 'room-new' only if logged in?
 
@@ -38,6 +43,8 @@ TODO
 
 - web server, validate API
   - return error || emit error event <- TODOs
+
+- replace should.js with chai.js for consistency between node and browser?
 
 - flow-steps
   - turn, river
