@@ -15,5 +15,7 @@ var tests = [
 ];
 
 require(tests, function() {
-  window.mocha.run();
+  window.mocha
+    .globals(['$', 'jQuery'])
+    .run();
 });

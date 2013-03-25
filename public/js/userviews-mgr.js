@@ -1,9 +1,4 @@
-define(['knockout', 'load-template', 'user', 'registration'], function(ko, loadTemplate, user, registration) {
-
-  //TODO: change is async!
-  loadTemplate('login');
-  loadTemplate('register');
-  loadTemplate('loggedin');
+define(['knockout', 'user', 'registration', 'loadTmpl!login', 'loadTmpl!register', 'loadTmpl!loggedin'], function(ko, user, registration) {
 
   var userViewsMgr = {
 

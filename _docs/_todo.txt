@@ -19,10 +19,9 @@ Home
     - Enable button to join
     - Game flow
 
-- Templates in file
-  - requirejs plugin to inject templates
-    - config: template folder, extension, id suffix
-  + static html/js test
+- room-list
+  - load template
+  - add room
 
 - sockets/events
   - 'room-new' only if logged in?

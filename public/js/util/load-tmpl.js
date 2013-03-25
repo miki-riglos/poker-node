@@ -1,10 +1,20 @@
 define(['text', 'jquery'], function(text, $) {
 
+  var defaults = {
+    path     : '../tmpl/',
+    ext      : '.html',
+    idSuffix : 'Tmpl',
+    container: 'body'
+  };
+
   return {
     load: function(name, req, onLoad, config) {
-      var tmplId = name + 'Tmpl';
-      text.get(req.toUrl(name) + '.html', function(tmplString){
-        $("body").append("<script id=\"" + tmplId + "Tmpl\" type=\"text/html\">" + tmplString + "<\/script>");
+
+      var filename = config.baseUrl + defaults.path + name + defaults.ext,
+          tmplId   = name + defaults.idSuffix;
+
+      text.get(filename, function(tmplString){
+        $(defaults.container).append('<script id="' + tmplId + '" type="text/html">' + tmplString + '</script>');
         onLoad(tmplId);
       });
     }

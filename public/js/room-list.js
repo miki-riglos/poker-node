@@ -15,7 +15,7 @@ define(['knockout', 'socket', 'user'], function(ko, socket, user) {
 
     add: function() {
       var self = this;
-      socket.emit('room-new', {host: user.name()}, function(newRoomResp) {
+      socket.emit('room-new', user.name(), function(newRoomResp) {
         if (newRoomResp.success) {
           self.allRooms.push(newRoomResp.roomAdded);
         } else {
