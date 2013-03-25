@@ -1,0 +1,20 @@
+<table>
+  <thead>
+    <tr>
+      <td>Id</td>
+      <td>Host</td>
+      <td>Started</td>
+      <td>Status</td>
+    </tr>
+  </thead>
+  <tbody data-bind='foreach: roomsToShow'>
+    <tr>
+      <td data-bind='text: id'></td>
+      <td data-bind='text: host'></td>
+      <td data-bind='text: started'></td>
+      <td data-bind='text: tournament.status'></td>
+    </tr>
+  </tbody>
+</table>
+
+<button data-bind='click:add'>Add</button>

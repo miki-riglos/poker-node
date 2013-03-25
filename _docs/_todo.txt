@@ -19,20 +19,16 @@ Home
     - Enable button to join
     - Game flow
 
-- room-list
-  - load template
-  - add room
-
 - sockets/events
   - 'room-new' only if logged in?
-
-- usr-mgr & room-mgr test
-  - assert fake db is modified
 
 - infrastructure/room-mgr: Room[] is loaded as Object[]
   - include in tests?
   - Consistency when sending out data: RoomDTO vs Room
   - Deserialize nested classes of Tournament
+
+- usr-mgr & room-mgr test
+  - assert fake db is modified
 
 - infrastructure/room-mgr: remove room when its tournament's status is not open or start
 

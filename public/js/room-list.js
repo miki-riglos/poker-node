@@ -1,6 +1,7 @@
-define(['knockout', 'socket', 'user'], function(ko, socket, user) {
+define(['knockout', 'socket', 'user', 'loadTmpl!roomlist'], function(ko, socket, user, roomlistTmplId) {
 
   var roomList = {
+    templateId   : roomlistTmplId,
     allRooms     : ko.observableArray([]),
     onlyUserRooms: ko.observable(false),
 
@@ -38,6 +39,7 @@ define(['knockout', 'socket', 'user'], function(ko, socket, user) {
   });
 
   socket.on('room-list', function(rooms) {
+    console.log(rooms);
     roomList.allRooms(rooms);
   });
 

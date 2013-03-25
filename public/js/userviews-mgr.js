@@ -1,4 +1,6 @@
-define(['knockout', 'user', 'registration', 'loadTmpl!login', 'loadTmpl!register', 'loadTmpl!loggedin'], function(ko, user, registration) {
+define(['knockout', 'user', 'registration',
+        'loadTmpl!login', 'loadTmpl!register', 'loadTmpl!loggedin'],
+function(ko, user, registration, loginTmplId, registerTmplId, loggedinTmplId) {
 
   var userViewsMgr = {
 
@@ -17,9 +19,9 @@ define(['knockout', 'user', 'registration', 'loadTmpl!login', 'loadTmpl!register
     }],
 
     views: {
-      'login'   : {templateId: 'loginTmpl',    viewModel: user},
-      'register': {templateId: 'registerTmpl', viewModel: registration},
-      'loggedin': {templateId: 'loggedinTmpl', viewModel: user}
+      'login'   : {templateId: loginTmplId,    viewModel: user},
+      'register': {templateId: registerTmplId, viewModel: registration},
+      'loggedin': {templateId: loggedinTmplId, viewModel: user}
     },
 
     activeView: ko.observable(),
