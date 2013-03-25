@@ -5,36 +5,37 @@ var http    = require('http'),
 
 var socketsEvents = require('../../sockets/events');
 
+var UserManager = require('../../infrastructure/user-mgr').UserManager,
+    RoomManager = require('../../infrastructure/room-mgr').RoomManager;
+
 var port        = process.env.PORT || 3000,
     ioc_options = {'transports': ['websocket'], 'force new connection': true};
 
-io.set("log level", 0);
-
 // Override load and save methods for UserManager
-var UserManager     = require('../../infrastructure/user-mgr').UserManager,
-    overrideUserMgr = {
-      load: function() {
-        this.users = {"miki": {"name": "miki", "password": "pass"} };
-      },
-      save: function(userTouched, cb) {
-        if (cb) cb(null, userTouched);
-      }
-    };
+var overrideUserMgr = {
+  load: function() {
+    this.users = {"miki": {"name": "miki", "password": "pass"} };
+  },
+  save: function(userTouched, cb) {
+    if (cb) cb(null, userTouched);
+  }
+};
 
-var RoomManager = require('../../infrastructure/room-mgr').RoomManager,
-    overrideRoomMgr = {
-      load: function() {
-        this.rooms = {};
-      },
-      save: function(roomTouched, cb) {
-        if (cb) cb(null, roomTouched);
-      }
-    };
+var overrideRoomMgr = {
+  load: function() {
+    this.rooms = {};
+  },
+  save: function(roomTouched, cb) {
+    if (cb) cb(null, roomTouched);
+  }
+};
 
 var override = {
   userMgr: UserManager(overrideUserMgr),
   roomMgr: RoomManager(overrideRoomMgr),
 };
+
+io.set("log level", 0);
 
 // Config events
 socketsEvents(io, override);
@@ -42,11 +43,12 @@ socketsEvents(io, override);
 describe('Socket events', function() {
   var socket;
 
-  beforeEach(function(done) {
-    server.listen(port, function() {
-      socket = ioc.connect('http://localhost:' + port, ioc_options);
-      done();
-    });
+  before(function(done) {
+    server.listen(port, done);
+  });
+
+  beforeEach(function() {
+    socket = ioc.connect('http://localhost:' + port, ioc_options);
   });
 
   describe('User events', function() {
@@ -54,6 +56,7 @@ describe('Socket events', function() {
     it('should respond to valid login', function(done) {
       socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
         loginRet.success.should.be.true;
+    socket.disconnect();
         done();
       });
     });
@@ -100,15 +103,18 @@ describe('Socket events', function() {
 
       function EmittedAndNotified() {
         roomAddedInCallback.host.should.equal(roomAddedInEvent.host);
+        targetSocket.disconnect();
         done();
       }
     });
 
   });
 
-//  afterEach(function(done) {
-//    socket.disconnect();
-//    server.close(done);
-//  });
+  afterEach(function() {
+    socket.disconnect();
+  });
 
+  after(function(done) {
+    server.close(done);
+  });
 });
