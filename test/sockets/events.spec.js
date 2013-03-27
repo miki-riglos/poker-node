@@ -57,7 +57,6 @@ describe('Socket events', function() {
     it('should respond to valid login', function(done) {
       socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
         loginRet.success.should.be.true;
-    socket.disconnect();
         done();
       });
     });
