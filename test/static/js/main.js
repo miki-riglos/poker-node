@@ -15,7 +15,12 @@ var tests = [
 ];
 
 require(tests, function() {
-  window.mocha
-    .globals(['$', 'jQuery'])
-    .run();
+
+  window.mocha.globals(['$', 'jQuery']);
+
+  if (window.mochaPhantomJS) {
+    window.mochaPhantomJS.run();
+  } else {
+    window.mocha.run();
+  }
 });

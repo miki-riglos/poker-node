@@ -8,7 +8,8 @@ var socketsEvents = require('../../sockets/events');
 var UserManager = require('../../infrastructure/user-mgr').UserManager,
     RoomManager = require('../../infrastructure/room-mgr').RoomManager;
 
-var port        = process.env.PORT || 3000,
+var host        = process.env.IP || 'localhost',
+    port        = process.env.PORT || 3000,
     ioc_options = {'transports': ['websocket'], 'force new connection': true};
 
 // Override load and save methods for UserManager
@@ -48,7 +49,7 @@ describe('Socket events', function() {
   });
 
   beforeEach(function() {
-    socket = ioc.connect('http://localhost:' + port, ioc_options);
+    socket = ioc.connect('http://' + host + ':' + port, ioc_options);
   });
 
   describe('User events', function() {
@@ -81,7 +82,7 @@ describe('Socket events', function() {
     });
 
     it('should respond to new room and notify others', function(done) {
-      var targetSocket = ioc.connect('http://localhost:' + port, ioc_options),
+      var targetSocket = ioc.connect('http://' + host + ':' + port, ioc_options),
           counter      = 0,
           roomAddedInCallback,
           roomAddedInEvent;
