@@ -44,13 +44,19 @@ function events(io, override) {
     socket.emit('room-list', roomMgr.getAllRooms());
 
     socket.on('room-new', function(host, cb) {
-      roomMgr.add(host, function(err, roomAdded) {
-        if (err) {
-          cb({success: false, message: err.message});
+      socket.get('username', function(err, username) {
+        if (host === username) {
+          roomMgr.add(host, function(err, roomAdded) {
+            if (err) {
+              cb({success: false, message: err.message});
+            } else {
+              cb({success: true, roomAdded: roomAdded});
+              // Notify the others
+              socket.broadcast.emit('room-added', roomAdded);
+            }
+          });
         } else {
-          cb({success: true, roomAdded: roomAdded});
-          // Notify the others
-          socket.broadcast.emit('room-added', roomAdded);
+         cb({success: false, message: 'Invalid host'});
         }
       });
     });

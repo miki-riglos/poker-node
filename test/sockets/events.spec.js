@@ -10,6 +10,7 @@ var UserManager = require('../../infrastructure/user-mgr').UserManager,
 
 var host        = process.env.IP || 'localhost',
     port        = process.env.PORT || 3000,
+    ios         = 'http://' + host + ':' + port,
     ioc_options = {'transports': ['websocket'], 'force new connection': true};
 
 // Override load and save methods for UserManager
@@ -49,7 +50,7 @@ describe('Socket events', function() {
   });
 
   beforeEach(function() {
-    socket = ioc.connect('http://' + host + ':' + port, ioc_options);
+    socket = ioc.connect(ios, ioc_options);
   });
 
   describe('User events', function() {
@@ -81,31 +82,43 @@ describe('Socket events', function() {
     });
 
     it('should respond to new room and notify others', function(done) {
-      var targetSocket = ioc.connect('http://' + host + ':' + port, ioc_options),
+      var targetSocket = ioc.connect(ios, ioc_options),
           counter      = 0,
           roomAddedInCallback,
           roomAddedInEvent;
 
-      socket.emit('room-new', 'host-name', function(roomNewRet) {
-        roomNewRet.success.should.be.true;
-        roomNewRet.roomAdded.should.be.an.instanceOf(Object);
-        roomAddedInCallback = roomNewRet.roomAdded;
-        ++counter;
-        if (counter === 2) EmittedAndNotified();
-      });
+      socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+        socket.emit('room-new', 'miki', function(roomNewRet) {
+          roomNewRet.success.should.be.true;
+          roomNewRet.roomAdded.should.be.an.instanceOf(Object);
+          roomAddedInCallback = roomNewRet.roomAdded;
+          ++counter;
+          if (counter === 2) EmittedAndNotified();
+        });
 
-      targetSocket.on('room-added', function(roomAdded) {
-        roomAdded.should.be.an.instanceOf(Object);
-        roomAddedInEvent = roomAdded;
-        ++counter;
-        if (counter === 2) EmittedAndNotified();
-      });
+        targetSocket.on('room-added', function(roomAdded) {
+          roomAdded.should.be.an.instanceOf(Object);
+          roomAddedInEvent = roomAdded;
+          ++counter;
+          if (counter === 2) EmittedAndNotified();
+        });
 
-      function EmittedAndNotified() {
-        roomAddedInCallback.host.should.equal(roomAddedInEvent.host);
-        targetSocket.disconnect();
-        done();
-      }
+        function EmittedAndNotified() {
+          roomAddedInCallback.host.should.equal(roomAddedInEvent.host);
+          targetSocket.disconnect();
+          done();
+        }
+      });
+    });
+
+    it('should reject new room if host is not equal to player name', function(done) {
+      socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+        socket.emit('room-new', 'another', function(roomNewRet) {
+          roomNewRet.success.should.be.false;
+          roomNewRet.should.have.property('message');
+          done();
+        });
+      });
     });
 
   });
