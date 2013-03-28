@@ -6,15 +6,12 @@ Experimenting using only socket.io for all server/client communication.
   Removing ajax calls in main.js
   Commeting out unneccesary Express middleware
 
-Home
-- Show active rooms
-  + generate server data
-+ Show option to login
-+ Registration
 - When logged in
   - Mark rooms where user is in
   - Filter rooms of the user/player, move logic to client
+    - room.tournament.players: {} or []
   - Enable button to activate new room
+  - Remove room, only by host if status is open (not start)
   - Rooms with open tournament (not start)
     - Enable button to join
     - Game flow
@@ -25,6 +22,7 @@ Home
   - Deserialize nested classes of Tournament
 
 - infrastructure/room-mgr: remove room when its tournament's status is not open or start
+- Client session, reconnections / refresh
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
@@ -56,12 +54,10 @@ TODO
   - Player inactive, automatic checks/folds
   - Game status: all players are All in, show hands
 
-- Client session, reconnections
-
 - Remove views? routes?
   - jade dependency
 
-- Acceptance test / automate browser
+- Acceptance test / automate browser (CasperJS)
 
 
 

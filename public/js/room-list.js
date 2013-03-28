@@ -5,15 +5,6 @@ define(['knockout', 'socket', 'user', 'loadTmpl!roomlist'], function(ko, socket,
     allRooms     : ko.observableArray([]),
     onlyUserRooms: ko.observable(false),
 
-//    roomsToShow: ko.computed(function() {
-//      if (!this.onlyUserRooms()) {
-//        return this.allRooms();
-//      } else {
-//        //TODO: filter array
-//        return this.allRooms();
-//      }
-//    }),
-
     add: function() {
       var self = this;
       socket.emit('room-new', user.name(), function(newRoomResp) {
@@ -39,7 +30,6 @@ define(['knockout', 'socket', 'user', 'loadTmpl!roomlist'], function(ko, socket,
   });
 
   socket.on('room-list', function(rooms) {
-    console.log(rooms);
     roomList.allRooms(rooms);
   });
 
