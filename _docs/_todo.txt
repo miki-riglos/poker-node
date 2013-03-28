@@ -62,3 +62,19 @@ TODO
   - jade dependency
 
 - Acceptance test / automate browser
+
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+CasperJS
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Installation:
+  cd node_modules
+  git clone git://github.com/n1k0/casperjs.git
+  cd casperjs
+  git checkout tags/1.0.2
+
+Execution
+  node_modules/casperjs/bin/casperjs node_modules/casperjs/samples/each.js
+
+Symbolic link in node_modules/.bin?

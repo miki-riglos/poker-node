@@ -23,8 +23,9 @@
     "node": "*"
   },
   "scripts": {
-    "test-infra": "mocha test/infrastructure",
+    "test": "mocha test/poker test/infrastructure test/sockets && mocha-phantomjs test/static/runner.html",
     "test-poker": "mocha test/poker",
+    "test-infra": "mocha test/infrastructure",
     "test-sockets": "mocha test/sockets",
     "test-static": "mocha-phantomjs test/static/runner.html"
   }

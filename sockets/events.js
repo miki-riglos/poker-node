@@ -3,8 +3,9 @@ var UserManager = require('../infrastructure/user-mgr').UserManager,
 
 function events(io, override) {
 
-  var override = override || {},
-      userMgr  = override.userMgr || UserManager(),
+  override = override || {};
+
+  var userMgr  = override.userMgr || UserManager(),
       roomMgr  = override.roomMgr || RoomManager();
 
   io.sockets.on('connection', function (socket) {

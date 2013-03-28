@@ -18,6 +18,20 @@ Room.prototype.id = function() {
   return this.host + this.started;
 };
 
+Room.prototype.toDTO = function() {
+  return {
+    id        : this.id(),
+    host      : this.host,
+    started   : this.started,
+    tournament: {
+      status     : this.tournament.status,
+      players    : this.tournament.registeredPlayers,
+      gameCounter: this.tournament.gameCounter,
+    }
+  };
+};
+
+
 // RoomManager Class
 function RoomManager(override) {
   if (!(this instanceof RoomManager)) return new RoomManager(override);
@@ -67,7 +81,7 @@ RoomManager.prototype.save = function(roomTouched, cb) {
       if (cb) cb(err);
       return;
     }
-    if (cb) cb(null, roomTouched);
+    if (cb) cb(null, roomTouched.toDTO());
   });
 };
 
@@ -75,7 +89,7 @@ RoomManager.prototype.getAllRooms = function() {
   var allRooms = [],
       self     = this;
   Object.keys(this.rooms).forEach(function(key) {
-    allRooms.push(getRoomDTO(self.rooms[key]));
+    allRooms.push( self.rooms[key].toDTO() );
   });
   return allRooms;
 };
@@ -88,27 +102,12 @@ RoomManager.prototype.getRoomsPlayedBy = function(playerName) {
       return self.rooms[key].tournament.registeredPlayers[position].name;
     });
     if (allPlayerNames.indexOf(playerName) !== -1) {
-      playerRooms.push(getRoomDTO(self.rooms[key]));
+      playerRooms.push( self.rooms[key].toDTO() );
     }
   });
   return playerRooms;
 };
 
-// Private
-function getRoomDTO(room) {
-  var roomDTO = {
-    id        : room.id(),
-    host      : room.host,
-    started   : room.started,
-    tournament: {
-      status     : room.tournament.status,
-      players    : room.tournament.registeredPlayers,
-      gameCounter: room.tournament.gameCounter,
-    }
-  };
-
-  return roomDTO;
-}
 
 // Exports
 module.exports = {
