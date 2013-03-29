@@ -60,19 +60,28 @@ RoomManager.prototype.remove = function(room, cb) {
   }
 };
 
-RoomManager.prototype.load = function() {
+RoomManager.prototype.read = function() {
+  var flatRooms = JSON.parse({});
   if (fs.existsSync(DATA_FILE)) {
-    // Convert json object to Room
-    var self = this,
-        roomObjs = require(DATA_FILE);
-    this.rooms = {};
-    Object.keys(roomObjs).forEach(function(roomObjKey) {
-      self.rooms[roomObjKey] = new Room( roomObjs[roomObjKey].host );
-      _.extend(self.rooms[roomObjKey], roomObjs[roomObjKey]);
-      _.extend(self.rooms[roomObjKey].tournament, roomObjs[roomObjKey].tournament);
-      //TODO: other nestes classes
-    });
+    flatRooms = require(DATA_FILE);
   }
+  return flatRooms;
+};
+
+RoomManager.prototype.deserialize = function(flatRooms) {
+  var self = this;
+  this.rooms = {};
+  Object.keys(JSON.parse(flatRooms)).forEach(function(roomObjKey) {
+    self.rooms[roomObjKey] = new Room( flatRooms[roomObjKey].host );
+    _.extend(self.rooms[roomObjKey], flatRooms[roomObjKey]);
+    _.extend(self.rooms[roomObjKey].tournament, flatRooms[roomObjKey].tournament);
+    //TODO: other nestes classes
+  });
+};
+
+RoomManager.prototype.load = function() {
+  var flatRooms = this.read();
+  this.deserialize(flatRooms);
 };
 
 RoomManager.prototype.save = function(roomTouched, cb) {

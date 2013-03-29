@@ -39,10 +39,21 @@ UserManager.prototype.remove = function(name, cb) {
   }
 };
 
-UserManager.prototype.load = function() {
+UserManager.prototype.read = function() {
+  var flatUsers = JSON.stringify({});
   if (fs.existsSync(DATA_FILE)) {
-    this.users = require(DATA_FILE);
+    flatUsers = fs.readFileSync(DATA_FILE);
   }
+  return flatUsers;
+};
+
+UserManager.prototype.load = function() {
+  var flatUsers = this.read();
+  this.deserialize(flatUsers);
+};
+
+UserManager.prototype.deserialize = function(flatUsers) {
+  this.users = JSON.parse(flatUsers);
 };
 
 UserManager.prototype.save = function(userTouched, cb) {

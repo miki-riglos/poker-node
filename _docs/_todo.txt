@@ -5,6 +5,14 @@ Replacing ajax login with socket.io
 Experimenting using only socket.io for all server/client communication.
   Removing ajax calls in main.js
   Commeting out unneccesary Express middleware
+-------------------------------------------------------------------------------
+
+- infrastructure/room-mgr: Room[] is loaded as Object[]
+  - include in tests
+    - Similar in user-mgr
+    - Organize before, beforeEach, afterEach, after
+  - Consistency when sending out data: RoomDTO vs Room
+  - Deserialize nested classes of Tournament
 
 - When logged in
   - Mark rooms where user is in
@@ -16,13 +24,9 @@ Experimenting using only socket.io for all server/client communication.
     - Enable button to join
     - Game flow
 
-- infrastructure/room-mgr: Room[] is loaded as Object[]
-  - include in tests?
-  - Consistency when sending out data: RoomDTO vs Room
-  - Deserialize nested classes of Tournament
-
 - infrastructure/room-mgr: remove room when its tournament's status is not open or start
 - Client session, reconnections / refresh
+  - cookies? socket.io handshake?
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
