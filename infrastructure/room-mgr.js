@@ -40,8 +40,8 @@ function RoomManager(override) {
   this.load();
 }
 
-RoomManager.prototype.exist = function(room) {
-  return (room.id() in this.rooms);
+RoomManager.prototype.exist = function(roomId) {
+  return (roomId in this.rooms);
 };
 
 RoomManager.prototype.add = function(host, cb) {
@@ -50,10 +50,10 @@ RoomManager.prototype.add = function(host, cb) {
   this.save(roomToAdd, cb);
 };
 
-RoomManager.prototype.remove = function(room, cb) {
-  if (this.exist(room)) {
-    var roomToRemove = this.rooms[room.id()];
-    delete this.rooms[room.id()];
+RoomManager.prototype.remove = function(roomId, cb) {
+  if (this.exist(roomId)) {
+    var roomToRemove = this.rooms[roomId];
+    delete this.rooms[roomId];
     this.save(roomToRemove, cb);
   } else {
     if (cb) cb(new Error('Room does not exist.'));
@@ -61,36 +61,36 @@ RoomManager.prototype.remove = function(room, cb) {
 };
 
 RoomManager.prototype.read = function() {
-  var flatRooms = JSON.parse({});
+  var flatRooms = JSON.stringify({});
   if (fs.existsSync(DATA_FILE)) {
-    flatRooms = require(DATA_FILE);
+    flatRooms = fs.readFileSync(DATA_FILE);
   }
   return flatRooms;
 };
 
 RoomManager.prototype.deserialize = function(flatRooms) {
-  var self = this;
-  this.rooms = {};
-  Object.keys(JSON.parse(flatRooms)).forEach(function(roomObjKey) {
-    self.rooms[roomObjKey] = new Room( flatRooms[roomObjKey].host );
-    _.extend(self.rooms[roomObjKey], flatRooms[roomObjKey]);
-    _.extend(self.rooms[roomObjKey].tournament, flatRooms[roomObjKey].tournament);
-    //TODO: other nestes classes
-  });
+  return JSON.parse(flatRooms);
 };
 
 RoomManager.prototype.load = function() {
   var flatRooms = this.read();
-  this.deserialize(flatRooms);
+  this.rooms = this.deserialize(flatRooms);
+};
+
+RoomManager.prototype.serialize = function(rooms) {
+  return JSON.stringify(rooms, null, 2);
+};
+
+RoomManager.prototype.write = function(flatRooms, cb) {
+  fs.writeFile(DATA_FILE, flatRooms, function(err) {
+    cb(err);
+  });
 };
 
 RoomManager.prototype.save = function(roomTouched, cb) {
-  fs.writeFile(DATA_FILE, JSON.stringify(this.rooms, null, 2), function(err) {
-    if (err) {
-      if (cb) cb(err);
-      return;
-    }
-    if (cb) cb(null, roomTouched.toDTO());
+  var flatRooms = this.serialize(this.rooms);
+  this.write(flatRooms, function(err) {
+    if (cb) cb(err, roomTouched.toDTO());
   });
 };
 
@@ -98,24 +98,26 @@ RoomManager.prototype.getAllRooms = function() {
   var allRooms = [],
       self     = this;
   Object.keys(this.rooms).forEach(function(key) {
-    allRooms.push( self.rooms[key].toDTO() );
+    allRooms.push(self.rooms[key].toDTO());
   });
   return allRooms;
 };
 
-RoomManager.prototype.getRoomsPlayedBy = function(playerName) {
-  var playerRooms = [],
-      self        = this;
-  Object.keys(this.rooms).forEach(function(key) {
-    var allPlayerNames = Object.keys(self.rooms[key].tournament.registeredPlayers).map(function(position) {
-      return self.rooms[key].tournament.registeredPlayers[position].name;
-    });
-    if (allPlayerNames.indexOf(playerName) !== -1) {
-      playerRooms.push( self.rooms[key].toDTO() );
-    }
-  });
-  return playerRooms;
-};
+//TODO: move to client
+//--------------------
+// RoomManager.prototype.getRoomsPlayedBy = function(playerName) {
+//   var playerRooms = [],
+//       self        = this;
+//   Object.keys(this.rooms).forEach(function(key) {
+//     var allPlayerNames = Object.keys(self.rooms[key].tournament.registeredPlayers).map(function(position) {
+//       return self.rooms[key].tournament.registeredPlayers[position].name;
+//     });
+//     if (allPlayerNames.indexOf(playerName) !== -1) {
+//       playerRooms.push( self.rooms[key] );
+//     }
+//   });
+//   return playerRooms;
+// };
 
 
 // Exports

@@ -3,20 +3,20 @@ var UserManager = require('../../infrastructure/user-mgr').UserManager;
 describe('UserManager class', function() {
   var userMgr;
   var override = {
-    read: function() {
-      return JSON.stringify({});
+    load: function() {
+      this.users = {};
     },
     save: function(userTouched, cb) {
       if (cb) cb(null, userTouched);
     }
   };
-  var userAdded;
 
   beforeEach(function() {
     userMgr = UserManager(override); // Override load and save methods
   });
 
   describe('adding users', function() {
+    var userAdded;
 
     beforeEach(function(done) {
       userMgr.add('giovana', 'pass', function(err, firstUserAdded) {

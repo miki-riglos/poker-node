@@ -7,12 +7,11 @@ Experimenting using only socket.io for all server/client communication.
   Commeting out unneccesary Express middleware
 -------------------------------------------------------------------------------
 
-- infrastructure/room-mgr: Room[] is loaded as Object[]
-  - include in tests
-    - Similar in user-mgr
-    - Organize before, beforeEach, afterEach, after
-  - Consistency when sending out data: RoomDTO vs Room
-  - Deserialize nested classes of Tournament
+- infrastructure
+  - Deserialize users/rooms(nested); recreate instances of User/Room
+
+- room-mgr
+  - save one room per file
 
 - When logged in
   - Mark rooms where user is in

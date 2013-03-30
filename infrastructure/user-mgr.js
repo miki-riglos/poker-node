@@ -4,6 +4,20 @@ var fs   = require('fs'),
 
 var DATA_FILE = path.join(__dirname, 'db', 'users.json');
 
+// User Class
+function User(name, password) {
+  if (!(this instanceof User)) return new User(name, password);
+  this.name     = name;
+  this.password = password;
+}
+
+User.prototype.toDTO = function() {
+  return {
+    name: this.name
+  };
+};
+
+
 // UserManager Class
 function UserManager(override) {
   if (!(this instanceof UserManager)) return new UserManager(override);
@@ -20,7 +34,7 @@ UserManager.prototype.exist = function(name) {
 UserManager.prototype.add = function(name, password, cb) {
   name = name.toLowerCase();
   if (!this.exist(name)) {
-    var userToAdd = {name: name, password: password};
+    var userToAdd = User(name, password);
     this.users[name] = userToAdd;
     this.save(userToAdd, cb);
   } else {
@@ -47,22 +61,29 @@ UserManager.prototype.read = function() {
   return flatUsers;
 };
 
-UserManager.prototype.load = function() {
-  var flatUsers = this.read();
-  this.deserialize(flatUsers);
+UserManager.prototype.deserialize = function(flatUsers) {
+  return JSON.parse(flatUsers);
 };
 
-UserManager.prototype.deserialize = function(flatUsers) {
-  this.users = JSON.parse(flatUsers);
+UserManager.prototype.load = function() {
+  var flatUsers = this.read();
+  this.users = this.deserialize(flatUsers);
+};
+
+UserManager.prototype.serialize = function(users) {
+  return JSON.stringify(users, null, 2);
+};
+
+UserManager.prototype.write = function(flatUsers, cb) {
+  fs.writeFile(DATA_FILE, flatUsers, function(err) {
+    cb(err);
+  });
 };
 
 UserManager.prototype.save = function(userTouched, cb) {
-  fs.writeFile(DATA_FILE, JSON.stringify(this.users, null, 2), function(err) {
-    if (err) {
-      if (cb) cb(err);
-      return;
-    }
-    if (cb) cb(null, userTouched);
+  var flatUsers = this.serialize(this.users);
+  this.write(flatUsers, function(err) {
+    if (cb) cb(err, userTouched.toDTO());
   });
 };
 

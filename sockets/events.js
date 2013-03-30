@@ -42,18 +42,19 @@ function events(io, override) {
     });
 
     // Room List events
-    socket.emit('room-list', roomMgr.getAllRooms());
+    var allRoomsDTO = roomMgr.getAllRooms();
+    socket.emit('room-list', allRoomsDTO);
 
     socket.on('room-new', function(host, cb) {
       socket.get('username', function(err, username) {
         if (host === username) {
-          roomMgr.add(host, function(err, roomAdded) {
+          roomMgr.add(host, function(err, roomAddedDTO) {
             if (err) {
               cb({success: false, message: err.message});
             } else {
-              cb({success: true, roomAdded: roomAdded});
+              cb({success: true, roomAdded: roomAddedDTO});
               // Notify the others
-              socket.broadcast.emit('room-added', roomAdded);
+              socket.broadcast.emit('room-added', roomAddedDTO);
             }
           });
         } else {

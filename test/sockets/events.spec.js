@@ -15,8 +15,8 @@ var host        = process.env.IP || 'localhost',
 
 // Override load and save methods for UserManager
 var overrideUserMgr = {
-  read: function() {
-    return {"miki": {"name": "miki", "password": "pass"} };
+  load: function() {
+    this.users = {"miki": {"name": "miki", "password": "pass"} };
   },
   save: function(userTouched, cb) {
     if (cb) cb(null, userTouched);
@@ -24,8 +24,8 @@ var overrideUserMgr = {
 };
 
 var overrideRoomMgr = {
-  read: function() {
-    return {};
+  load: function() {
+    this.rooms = {};
   },
   save: function(roomTouched, cb) {
     if (cb) cb(null, roomTouched);
