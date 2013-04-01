@@ -62,7 +62,14 @@ UserManager.prototype.read = function() {
 };
 
 UserManager.prototype.deserialize = function(flatUsers) {
-  return JSON.parse(flatUsers);
+  var usersIns = {},
+      usersObj = JSON.parse(flatUsers);
+
+  Object.keys(usersObj).forEach(function(userKey) {
+    usersIns[userKey] = User(usersObj[userKey].name, usersObj[userKey].password);
+  });
+
+  return usersIns;
 };
 
 UserManager.prototype.load = function() {
@@ -95,5 +102,6 @@ UserManager.prototype.authenticate = function(name, password) {
 
 // Exports
 module.exports = {
+  User       : User,
   UserManager: UserManager
 };

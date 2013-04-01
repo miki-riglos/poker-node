@@ -1,4 +1,5 @@
-var UserManager = require('../../infrastructure/user-mgr').UserManager;
+var User        = require('../../infrastructure/user-mgr').User,
+    UserManager = require('../../infrastructure/user-mgr').UserManager;
 
 describe('UserManager class', function() {
   var userMgr;
@@ -7,7 +8,7 @@ describe('UserManager class', function() {
       this.users = {};
     },
     save: function(userTouched, cb) {
-      if (cb) cb(null, userTouched);
+      if (cb) cb(null, userTouched.toDTO());
     }
   };
 
@@ -26,9 +27,11 @@ describe('UserManager class', function() {
     });
 
     it('should add user', function(done) {
+      Object.keys(userAdded).should.include('name');
       userAdded.name.should.equal('giovana');
-      userAdded.password.should.equal('pass');
-      userMgr.users['giovana'].password.should.equal(userAdded.password);
+      Object.keys(userAdded).should.not.include('password');
+      userMgr.users['giovana'].name.should.equal(userAdded.name);
+      userMgr.users['giovana'].password.should.equal('pass');
       done();
     });
 
@@ -94,6 +97,23 @@ describe('UserManager class', function() {
 
     afterEach(function() {
       Object.keys(userMgr.users).should.have.length(0);
+    });
+
+  });
+
+  describe('serialization', function() {
+
+    beforeEach(function(done) {
+      userMgr.add('giovana', 'pass', done);
+    });
+
+    it('should serialize user', function() {
+      var flatUsers = userMgr.serialize(userMgr.users),
+          instUsers = userMgr.deserialize(flatUsers);
+
+      instUsers['giovana'].should.be.instanceOf(User);
+      instUsers['giovana'].name.should.be.equal('giovana');
+      instUsers['giovana'].password.should.be.equal('pass');
     });
 
   });

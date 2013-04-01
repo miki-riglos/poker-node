@@ -69,7 +69,16 @@ RoomManager.prototype.read = function() {
 };
 
 RoomManager.prototype.deserialize = function(flatRooms) {
-  return JSON.parse(flatRooms);
+  var roomsIns = {},
+      roomsObj = JSON.parse(flatRooms);
+
+  Object.keys(roomsObj).forEach(function(roomKey) {
+    roomsIns[roomKey] = Room(roomsObj[roomKey].host);
+    _.extend(roomsIns[roomKey], roomsObj[roomKey]);
+    // roomsIns[roomKey].started = roomsObj[roomKey].started;
+  });
+
+  return roomsIns;
 };
 
 RoomManager.prototype.load = function() {
@@ -122,5 +131,6 @@ RoomManager.prototype.getAllRooms = function() {
 
 // Exports
 module.exports = {
+  Room       : Room,
   RoomManager: RoomManager
 };

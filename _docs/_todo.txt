@@ -8,7 +8,7 @@ Experimenting using only socket.io for all server/client communication.
 -------------------------------------------------------------------------------
 
 - infrastructure
-  - Deserialize users/rooms(nested); recreate instances of User/Room
+  - Deserialize rooms(nested); recreate instances of Room
 
 - room-mgr
   - save one room per file

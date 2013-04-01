@@ -19,7 +19,7 @@ var overrideUserMgr = {
     this.users = {"miki": {"name": "miki", "password": "pass"} };
   },
   save: function(userTouched, cb) {
-    if (cb) cb(null, userTouched);
+    if (cb) cb(null, userTouched.toDTO());
   }
 };
 
@@ -28,7 +28,7 @@ var overrideRoomMgr = {
     this.rooms = {};
   },
   save: function(roomTouched, cb) {
-    if (cb) cb(null, roomTouched);
+    if (cb) cb(null, roomTouched.toDTO());
   }
 };
 
