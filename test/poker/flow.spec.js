@@ -2,11 +2,11 @@ var fs   = require('fs'),
     path = require('path');
 
 var stepsDir = path.join(__dirname, 'flow-steps'),
-    steps = fs.readdirSync(stepsDir)
-              .sort()
-              .map(function(stepFile) {
-                return require( path.join(stepsDir, stepFile) );
-              });
+    steps    = fs.readdirSync(stepsDir)
+                 .sort()
+                 .map(function(stepFile) {
+                   return require( path.join(stepsDir, stepFile) );
+                 });
 
 var Tournament = require('../../poker/tournament').Tournament;
 

@@ -2,7 +2,7 @@ var util   = require('util'),
     events = require('events');
 
 // Round class
-function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing) {
+function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing, init) {
   if (!(this instanceof Round)) return new Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing);
   this.number = roundCounter;   // 1: 'preflop' | 2: 'flop' | 3: 'turn' | 4: 'river'
   this.button = button;
@@ -10,9 +10,15 @@ function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, pos
   this.registeredPlayers = registeredPlayers;                 // {position: {name: String, chips: Number} }
   this.gamePlayers       = gamePlayers;                       // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
   this.roundPlayers      = getRoundPlayers(positionsActing);  // {position: {actions: String[], bets: Number[]} }
-  this.positionToAct = null;
-  this.finalPosition = null;
-  this.betToCall     = null;
+  if (!init) {
+    this.positionToAct = null;
+    this.finalPosition = null;
+    this.betToCall     = null;
+  } else {
+    this.positionToAct = init.positionToAct;
+    this.finalPosition = init.finalPosition;
+    this.betToCall     = init.betToCall;
+  }
 
   events.EventEmitter.call(this);
 }

@@ -107,13 +107,13 @@ describe('UserManager class', function() {
       userMgr.add('giovana', 'pass', done);
     });
 
-    it('should serialize user', function() {
-      var flatUsers = userMgr.serialize(userMgr.users),
-          instUsers = userMgr.deserialize(flatUsers);
+    it('should serialize/deserialize users', function() {
+      var usersStr  = userMgr.serialize(userMgr.users),
+          usersIns = userMgr.deserialize(usersStr);
 
-      instUsers['giovana'].should.be.instanceOf(User);
-      instUsers['giovana'].name.should.be.equal('giovana');
-      instUsers['giovana'].password.should.be.equal('pass');
+      usersIns['giovana'].should.be.an.instanceOf(User);
+      usersIns['giovana'].name.should.equal('giovana');
+      usersIns['giovana'].password.should.equal('pass');
     });
 
   });

@@ -1,8 +1,14 @@
 // Player class
 function Player(name, chips) {
   if (!(this instanceof Player)) return new Player(name, chips);
-  this.name = name;
-  this.chips = chips;
+  if (typeof name == 'string') {
+    this.name  = name;
+    this.chips = chips;
+  } else {
+    var init = name;
+    this.name  = init.name;
+    this.chips = init.chips;
+  }
 }
 
 // Exports

@@ -15,19 +15,35 @@ var defaultOptions = {
 };
 
 // Tournament class
-function Tournament(options) {
-  if (!(this instanceof Tournament)) return new Tournament(options);
-  this.options = _.extend({}, defaultOptions, options);
-  this.status = 'open';
-  this.button = null;
-  this.blinds = {
-    small: this.options.initialSmallBlind,
-    big  : this.options.initialBigBlind
-  };
-  this.registeredPlayers = {};
-  this.gameCounter = 0;
-  this.currentGame = null;
-
+function Tournament(options, init) {
+  if (!(this instanceof Tournament)) return new Tournament(options, init);
+  if (!init) {
+    this.options = _.extend({}, defaultOptions, options);
+    this.status  = 'open';
+    this.button  = null;
+    this.blinds  = {
+      small: this.options.initialSmallBlind,
+      big  : this.options.initialBigBlind
+    };
+    this.registeredPlayers = {};
+    this.gameCounter       = 0;
+    this.currentGame       = null;
+  } else {
+    this.options = options;
+    this.status  = init.status;
+    this.button  = init.button;
+    this.blinds  = init.blinds;
+    this.registeredPlayers = {};
+    Object.keys(init.registeredPlayers).forEach(function(position) {
+      this.registeredPlayers[position] = Player(init.registeredPlayers[position]);
+    }, this);
+    this.gameCounter = init.gameCounter;
+    if (init.currentGame === null) {
+      this.currentGame = null;
+    } else {
+      this.currentGame = Game(this.gameCounter, this.button, this.blinds, this.registeredPlayers, this.getPositionsWithChips(), init.currentGame);
+    }
+  }
   events.EventEmitter.call(this);
 }
 util.inherits(Tournament, events.EventEmitter);

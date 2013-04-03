@@ -1,7 +1,10 @@
 var Room        = require('../../infrastructure/room-mgr').Room,
     RoomManager = require('../../infrastructure/room-mgr').RoomManager;
 
-var Tournament = require('../../poker/tournament').Tournament;
+var Tournament = require('../../poker/tournament').Tournament,
+    Player     = require('../../poker/player').Player,
+    Game       = require('../../poker/game').Game,
+    Deck       = require('../../poker/deck').Deck;
 
 describe('RoomManager class', function() {
   var roomMgr;
@@ -71,6 +74,7 @@ describe('RoomManager class', function() {
   });
 
   describe('serialization', function() {
+    var roomsStr, roomsIns;
 
     beforeEach(function(done) {
       roomMgr.add('giovana', function(err, firstRoomAdded) {
@@ -79,14 +83,59 @@ describe('RoomManager class', function() {
       });
     });
 
-    it('should serialize room', function() {
-      var flatRooms = roomMgr.serialize(roomMgr.rooms),
-          instRooms = roomMgr.deserialize(flatRooms);
-      instRooms[roomAdded.id].should.be.instanceOf(Room);
-      instRooms[roomAdded.id].host.should.be.equal(roomAdded.host);
-      instRooms[roomAdded.id].started.should.be.equal(roomAdded.started);
+    it('should serialize/deserialize rooms', function() {
+      roomsStr = roomMgr.serialize(roomMgr.rooms);
+      roomsIns = roomMgr.deserialize(roomsStr);
 
-      instRooms[roomAdded.id].tournament.should.be.instanceOf(Tournament);
+      roomsIns[roomAdded.id].should.be.an.instanceOf(Room);
+      roomsIns[roomAdded.id].host.should.equal(roomAdded.host);
+      roomsIns[roomAdded.id].started.should.equal(roomAdded.started);
+
+      roomsIns[roomAdded.id].tournament.should.be.an.instanceOf(Tournament);
+      roomsIns[roomAdded.id].tournament.should.have.property('status', 'open');
+      roomsIns[roomAdded.id].tournament.should.have.property('button', null);
+      roomsIns[roomAdded.id].tournament.registeredPlayers.should.eql({});  //deepEqual
+      roomsIns[roomAdded.id].tournament.should.have.property('gameCounter', 0);
+      roomsIns[roomAdded.id].tournament.should.have.property('currentGame', null);
+    });
+
+    it('should serialize/deserialize rooms with ongoing tournaments', function() {
+      roomMgr.rooms[roomAdded.id].tournament.registerPlayer(1, 'Miki');
+      roomMgr.rooms[roomAdded.id].tournament.registerPlayer(2, 'Giovana');
+      roomMgr.rooms[roomAdded.id].tournament.registerPlayer(3, 'Sofia');
+      roomMgr.rooms[roomAdded.id].tournament.registerPlayer(4, 'Bianca');
+      roomMgr.rooms[roomAdded.id].tournament.start();
+
+      roomsStr = roomMgr.serialize(roomMgr.rooms);
+      roomsIns = roomMgr.deserialize(roomsStr);
+
+      roomsIns[roomAdded.id].should.be.an.instanceOf(Room);
+      roomsIns[roomAdded.id].tournament.should.be.an.instanceOf(Tournament);
+      roomsIns[roomAdded.id].tournament.should.have.property('status', 'start');
+      roomsIns[roomAdded.id].tournament.should.have.property('button');
+      roomsIns[roomAdded.id].tournament.button.should.be.ok;
+      [1, 2, 3, 4].forEach(function(pos) {
+        roomsIns[roomAdded.id].tournament.registeredPlayers[pos].should.be.an.instanceOf(Player);
+        roomsIns[roomAdded.id].tournament.registeredPlayers[pos].name.should.equal(roomMgr.rooms[roomAdded.id].tournament.registeredPlayers[pos].name);
+        roomsIns[roomAdded.id].tournament.registeredPlayers[pos].chips.should.equal(roomMgr.rooms[roomAdded.id].tournament.registeredPlayers[pos].chips);
+      });
+      roomsIns[roomAdded.id].tournament.should.have.property('gameCounter', 1);
+
+      roomsIns[roomAdded.id].tournament.currentGame.should.be.an.instanceOf(Game);
+      roomsIns[roomAdded.id].tournament.currentGame.pot.should.be.ok;
+      roomsIns[roomAdded.id].tournament.currentGame.deck.should.be.an.instanceOf(Deck);
+      // flop
+      // turn
+      // river
+      // burnt
+      // roundCounter
+
+      // currentRound;
+        // positionToAct
+        // finalPosition
+        // betToCall
+
+
     });
 
   });
@@ -103,7 +152,7 @@ describe('RoomManager class', function() {
 
     it('should return all rooms', function() {
       var allRooms = roomMgr.getAllRooms();
-      allRooms.should.be.instanceOf(Array);
+      allRooms.should.be.an.instanceOf(Array);
       allRooms.should.have.length(2);
     });
 

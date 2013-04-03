@@ -5,24 +5,44 @@ var Deck  = require('./deck').Deck,
     Round = require('./round').Round;
 
 // Game class
-function Game(gameCounter, button, blinds, registeredPlayers, positionsWithChips) {
-  if (!(this instanceof Game)) return new Game(gameCounter, button, blinds, registeredPlayers, positionsWithChips);
+function Game(gameCounter, button, blinds, registeredPlayers, positionsWithChips, init) {
+  if (!(this instanceof Game)) return new Game(gameCounter, button, blinds, registeredPlayers, positionsWithChips, init);
   this.number = gameCounter;
   this.button = button;
   this.blinds = blinds;
   this.registeredPlayers = registeredPlayers;                   // {position: {name: String, chips: Number} }
   this.gamePlayers       = getGamePlayers(positionsWithChips);  // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
-  this.pot    = 0;
-  this.deck   = Deck().shuffle();
-  this.flop   = [];
-  this.turn   = {};
-  this.river  = {};
-  this.burnt  = [];
+  if (!init) {
+    this.pot    = 0;
+    this.deck   = Deck().shuffle();
+    this.flop   = [];
+    this.turn   = {};
+    this.river  = {};
+    this.burnt  = [];
 
-  this.winners = [];
+    this.winners = [];
 
-  this.roundCounter = 0;
-  this.currentRound = null;
+    this.roundCounter = 0;
+    this.currentRound = null;
+
+  } else {
+    this.pot    = init.pot;
+    this.deck   = init.deck;
+    this.flop   = init.flop;
+    this.turn   = init.turn;
+    this.river  = init.river;
+    this.burnt  = init.burnt;
+
+    this.winners = init.winners;
+
+    this.roundCounter = init.roundCounter;
+    if (init.currentRound === null) {
+      this.currentRound = null;
+    } else {
+      this.currentRound = Round(this.roundCounter, this.button, this.blinds, this.registeredPlayers, this.gamePlayers, this.getPositionsActing(), init.currentRound);
+    }
+
+  }
 
   events.EventEmitter.call(this);
 }

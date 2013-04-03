@@ -7,11 +7,17 @@ var DATA_FILE = path.join(__dirname, 'db', 'rooms.json');
 var Tournament = require('../poker/tournament').Tournament;
 
 // Room Class
-function Room(host) {
-  if (!(this instanceof Room)) return new Room(host);
-  this.host = host;
-  this.started = Date.now();
-  this.tournament = new Tournament();
+function Room(init) {
+  if (!(this instanceof Room)) return new Room(init);
+  if (typeof init == 'string') {
+    this.host       = init;
+    this.started    = Date.now();
+    this.tournament = Tournament();
+  } else {
+    this.host       = init.host;
+    this.started    = init.started;
+    this.tournament = Tournament(init.tournament.options, init.tournament);
+  }
 }
 
 Room.prototype.id = function() {
@@ -61,44 +67,42 @@ RoomManager.prototype.remove = function(roomId, cb) {
 };
 
 RoomManager.prototype.read = function() {
-  var flatRooms = JSON.stringify({});
+  var roomsStr = JSON.stringify({});
   if (fs.existsSync(DATA_FILE)) {
-    flatRooms = fs.readFileSync(DATA_FILE);
+    roomsStr = fs.readFileSync(DATA_FILE);
   }
-  return flatRooms;
+  return roomsStr;
 };
 
-RoomManager.prototype.deserialize = function(flatRooms) {
+RoomManager.prototype.deserialize = function(roomsStr) {
   var roomsIns = {},
-      roomsObj = JSON.parse(flatRooms);
+      roomsObj = JSON.parse(roomsStr);
 
   Object.keys(roomsObj).forEach(function(roomKey) {
-    roomsIns[roomKey] = Room(roomsObj[roomKey].host);
-    _.extend(roomsIns[roomKey], roomsObj[roomKey]);
-    // roomsIns[roomKey].started = roomsObj[roomKey].started;
+    roomsIns[roomKey] = Room(roomsObj[roomKey]);
   });
 
   return roomsIns;
 };
 
 RoomManager.prototype.load = function() {
-  var flatRooms = this.read();
-  this.rooms = this.deserialize(flatRooms);
+  var roomsStr = this.read();
+  this.rooms = this.deserialize(roomsStr);
 };
 
 RoomManager.prototype.serialize = function(rooms) {
   return JSON.stringify(rooms, null, 2);
 };
 
-RoomManager.prototype.write = function(flatRooms, cb) {
-  fs.writeFile(DATA_FILE, flatRooms, function(err) {
+RoomManager.prototype.write = function(roomsStr, cb) {
+  fs.writeFile(DATA_FILE, roomsStr, function(err) {
     cb(err);
   });
 };
 
 RoomManager.prototype.save = function(roomTouched, cb) {
-  var flatRooms = this.serialize(this.rooms);
-  this.write(flatRooms, function(err) {
+  var roomsStr = this.serialize(this.rooms);
+  this.write(roomsStr, function(err) {
     if (cb) cb(err, roomTouched.toDTO());
   });
 };

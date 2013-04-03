@@ -54,16 +54,16 @@ UserManager.prototype.remove = function(name, cb) {
 };
 
 UserManager.prototype.read = function() {
-  var flatUsers = JSON.stringify({});
+  var usersStr = JSON.stringify({});
   if (fs.existsSync(DATA_FILE)) {
-    flatUsers = fs.readFileSync(DATA_FILE);
+    usersStr = fs.readFileSync(DATA_FILE);
   }
-  return flatUsers;
+  return usersStr;
 };
 
-UserManager.prototype.deserialize = function(flatUsers) {
+UserManager.prototype.deserialize = function(usersStr) {
   var usersIns = {},
-      usersObj = JSON.parse(flatUsers);
+      usersObj = JSON.parse(usersStr);
 
   Object.keys(usersObj).forEach(function(userKey) {
     usersIns[userKey] = User(usersObj[userKey].name, usersObj[userKey].password);
@@ -73,23 +73,23 @@ UserManager.prototype.deserialize = function(flatUsers) {
 };
 
 UserManager.prototype.load = function() {
-  var flatUsers = this.read();
-  this.users = this.deserialize(flatUsers);
+  var usersStr = this.read();
+  this.users = this.deserialize(usersStr);
 };
 
 UserManager.prototype.serialize = function(users) {
   return JSON.stringify(users, null, 2);
 };
 
-UserManager.prototype.write = function(flatUsers, cb) {
-  fs.writeFile(DATA_FILE, flatUsers, function(err) {
+UserManager.prototype.write = function(usersStr, cb) {
+  fs.writeFile(DATA_FILE, usersStr, function(err) {
     cb(err);
   });
 };
 
 UserManager.prototype.save = function(userTouched, cb) {
-  var flatUsers = this.serialize(this.users);
-  this.write(flatUsers, function(err) {
+  var usersStr = this.serialize(this.users);
+  this.write(usersStr, function(err) {
     if (cb) cb(err, userTouched.toDTO());
   });
 };

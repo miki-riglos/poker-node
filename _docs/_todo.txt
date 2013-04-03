@@ -9,6 +9,7 @@ Experimenting using only socket.io for all server/client communication.
 
 - infrastructure
   - Deserialize rooms(nested); recreate instances of Room
+  - Serialize: exclude computed properties?
 
 - room-mgr
   - save one room per file
