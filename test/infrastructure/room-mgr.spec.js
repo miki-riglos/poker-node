@@ -77,111 +77,125 @@ describe('RoomManager class', function() {
 
   describe('deserialization', function() {
     var roomsStr, roomsIns;
-    var expectedTournament, actualTournament;
-
+    var expectedRoom, expectedTournament, expectedRegisteredPlayers,
+        actualRoom  , actualTournament  , actualRegisteredPlayers  ;
 
     beforeEach(function(done) {
       roomMgr.add('giovana', function(err, firstRoomAdded) {
         roomAdded = firstRoomAdded;
-        actualTournament = roomMgr.rooms[roomAdded.id].tournament;
+        expectedTournament = roomMgr.rooms[roomAdded.id].tournament;
         done();
       });
     });
 
+    function assignExpectedActualVars() {
+      expectedRoom              = roomMgr.rooms[roomAdded.id];
+      expectedTournament        = roomMgr.rooms[roomAdded.id].tournament;
+      expectedRegisteredPlayers = roomMgr.rooms[roomAdded.id].tournament.registeredPlayers;
+
+      roomsStr = roomMgr.serialize(roomMgr.rooms);
+      roomsIns = roomMgr.deserialize(roomsStr);
+
+      actualRoom              = roomsIns[roomAdded.id];
+      actualTournament        = roomsIns[roomAdded.id].tournament;
+      actualRegisteredPlayers = roomsIns[roomAdded.id].tournament.registeredPlayers;
+    }
+
+    function getPositionToAct() {
+      return expectedTournament.currentGame.currentRound.positionToAct;
+    }
+
     it('should deserialize rooms', function() {
-      roomsStr = roomMgr.serialize(roomMgr.rooms);
-      roomsIns = roomMgr.deserialize(roomsStr);
-
-      var expectedRoom = roomsIns[roomAdded.id];
-
-      expectedRoom.should.be.an.instanceOf(Room);
-      expectedRoom.host.should.equal(roomAdded.host);
-      expectedRoom.started.should.equal(roomAdded.started);
-
-      expectedRoom.tournament.should.be.an.instanceOf(Tournament);
-      expectedRoom.tournament.should.have.property('status', 'open');
-      expectedRoom.tournament.should.have.property('button', null);
-      expectedRoom.tournament.registeredPlayers.should.eql({});  //deepEqual
-      expectedRoom.tournament.should.have.property('gameCounter', 0);
-      expectedRoom.tournament.should.have.property('currentGame', null);
+      assignExpectedActualVars();
+      actualRoom.should.eql(expectedRoom); // deepEqual
     });
 
-    it('should deserialize rooms with ongoing tournaments', function() {
-      actualTournament.registerPlayer(1, 'Miki');
-      actualTournament.registerPlayer(2, 'Giovana');
-      actualTournament.registerPlayer(3, 'Sofia');
-      actualTournament.registerPlayer(4, 'Bianca');
-      actualTournament.start();
+    it('should deserialize rooms with ongoing tournaments', function(done) {
+      expectedTournament.registerPlayer(1, 'Miki');
+      expectedTournament.registerPlayer(2, 'Giovana');
+      expectedTournament.registerPlayer(3, 'Sofia');
+      expectedTournament.registerPlayer(4, 'Bianca');
 
-      roomsStr = roomMgr.serialize(roomMgr.rooms);
-      roomsIns = roomMgr.deserialize(roomsStr);
-
-      expectedTournament = roomsIns[roomAdded.id].tournament;
-
-      expectedTournament.should.be.an.instanceOf(Tournament);
-      expectedTournament.should.have.property('status', 'start');
-      expectedTournament.should.have.property('button');
-      expectedTournament.button.should.be.ok;
-      [1, 2, 3, 4].forEach(function(pos) {
-        expectedTournament.registeredPlayers[pos].should.be.an.instanceOf(Player);
-        expectedTournament.registeredPlayers[pos].name.should.equal(actualTournament.registeredPlayers[pos].name);
-        expectedTournament.registeredPlayers[pos].chips.should.equal(actualTournament.registeredPlayers[pos].chips);
-        // Methods for actions
-        ['raises', 'calls', 'checks', 'folds'].forEach(function(method) {
-          expectedTournament.registeredPlayers[pos].should.have.property(method);
+      // events fire sequentially (flow.spec.js)
+      expectedTournament.on('tournament-start', function() {
+        assignExpectedActualVars();
+        actualTournament.should.be.an.instanceOf(Tournament);
+        actualTournament.should.have.property('status', expectedTournament.status);
+        [1, 2, 3, 4].forEach(function(position) {
+          actualRegisteredPlayers[position].should.be.an.instanceOf(Player);
+          actualRegisteredPlayers[position].should.have.property('name' , expectedRegisteredPlayers[position].name);
+          actualRegisteredPlayers[position].should.have.property('chips', expectedRegisteredPlayers[position].chips);
+          // Methods for actions
+          ['raises', 'calls', 'checks', 'folds'].forEach(function(method) {
+            actualRegisteredPlayers[position].should.have.property(method);
+          });
         });
-      });
-      expectedTournament.should.have.property('gameCounter', 1);
-
-      expectedTournament.currentGame.should.be.an.instanceOf(Game);
-      expectedTournament.currentGame.pot.should.be.ok;
-      expectedTournament.currentGame.deck.should.be.an.instanceOf(Deck);
-      expectedTournament.currentGame.should.have.property('roundCounter', 1);
-
-      expectedTournament.currentGame.should.have.property('gamePlayers');
-      [1, 2, 3, 4].forEach(function(pos) {
-        expectedTournament.currentGame.gamePlayers[pos].hand.should.be.an.instanceOf(Array);
-        expectedTournament.currentGame.gamePlayers[pos].should.have.property('totalBet', 0);
-        expectedTournament.currentGame.gamePlayers[pos].should.have.property('folded', false);
+        actualTournament.should.have.property('gameCounter', actualTournament.gameCounter);
       });
 
-      expectedTournament.currentGame.currentRound.should.be.an.instanceOf(Round);
-      expectedTournament.currentGame.currentRound.should.have.property('number', 1);
-      expectedTournament.currentGame.currentRound.should.have.property('positionToAct', null);
-      expectedTournament.currentGame.currentRound.should.have.property('finalPosition', null);
-      expectedTournament.currentGame.currentRound.should.have.property('betToCall', null);
+      expectedTournament.on('tournament-button', function() {
+        assignExpectedActualVars();
+        actualTournament.should.have.property('button', expectedTournament.button);
+      });
+
+      expectedTournament.once('game-start', function() {
+        assignExpectedActualVars();
+
+        actualTournament.should.have.property('gameCounter', expectedTournament.gameCounter);
+
+        actualTournament.currentGame.should.be.an.instanceOf(Game);
+        actualTournament.currentGame.should.have.property('pot', expectedTournament.currentGame.pot);
+        actualTournament.currentGame.deck.should.be.an.instanceOf(Deck);
+        actualTournament.currentGame.should.have.property('roundCounter', expectedTournament.currentGame.roundCounter);
+        actualTournament.currentGame.gamePlayers.should.eql( expectedTournament.currentGame.gamePlayers );
+      });
+
+      expectedTournament.once('round-start', function() {
+        assignExpectedActualVars();
+
+        actualTournament.currentGame.should.have.property('roundCounter', expectedTournament.currentGame.roundCounter);
+
+        actualTournament.currentGame.currentRound.should.be.an.instanceOf(Round);
+        actualTournament.currentGame.currentRound.should.have.property('number', expectedTournament.currentGame.currentRound.number);
+        actualTournament.currentGame.currentRound.should.have.property('positionToAct', expectedTournament.currentGame.currentRound.positionToAct);
+        actualTournament.currentGame.currentRound.should.have.property('finalPosition', expectedTournament.currentGame.currentRound.finalPosition);
+        actualTournament.currentGame.currentRound.should.have.property('betToCall', expectedTournament.currentGame.currentRound.betToCall);
+      });
+
+      expectedTournament.once('game-end', function() {
+        assignExpectedActualVars();
+
+        actualTournament.should.have.property('gameCounter', expectedTournament.gameCounter);
+actualTournament.currentGame.toInspect('currentGame');
+actualTournament.currentGame.currentRound.toInspect('currentRound');
+      // assert:
+      //  - flop
+      //  - turn
+      //  - river
+      //  - roundPlayers: actions, bets
+
+        done();
+      });
+
+      expectedTournament.start();
+      // events up to round-start were fired, blinds are placed
+      expectedTournament.currentGame.currentRound.call( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.call( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.call( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.check( getPositionToAct() );
+      // preflop finish
+      expectedTournament.currentGame.currentRound.check( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.check( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.check( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.check( getPositionToAct() );
+      // flop finish
+      expectedTournament.currentGame.currentRound.raise( getPositionToAct(), 25 );
+      expectedTournament.currentGame.currentRound.fold( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.fold( getPositionToAct() );
+      expectedTournament.currentGame.currentRound.fold( getPositionToAct() );
+      // game finish
     });
 
-    it('should deserialize rooms with ongoing tournaments at the end of 1st game', function() {
-      var positionToAct;
-      actualTournament.registerPlayer(1, 'Miki');
-      actualTournament.registerPlayer(2, 'Giovana');
-      actualTournament.registerPlayer(3, 'Sofia');
-      actualTournament.registerPlayer(4, 'Bianca');
-      actualTournament.start();
-      // preflop
-      [1, 2, 3].forEach(function() {
-        positionToAct = actualTournament.currentGame.currentRound.positionToAct;
-        actualTournament.currentGame.currentRound.call(positionToAct);
-      });
-      positionToAct = actualTournament.currentGame.currentRound.positionToAct;
-      actualTournament.currentGame.currentRound.check(positionToAct);
-
-      // Advance until the of end first game
-      // *** need to use tournament events (process.nextTick)
-
-      roomsStr = roomMgr.serialize(roomMgr.rooms);
-      roomsIns = roomMgr.deserialize(roomsStr);
-
-      expectedTournament = roomsIns[roomAdded.id].tournament;
-
-      expectedTournament.currentGame.currentRound.should.be.an.instanceOf(Round);
-      // flop
-      // turn
-      // river
-
-      // roundPlayers: actions, bets
-    });
   });
 
   describe('getting array of rooms', function() {

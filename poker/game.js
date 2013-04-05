@@ -68,7 +68,7 @@ Game.prototype.getPositionsActing = function() {
 };
 
 Game.prototype.startRound = function() {
-  var self  = this,
+  var self = this,
       round;
 
   ++self.roundCounter;

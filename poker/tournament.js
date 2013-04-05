@@ -42,8 +42,8 @@ function Tournament(options, init) {
       this.currentGame = null;
     } else {
       this.currentGame = Game(this.gameCounter, this.button, this.blinds, this.registeredPlayers, this.getPositionsWithChips(), init.currentGame);
-      this.addActionsToPlayers();
     }
+    if (this.status != 'open') this.addActionsToPlayers();
   }
   events.EventEmitter.call(this);
 }

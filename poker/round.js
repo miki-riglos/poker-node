@@ -3,7 +3,7 @@ var util   = require('util'),
 
 // Round class
 function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing, init) {
-  if (!(this instanceof Round)) return new Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing);
+  if (!(this instanceof Round)) return new Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing, init);
   this.number = roundCounter;   // 1: 'preflop' | 2: 'flop' | 3: 'turn' | 4: 'river'
   this.button = button;
   this.blinds = blinds;

@@ -52,6 +52,7 @@ TODO
     - use _.keys instead of Objecy.keys?
 
 - Poker
+  - Event for player registration?
   - Tie, pot distribution
   - Define how blinds increase (when and how)
   - Multiple pots (all ins)
