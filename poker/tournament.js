@@ -42,6 +42,7 @@ function Tournament(options, init) {
       this.currentGame = null;
     } else {
       this.currentGame = Game(this.gameCounter, this.button, this.blinds, this.registeredPlayers, this.getPositionsWithChips(), init.currentGame);
+      this.addActionsToPlayers();
     }
   }
   events.EventEmitter.call(this);
@@ -67,21 +68,24 @@ Tournament.prototype.registerPlayer = function(position, name) {
   return {errorMessage: ''};
 };
 
+Tournament.prototype.addActionsToPlayers = function() {
+  // adding methods such as registeredPlayers[1].raises()
+  var self = this;
+  Object.keys(this.registeredPlayers).forEach(function(position) {
+    ['raise', 'call', 'check', 'fold'].forEach(function(method) {
+      self.registeredPlayers[position][method + 's'] = function() {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift(+position);
+        self.currentGame.currentRound[method].apply(self.currentGame.currentRound, args);
+      };
+    });
+  });
+};
+
 Tournament.prototype.start = function() {
   if (this.status === 'open' &&  _.size(this.registeredPlayers) > 1) {
     this.status = 'start';
-
-    // adding methods such as registeredPlayers[1].raises()
-    var self = this;
-    Object.keys(this.registeredPlayers).forEach(function(position) {
-      ['raise', 'call', 'check', 'fold'].forEach(function(method) {
-        self.registeredPlayers[position][method + 's'] = function() {
-          var args = Array.prototype.slice.call(arguments);
-          args.unshift(+position);
-          self.currentGame.currentRound[method].apply(self.currentGame.currentRound, args);
-        };
-      });
-    });
+    this.addActionsToPlayers();
 
     this.emit('tournament-start', this);
     this.startGame();

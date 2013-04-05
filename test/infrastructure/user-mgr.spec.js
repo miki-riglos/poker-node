@@ -101,13 +101,13 @@ describe('UserManager class', function() {
 
   });
 
-  describe('serialization', function() {
+  describe('deserialization', function() {
 
     beforeEach(function(done) {
       userMgr.add('giovana', 'pass', done);
     });
 
-    it('should serialize/deserialize users', function() {
+    it('should deserialize users', function() {
       var usersStr  = userMgr.serialize(userMgr.users),
           usersIns = userMgr.deserialize(usersStr);
 

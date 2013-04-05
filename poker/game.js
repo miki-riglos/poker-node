@@ -27,7 +27,7 @@ function Game(gameCounter, button, blinds, registeredPlayers, positionsWithChips
 
   } else {
     this.pot    = init.pot;
-    this.deck   = init.deck;
+    this.deck   = Deck(init.deck);
     this.flop   = init.flop;
     this.turn   = init.turn;
     this.river  = init.river;

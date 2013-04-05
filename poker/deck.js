@@ -24,6 +24,11 @@ var suits = {
 // Card class
 function Card(rank, suit) {
   if (!(this instanceof Card)) return new Card(rank, suit);
+  if (typeof rank == 'object') {
+    var init = rank;
+    rank = init.rank;
+    suit = init.suit;
+  }
   if (!ranks[rank] || !suits[suit]) {
     throw new Error('Invalid Rank/Suit combination');
   }
@@ -49,14 +54,21 @@ Card.prototype.toJSON = function() {
 
 
 // Deck class
-function Deck() {
-  if (!(this instanceof Deck)) return new Deck();
+function Deck(init) {
+  if (!(this instanceof Deck)) return new Deck(init);
   var self = this;
-  Object.keys(suits).forEach( function(suitKey) {
-    Object.keys(ranks).forEach( function(rankKey) {
-      self.push( Card(rankKey, suitKey) );
+  if (!init) {
+    Object.keys(suits).forEach( function(suitKey) {
+      Object.keys(ranks).forEach( function(rankKey) {
+        self.push( Card(rankKey, suitKey) );
+      });
     });
-  });
+  } else {
+    // Deck is stringified as Object, not Array
+    Object.keys(init).forEach(function(key) {
+      if (key != 'length') self.push( Card(init[key]) );
+    });
+  }
 }
 
 Deck.prototype = [];
