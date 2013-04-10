@@ -14,10 +14,12 @@ function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, pos
     this.positionToAct = null;
     this.finalPosition = null;
     this.betToCall     = null;
+    this.bigBlindPosition = null;
   } else {
     this.positionToAct = init.positionToAct;
     this.finalPosition = init.finalPosition;
     this.betToCall     = init.betToCall;
+    this.bigBlindPosition = init.betToCall;
   }
 
   events.EventEmitter.call(this);
@@ -37,6 +39,7 @@ Round.prototype.start = function() {
     // small blind
     this.raise(this.positionToAct, this.blinds.small, 'sb');
     // big blind
+    this.bigBlindPosition = this.positionToAct;
     this.raise(this.positionToAct, this.blinds.big, 'bb');
   }
 
@@ -64,6 +67,7 @@ Round.prototype.nextPosition = function() {
   this.positionToAct = runningPosition;
 
   if (this.positionToAct === this.finalPosition) {
+    // if (this.bigBlindPosition === this.finalPosition) {}
     this.end();
   }
 };
@@ -142,6 +146,7 @@ Round.prototype.fold = function(position) {
 };
 
 Round.prototype.end = function() {
+  this.positionToAct = null; // if there is a reference to this round after it ends, disables actions
   this.emit('end');
 };
 

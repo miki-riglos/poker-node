@@ -1,3 +1,5 @@
+/*global describe, it, before, beforeEach, afterEach, after*/
+
 var User        = require('../../infrastructure/user-mgr').User,
     UserManager = require('../../infrastructure/user-mgr').UserManager;
 

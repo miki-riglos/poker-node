@@ -1,3 +1,5 @@
+/*global describe, it, before, beforeEach, afterEach, after*/
+
 var Game = require('../../poker/game').Game;
 
 describe('Game class', function() {

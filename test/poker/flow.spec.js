@@ -1,3 +1,5 @@
+/*global describe, it, before, beforeEach, afterEach, after*/
+
 var fs   = require('fs'),
     path = require('path');
 

@@ -126,7 +126,7 @@ var stepRound = {
            bets    : [25] }
   },
 
-  positionToAct: 1,
+  positionToAct: null,
   finalPosition: 1,
 
   betToCall: 1025

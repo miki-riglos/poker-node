@@ -7,6 +7,9 @@ Experimenting using only socket.io for all server/client communication.
   Commeting out unneccesary Express middleware
 -------------------------------------------------------------------------------
 
+- Round.nextPosition bug
+  - in preflop when nobody raises, big blind position doesn't have chance to act
+
 - infrastructure
   - Deserialize rooms(nested); recreate instances of Room
   - Serialize: exclude redundant properties on currentGame and currentRound?

@@ -1,3 +1,5 @@
+/*global describe, it, before, beforeEach, afterEach, after*/
+
 var http    = require('http'),
     server  = http.createServer(),
     io      = require('socket.io').listen(server),

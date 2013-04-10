@@ -1,3 +1,5 @@
+/*global describe, it, before, beforeEach, afterEach, after*/
+
 define(['require'], function(require) {
 
   describe('loadTmpl: requirejs plugin for loading external templates', function() {

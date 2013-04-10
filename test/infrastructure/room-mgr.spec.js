@@ -1,3 +1,5 @@
+/*global describe, it, before, beforeEach, afterEach, after*/
+
 var Room        = require('../../infrastructure/room-mgr').Room,
     RoomManager = require('../../infrastructure/room-mgr').RoomManager;
 
@@ -107,6 +109,7 @@ describe('RoomManager class', function() {
 
     it('should deserialize rooms', function() {
       assignExpectedActualVars();
+      actualRoom.should.be.instanceOf(Room);
       actualRoom.should.eql(expectedRoom); // deepEqual
     });
 
@@ -138,7 +141,7 @@ describe('RoomManager class', function() {
         actualTournament.should.have.property('button', expectedTournament.button);
       });
 
-      expectedTournament.once('game-start', function() {
+      expectedTournament.on('game-start', function() {
         assignExpectedActualVars();
 
         actualTournament.should.have.property('gameCounter', expectedTournament.gameCounter);
@@ -150,7 +153,7 @@ describe('RoomManager class', function() {
         actualTournament.currentGame.gamePlayers.should.eql( expectedTournament.currentGame.gamePlayers );
       });
 
-      expectedTournament.once('round-start', function() {
+      expectedTournament.on('round-start', function() {
         assignExpectedActualVars();
 
         actualTournament.currentGame.should.have.property('roundCounter', expectedTournament.currentGame.roundCounter);
@@ -166,8 +169,9 @@ describe('RoomManager class', function() {
         assignExpectedActualVars();
 
         actualTournament.should.have.property('gameCounter', expectedTournament.gameCounter);
-actualTournament.currentGame.toInspect('currentGame');
-actualTournament.currentGame.currentRound.toInspect('currentRound');
+ actualTournament.currentGame.toInspect('actualTournament.currentGame');
+ expectedTournament.currentGame.toInspect('expectedTournament.currentGame');
+ // actualTournament.currentGame.currentRound.toInspect('currentRound');
       // assert:
       //  - flop
       //  - turn
