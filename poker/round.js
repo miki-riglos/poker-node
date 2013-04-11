@@ -14,12 +14,12 @@ function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, pos
     this.positionToAct = null;
     this.finalPosition = null;
     this.betToCall     = null;
-    this.bigBlindPosition = null;
+    // this.bigBlindPosition = null;
   } else {
     this.positionToAct = init.positionToAct;
     this.finalPosition = init.finalPosition;
     this.betToCall     = init.betToCall;
-    this.bigBlindPosition = init.betToCall;
+    // this.bigBlindPosition = init.betToCall;
   }
 
   events.EventEmitter.call(this);
@@ -39,7 +39,7 @@ Round.prototype.start = function() {
     // small blind
     this.raise(this.positionToAct, this.blinds.small, 'sb');
     // big blind
-    this.bigBlindPosition = this.positionToAct;
+    // this.bigBlindPosition = this.positionToAct;
     this.raise(this.positionToAct, this.blinds.big, 'bb');
   }
 

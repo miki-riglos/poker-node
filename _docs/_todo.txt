@@ -9,6 +9,8 @@ Experimenting using only socket.io for all server/client communication.
 
 - Round.nextPosition bug
   - in preflop when nobody raises, big blind position doesn't have chance to act
+  - test/poker/round.spec.js
+  - test/infrastructure/room-mgr.spec.js
 
 - infrastructure
   - Deserialize rooms(nested); recreate instances of Room
