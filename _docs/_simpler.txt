@@ -2,6 +2,10 @@
 - shorten depth of tournament
   - currentGame child of tournament- simplify creation of objects
 - initial state in classes: default or json
+- deserialization
 - parameters in constructors
   - reference to parent object?
 - remove irrelevant classes (Player)
+- Remove check for new in constructors
+
+- manipulate Tournament.players consistently (Tournament, Game, Round)

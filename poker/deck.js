@@ -21,54 +21,40 @@ var suits = {
   'S': {name: 'Spades'}
 };
 
+var keys = Object.keys;
+
 // Card class
 function Card(rank, suit) {
-  if (!(this instanceof Card)) return new Card(rank, suit);
-  if (typeof rank == 'object') {
-    var init = rank;
-    rank = init.rank;
-    suit = init.suit;
-  }
   if (!ranks[rank] || !suits[suit]) {
     throw new Error('Invalid Rank/Suit combination');
   }
-  this.rank  = rank;
-  this.suit  = suit;
+  this.rank = rank;
+  this.suit = suit;
+
   this.value = ranks[this.rank].value;
 }
 
-Card.prototype.getValue = function() {
-  return ranks[this.rank].value;
+Card.prototype.serialize = function() {
+  var exclusions = ['value'];
+  var stringified = JSON.stringify(this, function(key, value) { return exclusions.indexOf(key) != -1 ? undefined : value }, 2);
+  return stringified;
 };
 
-Card.prototype.toString = function() {
-  return ranks[this.rank].name + ' of ' + suits[this.suit].name;
-};
-
-Card.prototype.toJSON = function() {
-  return {
-    rank: this.rank,
-    suit: this.suit
-  };
+Card.deserialize = function(stringified) {
+  var object   = JSON.parse(stringified);
+  var instance = new Card(object.rank, object.suit);
+  return instance;
 };
 
 
 // Deck class
-function Deck(init) {
-  if (!(this instanceof Deck)) return new Deck(init);
+function Deck() {
   var self = this;
-  if (!init) {
-    Object.keys(suits).forEach( function(suitKey) {
-      Object.keys(ranks).forEach( function(rankKey) {
-        self.push( Card(rankKey, suitKey) );
-      });
+  keys(suits).forEach( function(suitKey) {
+    keys(ranks).forEach( function(rankKey) {
+      self.push( new Card(rankKey, suitKey) );
     });
-  } else {
-    // Deck is stringified as Object, not Array
-    Object.keys(init).forEach(function(key) {
-      if (key != 'length') self.push( Card(init[key]) );
-    });
-  }
+  });
 }
 
 Deck.prototype = [];
@@ -88,6 +74,17 @@ Deck.prototype.deal = function() {
   return this.shift();
 };
 
+Deck.prototype.serialize = function() {
+  var exclusions = ['length'];
+  var stringified = JSON.stringify(this, function(key, value) { return exclusions.indexOf(key) != -1 ? undefined : value }, 2);
+  return stringified;
+};
+
+Deck.deserialize = function(stringified) {
+  var object   = JSON.parse(stringified);
+  var instance = new Card(object.rank, object.suit);
+  return instance;
+};
 
 // Exports
 module.exports = {

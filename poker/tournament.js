@@ -7,6 +7,19 @@ var Player     = require('./player').Player,
     Deck       = require('./deck').Deck,
     buttonDraw = require('./button-draw');
 
+var tournamentInitialState = {
+  options: {
+    initialChips  : 10000,
+    maximumPlayers: 10,
+    initialBlinds : {small: 10, big: 25},
+  },
+  status : 'open',  // 'open' | 'start' | 'suspend' | 'end'
+  button : null,    // position of player (key of this.players)
+  blinds : {},      // running blinds
+  players: {},      // players[1] = {name: '', chips: 10000}
+  gameCounter: 0
+};
+
 var defaultOptions = {
   initialChips     : 10000,
   maximumPlayers   : 10,
