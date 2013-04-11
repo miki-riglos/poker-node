@@ -1,0 +1,7 @@
+- shorten property names
+- shorten depth of tournament
+  - currentGame child of tournament- simplify creation of objects
+- initial state in classes: default or json
+- parameters in constructors
+  - reference to parent object?
+- remove irrelevant classes (Player)
