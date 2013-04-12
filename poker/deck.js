@@ -1,3 +1,7 @@
+var _ = require('underscore');
+
+var keys = Object.keys;
+
 var ranks = {
   '2' : {name: 'Two',   value:  2},
   '3' : {name: 'Three', value:  3},
@@ -21,7 +25,6 @@ var suits = {
   'S': {name: 'Spades'}
 };
 
-var keys = Object.keys;
 
 // Card class
 function Card(rank, suit) {
@@ -34,10 +37,8 @@ function Card(rank, suit) {
   this.value = ranks[this.rank].value;
 }
 
-Card.prototype.serialize = function() {
-  var exclusions = ['value'];
-  var stringified = JSON.stringify(this, function(key, value) { return exclusions.indexOf(key) != -1 ? undefined : value }, 2);
-  return stringified;
+Card.prototype.toJSON = function () {
+  return _.omit(this, ['value']);
 };
 
 Card.deserialize = function(stringified) {
@@ -47,13 +48,20 @@ Card.deserialize = function(stringified) {
 };
 
 
+// Deck initial state
+var deckInitialState = {};
+keys(suits).forEach(function(suitKey) {
+  keys(ranks).forEach(function(rankKey) {
+    deckInitialState[keys(deckInitialState).length] = new Card(rankKey, suitKey);
+  });
+});
+
 // Deck class
-function Deck() {
+function Deck(state) {
   var self = this;
-  keys(suits).forEach( function(suitKey) {
-    keys(ranks).forEach( function(rankKey) {
-      self.push( new Card(rankKey, suitKey) );
-    });
+  state = state || deckInitialState;
+  keys(state).forEach(function(key) {
+    self.push( new Card(state[key].rank, state[key].suit) );
   });
 }
 
@@ -74,15 +82,13 @@ Deck.prototype.deal = function() {
   return this.shift();
 };
 
-Deck.prototype.serialize = function() {
-  var exclusions = ['length'];
-  var stringified = JSON.stringify(this, function(key, value) { return exclusions.indexOf(key) != -1 ? undefined : value }, 2);
-  return stringified;
+Deck.prototype.toJSON = function () {
+  return _.omit(this, ['length']);
 };
 
 Deck.deserialize = function(stringified) {
   var object   = JSON.parse(stringified);
-  var instance = new Card(object.rank, object.suit);
+  var instance = new Deck(object);
   return instance;
 };
 

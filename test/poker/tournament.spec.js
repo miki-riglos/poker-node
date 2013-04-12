@@ -1,13 +1,13 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
+var keys = Object.keys;
 
-var Tournament = require('../../poker/tournament').Tournament,
-    _          = require('underscore');
+var Tournament = require('../../poker/tournament').Tournament;
 
 describe('Tournament class', function() {
   var tournament;
 
   beforeEach(function() {
-    tournament = Tournament();
+    tournament = new Tournament();
   });
 
   it('should create new instance', function() {
@@ -19,22 +19,12 @@ describe('Tournament class', function() {
     tournament.emit('event');
   });
 
-  it('should accept options', function() {
-    var tournamentWithOptions = Tournament( {initialChips: 100} );
-    tournamentWithOptions.options.initialChips.should.equal(100);
-  });
-
   describe('Registration', function() {
-    it('should keep a property with registered players (object)', function() {
-      tournament.registerPlayer(1, 'Sofia').errorMessage.should.be.empty;
-      tournament.registerPlayer(2, 'Bianca').errorMessage.should.be.empty;
-      tournament.registeredPlayers.should.be.an.instanceOf(Object);
-    });
 
     it('should allow players registration', function() {
       tournament.registerPlayer(1, 'Sofia').errorMessage.should.be.empty;
       tournament.registerPlayer(2, 'Bianca').errorMessage.should.be.empty;
-      _.size(tournament.registeredPlayers).should.equal(2);
+      keys(tournament.players).should.have.lengthOf(2);
     });
 
     it('should validate position uniqueness', function() {

@@ -2,11 +2,13 @@ var util   = require('util'),
     events = require('events'),
     _      = require('underscore');
 
-var Player     = require('./player').Player,
-    Game       = require('./game').Game,
+var Game       = require('./game').Game,
     Deck       = require('./deck').Deck,
     buttonDraw = require('./button-draw');
 
+var keys = Object.keys;
+
+// Tournament initial state
 var tournamentInitialState = {
   options: {
     initialChips  : 10000,
@@ -19,52 +21,21 @@ var tournamentInitialState = {
   players: {},      // players[1] = {name: '', chips: 10000}
   gameCounter: 0
 };
-
-var defaultOptions = {
-  initialChips     : 10000,
-  maximumPlayers   : 10,
-  initialSmallBlind: 10,
-  initialBigBlind  : 25
-};
+tournamentInitialState.blinds.small = tournamentInitialState.options.initialBlinds.small;
+tournamentInitialState.blinds.big   = tournamentInitialState.options.initialBlinds.big;
 
 // Tournament class
-function Tournament(options, init) {
-  if (!(this instanceof Tournament)) return new Tournament(options, init);
-  if (!init) {
-    this.options = _.extend({}, defaultOptions, options);
-    this.status  = 'open';
-    this.button  = null;
-    this.blinds  = {
-      small: this.options.initialSmallBlind,
-      big  : this.options.initialBigBlind
-    };
-    this.registeredPlayers = {};
-    this.gameCounter       = 0;
-    this.currentGame       = null;
-  } else {
-    this.options = options;
-    this.status  = init.status;
-    this.button  = init.button;
-    this.blinds  = init.blinds;
-    this.registeredPlayers = {};
-    Object.keys(init.registeredPlayers).forEach(function(position) {
-      this.registeredPlayers[position] = Player(init.registeredPlayers[position]);
-    }, this);
-    this.gameCounter = init.gameCounter;
-    if (init.currentGame === null) {
-      this.currentGame = null;
-    } else {
-      this.currentGame = Game(this.gameCounter, this.button, this.blinds, this.registeredPlayers, this.getPositionsWithChips(), init.currentGame);
-    }
-    if (this.status != 'open') this.addActionsToPlayers();
-  }
+function Tournament(state) {
+  state = state || tournamentInitialState;
+  _.extend(this, state);
+
   events.EventEmitter.call(this);
 }
 util.inherits(Tournament, events.EventEmitter);
 
 Tournament.prototype.registerPlayer = function(position, name) {
   //Don't overwrite position
-  if (this.registeredPlayers[position]) {
+  if (this.players[position]) {
     return {errorMessage: 'Position ' + position + ' already taken'};
   }
   //Validate position range
@@ -77,16 +48,19 @@ Tournament.prototype.registerPlayer = function(position, name) {
     return {errorMessage: 'Tournament already started'};
   }
 
-  this.registeredPlayers[position] = Player(name, this.options.initialChips);
+  this.players[position] = {
+    name : name,
+    chips: this.options.initialChips
+  };
   return {errorMessage: ''};
 };
 
 Tournament.prototype.addActionsToPlayers = function() {
   // adding methods such as registeredPlayers[1].raises()
   var self = this;
-  Object.keys(this.registeredPlayers).forEach(function(position) {
+  keys(this.players).forEach(function(position) {
     ['raise', 'call', 'check', 'fold'].forEach(function(method) {
-      self.registeredPlayers[position][method + 's'] = function() {
+      self.players[position][method + 's'] = function() {
         var args = Array.prototype.slice.call(arguments);
         args.unshift(+position);
         self.currentGame.currentRound[method].apply(self.currentGame.currentRound, args);
@@ -96,7 +70,7 @@ Tournament.prototype.addActionsToPlayers = function() {
 };
 
 Tournament.prototype.start = function() {
-  if (this.status === 'open' &&  _.size(this.registeredPlayers) > 1) {
+  if (this.status === 'open' &&  _.size(this.players) > 1) {
     this.status = 'start';
     this.addActionsToPlayers();
 
@@ -121,14 +95,14 @@ Tournament.prototype.setButton = function() {
 Tournament.prototype.nextButton = function() {
   var initialPosition = this.button,
       runningPosition = initialPosition,
-      maximumPosition = Math.max.apply(Math, Object.keys(this.registeredPlayers).map(function(key) { return +key; }));
+      maximumPosition = Math.max.apply(Math, keys(this.players).map(function(key) { return +key; }));
 
   do {
     ++runningPosition;
     if (runningPosition > maximumPosition ) runningPosition = 1;
 
-    if (this.registeredPlayers[runningPosition]) {
-      if (this.registeredPlayers[runningPosition].chips > 0) {
+    if (this.players[runningPosition]) {
+      if (this.players[runningPosition].chips > 0) {
         break;
       }
     }
@@ -142,8 +116,8 @@ Tournament.prototype.getPositionsWithChips = function() {
   var positionsWithChips = [],
       position;
 
-  for (position in this.registeredPlayers) {
-    if (this.registeredPlayers[position].chips > 0) {
+  for (position in this.players) {
+    if (this.players[position].chips > 0) {
       positionsWithChips.push(position);
     }
   }
@@ -158,7 +132,7 @@ Tournament.prototype.startGame = function() {
   ++self.gameCounter;
   self.setButton();
 
-  game = Game(self.gameCounter, self.button, self.blinds, self.registeredPlayers, self.getPositionsWithChips());
+  game = Game(self.gameCounter, self.button, self.blinds, self.players, self.getPositionsWithChips());
   self.currentGame = game;
 
   game.on('start', function() {
@@ -170,12 +144,12 @@ Tournament.prototype.startGame = function() {
   });
 
   game.on('round-raise', function(evt) {
-    self.registeredPlayers[evt.position].chips -= evt.amount;
+    self.players[evt.position].chips -= evt.amount;
     self.emit('round-raise', self, evt);
   });
 
   game.on('round-call', function(evt) {
-    self.registeredPlayers[evt.position].chips -= evt.amount;
+    self.players[evt.position].chips -= evt.amount;
     self.emit('round-call', self, evt);
   });
 

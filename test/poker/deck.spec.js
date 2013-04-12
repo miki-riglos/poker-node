@@ -16,9 +16,9 @@ describe('Card class', function() {
     ( function() { new Card('X', 'X'); } ).should.throwError();
   });
 
-  it('should serialize and deserialize', function() {
+  it('should deserialize', function() {
     var cardAceOfSpades = new Card('A', 'S');
-    var stringified = cardAceOfSpades.serialize();
+    var stringified = JSON.stringify(cardAceOfSpades);
     var cardInstance = Card.deserialize(stringified);
     cardInstance.should.be.an.instanceOf(Card);
     cardInstance.should.eql(cardAceOfSpades);
@@ -47,7 +47,7 @@ describe('Deck class', function() {
 
   it('should have a shuffle method', function() {
     deck.shuffle();
-    deck.length.should.equal(52);
+    deck.should.have.lengthOf(52);
   });
 
   it('should have a deal method', function() {
@@ -58,9 +58,8 @@ describe('Deck class', function() {
     deck.length.should.equal(51);
   });
 
-  it('should serialize and deserialize', function() {
-    var stringified = deck.serialize();
-console.log(stringified)    ;
+  it('should deserialize', function() {
+    var stringified = JSON.stringify(deck);
     var deckInstance = Deck.deserialize(stringified);
     deckInstance.should.be.an.instanceOf(Deck);
     deckInstance[0].should.be.an.instanceOf(Card);
@@ -68,3 +67,4 @@ console.log(stringified)    ;
   });
 
 });
+
