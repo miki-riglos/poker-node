@@ -9,3 +9,10 @@
 - Remove check for new in constructors
 
 - manipulate Tournament.players consistently (Tournament, Game, Round)
+
+- var keys = Object.keys
+
+- rename
+    Tournament.registeredPlayers  -> players
+    Tournament.currentGame        -> game
+    Game.currentRound             -> round

@@ -49,17 +49,20 @@ Card.deserialize = function(stringified) {
 
 
 // Deck initial state
-var deckInitialState = {};
-keys(suits).forEach(function(suitKey) {
-  keys(ranks).forEach(function(rankKey) {
-    deckInitialState[keys(deckInitialState).length] = new Card(rankKey, suitKey);
+function getDeckInitialState() {
+  var deckInitialState = {};
+  keys(suits).forEach(function(suitKey) {
+    keys(ranks).forEach(function(rankKey) {
+      deckInitialState[keys(deckInitialState).length] = new Card(rankKey, suitKey);
+    });
   });
-});
+  return deckInitialState;
+}
 
 // Deck class
 function Deck(state) {
   var self = this;
-  state = state || deckInitialState;
+  state = state || getDeckInitialState();
   keys(state).forEach(function(key) {
     self.push( new Card(state[key].rank, state[key].suit) );
   });

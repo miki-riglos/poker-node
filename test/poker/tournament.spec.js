@@ -1,7 +1,8 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
-var keys = Object.keys;
 
 var Tournament = require('../../poker/tournament').Tournament;
+
+var keys = Object.keys;
 
 describe('Tournament class', function() {
   var tournament;
@@ -53,6 +54,31 @@ describe('Tournament class', function() {
       tournament.registerPlayer(11, 'Player 11').errorMessage.should.not.be.empty;
     });
 
+  });
+
+  describe('Deserialization', function() {
+    var tournamentStr,
+        tournamentIns;
+
+    beforeEach(function() {
+      tournament.registerPlayer(1, 'Sofia');
+      tournament.registerPlayer(2, 'Bianca');
+    });
+
+    it('should deserialize when tournament has not started', function() {
+      tournamentStr = JSON.stringify(tournament);
+      tournamentIns = Tournament.deserialize(tournamentStr);
+      tournamentIns.should.be.an.instanceOf(Tournament);
+      tournamentIns.should.eql(tournament);
+    });
+
+    // it('should deserialize after tournament has started', function() {
+    //   tournament.start();
+    //   tournamentStr = JSON.stringify(tournament);
+    //   tournamentIns = Tournament.deserialize(tournamentStr);
+    //   tournamentIns.should.be.an.instanceOf(Tournament);
+    //   tournamentIns.should.eql(tournament);
+    // });
   });
 
 });

@@ -9,24 +9,28 @@ var Game       = require('./game').Game,
 var keys = Object.keys;
 
 // Tournament initial state
-var tournamentInitialState = {
-  options: {
-    initialChips  : 10000,
-    maximumPlayers: 10,
-    initialBlinds : {small: 10, big: 25},
-  },
-  status : 'open',  // 'open' | 'start' | 'suspend' | 'end'
-  button : null,    // position of player (key of this.players)
-  blinds : {},      // running blinds
-  players: {},      // players[1] = {name: '', chips: 10000}
-  gameCounter: 0
-};
-tournamentInitialState.blinds.small = tournamentInitialState.options.initialBlinds.small;
-tournamentInitialState.blinds.big   = tournamentInitialState.options.initialBlinds.big;
+function getTournamentInitialState() {
+  var tournamentInitialState = {
+    options: {
+      initialChips  : 10000,
+      maximumPlayers: 10,
+      initialBlinds : {small: 10, big: 25},
+    },
+    status     : 'open',  // 'open' | 'start' | 'suspend' | 'end'
+    button     : null,    // position of player (key of this.players)
+    blinds     : {},      // running blinds
+    players    : {},      // {position: {name: String, chips: Number} }
+    gameCounter: 0,
+    game       : null     // Game
+  };
+  tournamentInitialState.blinds.small = tournamentInitialState.options.initialBlinds.small;
+  tournamentInitialState.blinds.big   = tournamentInitialState.options.initialBlinds.big;
+  return tournamentInitialState;
+}
 
 // Tournament class
 function Tournament(state) {
-  state = state || tournamentInitialState;
+  state = state || getTournamentInitialState();
   _.extend(this, state);
 
   events.EventEmitter.call(this);
@@ -63,14 +67,14 @@ Tournament.prototype.addActionsToPlayers = function() {
       self.players[position][method + 's'] = function() {
         var args = Array.prototype.slice.call(arguments);
         args.unshift(+position);
-        self.currentGame.currentRound[method].apply(self.currentGame.currentRound, args);
+        self.game.round[method].apply(self.game.round, args);
       };
     });
   });
 };
 
 Tournament.prototype.start = function() {
-  if (this.status === 'open' &&  _.size(this.players) > 1) {
+  if (this.status === 'open' &&  keys(this.players).length > 1) {
     this.status = 'start';
     this.addActionsToPlayers();
 
@@ -83,7 +87,7 @@ Tournament.prototype.start = function() {
 
 Tournament.prototype.setButton = function() {
   if (this.gameCounter === 1) {
-    var draw = buttonDraw( this.getPositionsWithChips(), Deck().shuffle() );
+    var draw = buttonDraw( this.getPositionsWithChips(), new Deck().shuffle() );
     this.button = draw.winner;
     this.emit('tournament-button', this, draw);
   } else {
@@ -132,8 +136,8 @@ Tournament.prototype.startGame = function() {
   ++self.gameCounter;
   self.setButton();
 
-  game = Game(self.gameCounter, self.button, self.blinds, self.players, self.getPositionsWithChips());
-  self.currentGame = game;
+  game = new Game(self);
+  self.game = game;
 
   game.on('start', function() {
     self.emit('game-start', self);
@@ -182,8 +186,16 @@ Tournament.prototype.end = function() {
   this.emit('tournament-end', this);
 };
 
+Tournament.prototype.toJSON = function() {};
+
+Tournament.deserialize = function(stringified) {
+  var object   = JSON.parse(stringified);
+  var instance = new Deck(object);
+  return instance;
+};
 
 // Exports
 module.exports = {
   Tournament: Tournament
 };
+

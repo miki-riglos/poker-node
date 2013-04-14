@@ -1,25 +1,32 @@
 var util   = require('util'),
-    events = require('events');
+    events = require('events'),
+    _      = require('underscore');
+
+var keys = Object.keys;
+
+// Game initial state
+function getRoundInitialState() {
+  var roundInitialState = {
+    number       : 0,     // 1: 'preflop' | 2: 'flop' | 3: 'turn' | 4: 'river'
+    roundPlayers : {},    // {position: {actions: String[], bets: Number[]} }
+    positionToAct: null,  // position of Player
+    finalPosition: null,  // position of Player where the round ends, first time is button+2, next times button
+    betToCall    : null
+  };
+  return roundInitialState;
+}
 
 // Round class
-function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing, init) {
-  if (!(this instanceof Round)) return new Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, positionsActing, init);
-  this.number = roundCounter;   // 1: 'preflop' | 2: 'flop' | 3: 'turn' | 4: 'river'
-  this.button = button;
-  this.blinds = blinds;
-  this.registeredPlayers = registeredPlayers;                 // {position: {name: String, chips: Number} }
-  this.gamePlayers       = gamePlayers;                       // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
-  this.roundPlayers      = getRoundPlayers(positionsActing);  // {position: {actions: String[], bets: Number[]} }
-  if (!init) {
-    this.positionToAct = null;
-    this.finalPosition = null;
-    this.betToCall     = null;
-    // this.bigBlindPosition = null;
-  } else {
-    this.positionToAct = init.positionToAct;
-    this.finalPosition = init.finalPosition;
-    this.betToCall     = init.betToCall;
-    // this.bigBlindPosition = init.betToCall;
+function Round(game, state) {
+  state = state || getRoundInitialState();
+  _.extend(this, state);
+
+  this.tournament = game.tournament;
+  this.game       = game;
+
+  if (!this.number) {
+    this.number       = this.game.roundCounter;
+    this.roundPlayers = getRoundPlayers( this.game.getPositionsActing() );
   }
 
   events.EventEmitter.call(this);
@@ -27,7 +34,7 @@ function Round(roundCounter, button, blinds, registeredPlayers, gamePlayers, pos
 util.inherits(Round, events.EventEmitter);
 
 Round.prototype.start = function() {
-  this.positionToAct = this.button;
+  this.positionToAct = this.tournament.button;
   this.nextPosition();
   this.finalPosition = this.positionToAct;
   this.betToCall     = 0;
@@ -37,10 +44,10 @@ Round.prototype.start = function() {
   // If preflop place blinds
   if (this.number === 1) {
     // small blind
-    this.raise(this.positionToAct, this.blinds.small, 'sb');
+    this.raise(this.positionToAct, this.tournament.blinds.small, 'sb');
     // big blind
     // this.bigBlindPosition = this.positionToAct;
-    this.raise(this.positionToAct, this.blinds.big, 'bb');
+    this.raise(this.positionToAct, this.tournament.blinds.big, 'bb');
   }
 
 };
@@ -48,14 +55,14 @@ Round.prototype.start = function() {
 Round.prototype.nextPosition = function() {
   var initialPosition = this.positionToAct,
       runningPosition = initialPosition,
-      maximumPosition = Math.max.apply(Math, Object.keys(this.roundPlayers).map(function(key) { return +key; }));
+      maximumPosition = Math.max.apply(Math, keys(this.roundPlayers).map(function(key) { return +key; }));
 
   do {
     ++runningPosition;
     if (runningPosition > maximumPosition ) runningPosition = 1;
 
     if (this.roundPlayers[runningPosition]) {
-      if (!this.gamePlayers[runningPosition].folded && this.registeredPlayers[runningPosition].chips > 0) {
+      if (!this.game.gamePlayers[runningPosition].folded && this.tournament.players[runningPosition].chips > 0) {
         break;
       }
     }
@@ -97,7 +104,7 @@ Round.prototype.raise = function(position, amount, type) {
 };
 
 Round.prototype.call = function(position) {
-  var amount = this.betToCall - this.gamePlayers[position].totalBet;
+  var amount = this.betToCall - this.game.gamePlayers[position].totalBet;
 
   if (this.positionToAct !== position) {
     //TODO: emit error

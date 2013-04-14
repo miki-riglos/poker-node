@@ -8,7 +8,7 @@ describe('buttonDraw function', function() {
   var deck;
 
   beforeEach(function() {
-    deck = Deck();
+    deck = new Deck();
   });
 
   it('should assign button in the 1st round', function() {

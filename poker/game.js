@@ -1,48 +1,43 @@
 var util   = require('util'),
-    events = require('events');
+    events = require('events'),
+    _      = require('underscore');
 
 var Deck  = require('./deck').Deck,
     Round = require('./round').Round;
 
+var keys = Object.keys;
+
+// Game initial state
+function getGameInitialState() {
+  var gameInitialState = {
+    number      : 0,
+    gamePlayers : {},     // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
+    pot         : 0,
+    deck        : [],     // Card[]
+    flop        : [],     // Card
+    turn        : {},     // Card
+    river       : {},     // Card
+    burnt       : [],     // Card[]
+    winners     : [],     // Number[]
+    roundCounter: 0,
+    round       : null    // Round
+  };
+  return gameInitialState;
+}
+
 // Game class
-function Game(gameCounter, button, blinds, registeredPlayers, positionsWithChips, init) {
-  if (!(this instanceof Game)) return new Game(gameCounter, button, blinds, registeredPlayers, positionsWithChips, init);
-  this.number = gameCounter;
-  this.button = button;
-  this.blinds = blinds;
-  this.registeredPlayers = registeredPlayers;                   // {position: {name: String, chips: Number} }
-  this.gamePlayers       = getGamePlayers(positionsWithChips);  // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
-  if (!init) {
-    this.pot    = 0;
-    this.deck   = Deck().shuffle();
-    this.flop   = [];
-    this.turn   = {};
-    this.river  = {};
-    this.burnt  = [];
+function Game(tournament, state) {
+  state = state || getGameInitialState();
+  _.extend(this, state);
 
-    this.winners = [];
+  this.tournament = tournament;
 
-    this.roundCounter = 0;
-    this.currentRound = null;
-
-  } else {
-    this.pot    = init.pot;
-    this.deck   = Deck(init.deck);
-    this.flop   = init.flop;
-    this.turn   = init.turn;
-    this.river  = init.river;
-    this.burnt  = init.burnt;
-
-    this.winners = init.winners;
-
-    this.roundCounter = init.roundCounter;
-    if (init.currentRound === null) {
-      this.currentRound = null;
-    } else {
-      this.currentRound = Round(this.roundCounter, this.button, this.blinds, this.registeredPlayers, this.gamePlayers, this.getPositionsActing(), init.currentRound);
-    }
-
+  if (!this.number) {
+    this.number      = this.tournament.gameCounter;
+    this.gamePlayers = getGamePlayers(this.tournament.getPositionsWithChips());
+    this.deck        = new Deck().shuffle();
   }
+  //TODO: if state.round, instanciate current round
 
   events.EventEmitter.call(this);
 }
@@ -73,8 +68,8 @@ Game.prototype.startRound = function() {
 
   ++self.roundCounter;
 
-  round = Round(self.roundCounter, self.button, self.blinds, self.registeredPlayers, self.gamePlayers, self.getPositionsActing());
-  self.currentRound = round;
+  round = new Round(self);
+  self.round = round;
 
   round.on('start', function() {
     self.emit('round-start');
@@ -128,7 +123,7 @@ Game.prototype.startRound = function() {
 
 Game.prototype.dealCards = {
   1: function preflop(self) {
-      var positions = Object.keys(self.gamePlayers).sort(function(left, right) { return left - right; });
+      var positions = keys(self.gamePlayers).sort(function(left, right) { return left - right; });
 
       self.burnt.push( self.deck.deal() );
 
