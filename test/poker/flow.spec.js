@@ -14,7 +14,7 @@ var Tournament = require('../../poker/tournament').Tournament;
 
 describe('Tournament flow', function() {
 
-  var tournament = Tournament();
+  var tournament = new Tournament();
 
   var actualCounter = {
           tournament: {start: 0, error: 0, button: 0, end: 0},

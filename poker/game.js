@@ -37,7 +37,14 @@ function Game(tournament, state) {
     this.gamePlayers = getGamePlayers( this.tournament.getPositionsWithChips() );
     this.deck        = new Deck().shuffle();
   } else {
-    _.extend(this, _.omit(state, ['deck', 'flop', 'turn', 'river', 'burnt', 'round']));
+    _.extend(this, _.omit(state, ['gamePlayers', 'deck', 'flop', 'turn', 'river', 'burnt', 'round']));
+    keys(state.gamePlayers).forEach(function(position) {
+      this.gamePlayers[position] = {
+        hand    : state.gamePlayers[position].hand.map(function(stateCard) { return new Card(stateCard) }),
+        folded  : state.gamePlayers[position].folded,
+        totalBet: state.gamePlayers[position].totalBet
+      };
+    }, this);
     this.deck = new Deck(state.deck);
     this.flop = state.flop.map(function(stateFlopCard) { return new Card(stateFlopCard) });
     if (keys(state.turn).length)  this.turn  = new Card(state.turn);
@@ -128,10 +135,10 @@ Game.prototype.startRound = function(state) {
     }
   });
 
-  self.dealCards[self.roundCounter](self);
-
-  // No need to start round with state, new Round() is re-states everything
+  // No need to start round with state,
+  // new Game() and new Round() is re-states everything
   if (!state) {
+    self.dealCards[self.roundCounter](self);
     round.start();
   }
 };
@@ -149,14 +156,17 @@ Game.prototype.dealCards = {
       });
     },
   2: function flop(self) {
+      self.burnt.push( self.deck.deal() );
       self.flop = [1, 2, 3].map(function() {
         return self.deck.deal();
       });
     },
   3: function turn(self) {
+      self.burnt.push( self.deck.deal() );
       self.turn = self.deck.deal();
     },
   4: function river(self) {
+      self.burnt.push( self.deck.deal() );
       self.river = self.deck.deal();
     }
 },

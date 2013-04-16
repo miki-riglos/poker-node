@@ -47,8 +47,9 @@ Round.prototype.start = function(state) {
     // small blind
     this.raise(this.positionToAct, this.tournament.blinds.small, 'sb');
     // big blind
-    // this.bigBlindPosition = this.positionToAct;
     this.raise(this.positionToAct, this.tournament.blinds.big, 'bb');
+  } else {
+    this.nextPosition();
   }
 
 };
@@ -75,7 +76,6 @@ Round.prototype.nextPosition = function() {
   this.positionToAct = runningPosition;
 
   if (this.positionToAct === this.finalPosition) {
-    // if (this.bigBlindPosition === this.finalPosition) {}
     this.end();
   }
 };
