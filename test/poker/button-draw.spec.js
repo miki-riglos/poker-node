@@ -14,9 +14,9 @@ describe('buttonDraw function', function() {
   it('should assign button in the 1st round', function() {
     var positions = [1, 2, 3];
 
-    deck.unshift( Card('2', 'S'),
-                  Card('A', 'C'),
-                  Card('Q', 'S') );
+    deck.unshift( new Card('2', 'S'),
+                  new Card('A', 'C'),
+                  new Card('Q', 'S') );
 
     var draw = buttonDraw(positions, deck);
 
@@ -27,11 +27,11 @@ describe('buttonDraw function', function() {
   it('should assign button in the 2nd round', function() {
     var positions = [1, 2, 3];
 
-    deck.unshift( Card('5', 'S'),
-                  Card('2', 'S'),
-                  Card('5', 'H'),
-                  Card('9', 'D'),
-                  Card('7', 'D') );
+    deck.unshift( new Card('5', 'S'),
+                  new Card('2', 'S'),
+                  new Card('5', 'H'),
+                  new Card('9', 'D'),
+                  new Card('7', 'D') );
 
     var draw = buttonDraw(positions, deck);
 

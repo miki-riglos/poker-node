@@ -18,22 +18,23 @@ function getRoundInitialState() {
 
 // Round class
 function Round(game, state) {
-  state = state || getRoundInitialState();
-  _.extend(this, state);
-
   this.tournament = game.tournament;
   this.game       = game;
 
-  if (!this.number) {
+  _.extend(this, getRoundInitialState());
+
+  if (!state) {
     this.number       = this.game.roundCounter;
     this.roundPlayers = getRoundPlayers( this.game.getPositionsActing() );
+  } else {
+    _.extend(this, state);
   }
 
   events.EventEmitter.call(this);
 }
 util.inherits(Round, events.EventEmitter);
 
-Round.prototype.start = function() {
+Round.prototype.start = function(state) {
   this.positionToAct = this.tournament.button;
   this.nextPosition();
   this.finalPosition = this.positionToAct;
@@ -155,6 +156,10 @@ Round.prototype.fold = function(position) {
 Round.prototype.end = function() {
   this.positionToAct = null; // if there is a reference to this round after it ends, disables actions
   this.emit('end');
+};
+
+Round.prototype.toJSON = function() {
+  return _.omit(this, ['tournament', 'game', '_events']);
 };
 
 // Private

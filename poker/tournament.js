@@ -16,7 +16,7 @@ function getTournamentInitialState() {
       maximumPlayers: 10,
       initialBlinds : {small: 10, big: 25},
     },
-    status     : 'open',  // 'open' | 'start' | 'suspend' | 'end'
+    status     : 'open',  // 'open' || 'start' || 'end'
     button     : null,    // position of player (key of this.players)
     blinds     : {},      // running blinds
     players    : {},      // {position: {name: String, chips: Number} }
@@ -30,8 +30,14 @@ function getTournamentInitialState() {
 
 // Tournament class
 function Tournament(state) {
-  state = state || getTournamentInitialState();
-  _.extend(this, state);
+  _.extend(this, getTournamentInitialState());
+
+  if (state) {
+    _.extend(this, _.omit(state, ['status', 'game']));
+    if (state.status === 'start') {
+      this.start(state);
+    }
+  }
 
   events.EventEmitter.call(this);
 }
@@ -73,13 +79,13 @@ Tournament.prototype.addActionsToPlayers = function() {
   });
 };
 
-Tournament.prototype.start = function() {
+Tournament.prototype.start = function(state) {
   if (this.status === 'open' &&  keys(this.players).length > 1) {
     this.status = 'start';
     this.addActionsToPlayers();
 
     this.emit('tournament-start', this);
-    this.startGame();
+    this.startGame(state);
   } else {
     this.emit('tournament-error', this);
   }
@@ -129,14 +135,19 @@ Tournament.prototype.getPositionsWithChips = function() {
   return positionsWithChips;
 };
 
-Tournament.prototype.startGame = function() {
+Tournament.prototype.startGame = function(state) {
   var self = this,
       game;
 
-  ++self.gameCounter;
-  self.setButton();
+  if (!state) {
+    ++self.gameCounter;
+    self.setButton();
+    game = new Game(self);
+  } else {
+    // gameCounter and button already re-stated
+    game = new Game(self, state.game);
+  }
 
-  game = new Game(self);
   self.game = game;
 
   game.on('start', function() {
@@ -179,19 +190,20 @@ Tournament.prototype.startGame = function() {
     }
   });
 
-  game.start();
+  if (!state) {
+    game.start();
+  } else {
+    game.start(state.game);
+  }
 };
 
 Tournament.prototype.end = function() {
+  this.status = 'end';
   this.emit('tournament-end', this);
 };
 
-Tournament.prototype.toJSON = function() {};
-
-Tournament.deserialize = function(stringified) {
-  var object   = JSON.parse(stringified);
-  var instance = new Deck(object);
-  return instance;
+Tournament.prototype.toJSON = function() {
+  return _.omit(this, ['_events']);
 };
 
 // Exports

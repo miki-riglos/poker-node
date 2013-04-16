@@ -28,6 +28,11 @@ var suits = {
 
 // Card class
 function Card(rank, suit) {
+  if (typeof rank == 'object') {
+    var state = rank;
+    rank = state.rank;
+    suit = state.suit;
+  }
   if (!ranks[rank] || !suits[suit]) {
     throw new Error('Invalid Rank/Suit combination');
   }
@@ -41,19 +46,13 @@ Card.prototype.toJSON = function () {
   return _.omit(this, ['value']);
 };
 
-Card.deserialize = function(stringified) {
-  var object   = JSON.parse(stringified);
-  var instance = new Card(object.rank, object.suit);
-  return instance;
-};
-
 
 // Deck initial state
 function getDeckInitialState() {
   var deckInitialState = {};
   keys(suits).forEach(function(suitKey) {
     keys(ranks).forEach(function(rankKey) {
-      deckInitialState[keys(deckInitialState).length] = new Card(rankKey, suitKey);
+      deckInitialState[ keys(deckInitialState).length ] = {rank: rankKey, suit: suitKey};
     });
   });
   return deckInitialState;
@@ -64,7 +63,7 @@ function Deck(state) {
   var self = this;
   state = state || getDeckInitialState();
   keys(state).forEach(function(key) {
-    self.push( new Card(state[key].rank, state[key].suit) );
+    self.push( new Card(state[key]) );
   });
 }
 
@@ -89,11 +88,6 @@ Deck.prototype.toJSON = function () {
   return _.omit(this, ['length']);
 };
 
-Deck.deserialize = function(stringified) {
-  var object   = JSON.parse(stringified);
-  var instance = new Deck(object);
-  return instance;
-};
 
 // Exports
 module.exports = {

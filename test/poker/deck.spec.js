@@ -16,14 +16,6 @@ describe('Card class', function() {
     ( function() { new Card('X', 'X'); } ).should.throwError();
   });
 
-  it('should deserialize', function() {
-    var cardAceOfSpades = new Card('A', 'S');
-    var stringified = JSON.stringify(cardAceOfSpades);
-    var cardInstance = Card.deserialize(stringified);
-    cardInstance.should.be.an.instanceOf(Card);
-    cardInstance.should.eql(cardAceOfSpades);
-  });
-
 });
 
 describe('Deck class', function() {
@@ -42,7 +34,7 @@ describe('Deck class', function() {
   });
 
   it('should have 52 cards', function() {
-    deck.length.should.equal(52);
+    deck.should.have.lengthOf(52);
   });
 
   it('should have a shuffle method', function() {
@@ -55,15 +47,16 @@ describe('Deck class', function() {
     deck.shuffle();
     dealt = deck.deal();
     dealt.should.be.an.instanceOf(Card);
-    deck.length.should.equal(51);
+    deck.should.have.lengthOf(51);
   });
 
   it('should deserialize', function() {
-    var stringified = JSON.stringify(deck);
-    var deckInstance = Deck.deserialize(stringified);
-    deckInstance.should.be.an.instanceOf(Deck);
-    deckInstance[0].should.be.an.instanceOf(Card);
-    deckInstance.should.eql(deck);
+    var deckSte = JSON.parse( JSON.stringify(deck) );
+    var deckIns = new Deck(deckSte);
+    deckIns.should.be.an.instanceOf(Deck);
+    deckIns.should.have.lengthOf(52);
+    deckIns[0].should.be.an.instanceOf(Card);
+    deckIns.should.eql(deck);
   });
 
 });

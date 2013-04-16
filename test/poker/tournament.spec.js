@@ -1,6 +1,10 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
+var _ = require('underscore');
 
-var Tournament = require('../../poker/tournament').Tournament;
+var Tournament = require('../../poker/tournament').Tournament,
+    Game       = require('../../poker/game').Game,
+    Deck       = require('../../poker/deck').Deck,
+    Card       = require('../../poker/deck').Card;
 
 var keys = Object.keys;
 
@@ -57,7 +61,7 @@ describe('Tournament class', function() {
   });
 
   describe('Deserialization', function() {
-    var tournamentStr,
+    var tournamentSte,
         tournamentIns;
 
     beforeEach(function() {
@@ -66,19 +70,52 @@ describe('Tournament class', function() {
     });
 
     it('should deserialize when tournament has not started', function() {
-      tournamentStr = JSON.stringify(tournament);
-      tournamentIns = Tournament.deserialize(tournamentStr);
+      tournamentSte = JSON.parse( JSON.stringify(tournament) );
+      tournamentIns = new Tournament(tournamentSte);
       tournamentIns.should.be.an.instanceOf(Tournament);
       tournamentIns.should.eql(tournament);
     });
 
-    // it('should deserialize after tournament has started', function() {
-    //   tournament.start();
-    //   tournamentStr = JSON.stringify(tournament);
-    //   tournamentIns = Tournament.deserialize(tournamentStr);
-    //   tournamentIns.should.be.an.instanceOf(Tournament);
-    //   tournamentIns.should.eql(tournament);
-    // });
+    it('should deserialize after tournament has started', function() {
+      tournament.start();
+      tournamentSte = JSON.parse( JSON.stringify(tournament) );
+      tournamentIns = new Tournament(tournamentSte);
+
+      // Tournament
+      tournamentIns.should.be.an.instanceOf(Tournament);
+      var tournamentOmits = ['players', 'game', '_events'];
+      _.omit(tournamentIns, tournamentOmits).should.eql( _.omit(tournament, tournamentOmits) );
+
+      // Players
+      keys(tournament.players).forEach(function(position) {
+        // omit methods
+        _.omit(tournamentIns.players[position], _.functions(tournamentIns.players[position])).should.eql(
+           _.omit(tournament.players[position], _.functions(tournament.players[position]))
+          );
+        // methods
+        _.functions(tournamentIns.players[position]).should.eql(
+           _.functions(tournament.players[position]) );
+      });
+
+      // Game
+      tournamentIns.game.should.be.an.instanceOf(Game);
+      // gamePlayers
+      keys(tournament.game.gamePlayers).forEach(function(position) {
+        tournamentIns.game.gamePlayers[position].hand[0].should.be.an.instanceOf(Card);
+        tournamentIns.game.gamePlayers[position].hand[1].should.be.an.instanceOf(Card);
+        tournamentIns.game.gamePlayers[position].should.eql( tournament.game.gamePlayers[position] );
+      });
+
+      tournamentIns.game.deck.should.be.an.instanceOf(Deck);
+    // deck        : [],     // Deck, Card[]
+    // flop        : [],     // Card
+    // turn        : {},     // Card
+    // river       : {},     // Card
+    // burnt       : [],     // Card[]
+
+      // Round
+
+    });
   });
 
 });

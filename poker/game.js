@@ -3,6 +3,7 @@ var util   = require('util'),
     _      = require('underscore');
 
 var Deck  = require('./deck').Deck,
+    Card  = require('./deck').Card,
     Round = require('./round').Round;
 
 var keys = Object.keys;
@@ -13,7 +14,7 @@ function getGameInitialState() {
     number      : 0,
     gamePlayers : {},     // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
     pot         : 0,
-    deck        : [],     // Card[]
+    deck        : [],     // Deck, Card[]
     flop        : [],     // Card
     turn        : {},     // Card
     river       : {},     // Card
@@ -27,26 +28,32 @@ function getGameInitialState() {
 
 // Game class
 function Game(tournament, state) {
-  state = state || getGameInitialState();
-  _.extend(this, state);
-
   this.tournament = tournament;
 
-  if (!this.number) {
+  _.extend(this, getGameInitialState());
+
+  if (!state) {
     this.number      = this.tournament.gameCounter;
-    this.gamePlayers = getGamePlayers(this.tournament.getPositionsWithChips());
+    this.gamePlayers = getGamePlayers( this.tournament.getPositionsWithChips() );
     this.deck        = new Deck().shuffle();
+  } else {
+    _.extend(this, _.omit(state, ['deck', 'flop', 'turn', 'river', 'burnt', 'round']));
+    this.deck = new Deck(state.deck);
+    this.flop = state.flop.map(function(stateFlopCard) { return new Card(stateFlopCard) });
+    if (keys(state.turn).length)  this.turn  = new Card(state.turn);
+    if (keys(state.river).length) this.river = new Card(state.river);
+    this.burnt = state.burnt.map(function(stateBurntCard) { return new Card(stateBurntCard) });
+    // round re-stated by Tournament.start()
   }
-  //TODO: if state.round, instanciate current round
 
   events.EventEmitter.call(this);
 }
 util.inherits(Game, events.EventEmitter);
 
-Game.prototype.start = function() {
+Game.prototype.start = function(state) {
   this.emit('start');
 
-  this.startRound();
+  this.startRound(state);
 };
 
 Game.prototype.getPositionsActing = function() {
@@ -62,13 +69,18 @@ Game.prototype.getPositionsActing = function() {
   return positionsActing;
 };
 
-Game.prototype.startRound = function() {
+Game.prototype.startRound = function(state) {
   var self = this,
       round;
 
-  ++self.roundCounter;
+  if (!state) {
+    ++self.roundCounter;
+    round = new Round(self);
+  } else {
+    // roundCounter already re-stated
+    round = new Round(self, state.round);
+  }
 
-  round = new Round(self);
   self.round = round;
 
   round.on('start', function() {
@@ -118,7 +130,10 @@ Game.prototype.startRound = function() {
 
   self.dealCards[self.roundCounter](self);
 
-  round.start();
+  // No need to start round with state, new Round() is re-states everything
+  if (!state) {
+    round.start();
+  }
 };
 
 Game.prototype.dealCards = {
@@ -148,6 +163,10 @@ Game.prototype.dealCards = {
 
 Game.prototype.end = function() {
   this.emit('end');
+};
+
+Game.prototype.toJSON = function() {
+  return _.omit(this, ['tournament', 'dealCards', '_events']);
 };
 
 // Private
