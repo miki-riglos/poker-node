@@ -1,5 +1,4 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
-var _ = require('underscore');
 
 var Tournament = require('../../poker/tournament').Tournament;
 

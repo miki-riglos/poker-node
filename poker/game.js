@@ -12,7 +12,7 @@ var keys = Object.keys;
 function getGameInitialState() {
   var gameInitialState = {
     number      : 0,
-    gamePlayers : {},     // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
+    handsInfo   : {},     // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
     pot         : 0,
     deck        : [],     // Deck, Card[]
     flop        : [],     // Card
@@ -33,16 +33,16 @@ function Game(tournament, state) {
   _.extend(this, getGameInitialState());
 
   if (!state) {
-    this.number      = this.tournament.gameCounter;
-    this.gamePlayers = getGamePlayers( this.tournament.getPositionsWithChips() );
-    this.deck        = new Deck().shuffle();
+    this.number    = this.tournament.gameCounter;
+    this.handsInfo = getHandsInfo( this.tournament.getPositionsWithChips() );
+    this.deck      = new Deck().shuffle();
   } else {
-    _.extend(this, _.omit(state, ['gamePlayers', 'deck', 'flop', 'turn', 'river', 'burnt', 'round']));
-    keys(state.gamePlayers).forEach(function(position) {
-      this.gamePlayers[position] = {
-        hand    : state.gamePlayers[position].hand.map(function(stateCard) { return new Card(stateCard) }),
-        folded  : state.gamePlayers[position].folded,
-        totalBet: state.gamePlayers[position].totalBet
+    _.extend(this, _.omit(state, ['handsInfo', 'deck', 'flop', 'turn', 'river', 'burnt', 'round']));
+    keys(state.handsInfo).forEach(function(position) {
+      this.handsInfo[position] = {
+        hand    : state.handsInfo[position].hand.map(function(stateCard) { return new Card(stateCard) }),
+        folded  : state.handsInfo[position].folded,
+        totalBet: state.handsInfo[position].totalBet
       };
     }, this);
     this.deck = new Deck(state.deck);
@@ -67,8 +67,8 @@ Game.prototype.getPositionsActing = function() {
   var positionsActing = [],
       position;
 
-  for (position in this.gamePlayers) {
-    if (!this.gamePlayers[position].folded) {
+  for (position in this.handsInfo) {
+    if (!this.handsInfo[position].folded) {
       positionsActing.push(+position);
     }
   }
@@ -96,14 +96,14 @@ Game.prototype.startRound = function(state) {
 
   round.on('raise', function(evt) {
     self.pot += evt.amount;
-    self.gamePlayers[evt.position].totalBet += evt.amount;
+    self.handsInfo[evt.position].totalBet += evt.amount;
 
     self.emit('round-raise', evt);
   });
 
   round.on('call', function(evt) {
     self.pot += evt.amount;
-    self.gamePlayers[evt.position].totalBet += evt.amount;
+    self.handsInfo[evt.position].totalBet += evt.amount;
 
     self.emit('round-call', evt);
   });
@@ -113,7 +113,7 @@ Game.prototype.startRound = function(state) {
   });
 
   round.on('fold', function(evt) {
-    self.gamePlayers[evt.position].folded = true;
+    self.handsInfo[evt.position].folded = true;
 
     self.emit('round-fold', evt);
   });
@@ -145,13 +145,13 @@ Game.prototype.startRound = function(state) {
 
 Game.prototype.dealCards = {
   1: function preflop(self) {
-      var positions = keys(self.gamePlayers).sort(function(left, right) { return left - right; });
+      var positions = keys(self.handsInfo).sort(function(left, right) { return left - right; });
 
       self.burnt.push( self.deck.deal() );
 
       [1, 2].forEach(function() {
         positions.forEach(function(position) {
-          self.gamePlayers[position].hand.push( self.deck.deal() );
+          self.handsInfo[position].hand.push( self.deck.deal() );
         });
       });
     },
@@ -180,18 +180,18 @@ Game.prototype.toJSON = function() {
 };
 
 // Private
-function getGamePlayers(positionsWithChips) {
-  var gamePlayers = {};
+function getHandsInfo(positionsWithChips) {
+  var handsInfo = {};
 
   positionsWithChips.forEach(function(position) {
-    gamePlayers[position] = {
+    handsInfo[position] = {
       hand    : [],
       folded  : false,
       totalBet: 0
     };
   });
 
-  return gamePlayers;
+  return handsInfo;
 }
 
 

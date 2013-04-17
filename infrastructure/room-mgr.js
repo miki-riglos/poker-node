@@ -6,17 +6,18 @@ var DATA_FILE = path.join(__dirname, 'db', 'rooms.json');
 
 var Tournament = require('../poker/tournament').Tournament;
 
+var keys = Object.keys;
+
 // Room Class
-function Room(init) {
-  if (!(this instanceof Room)) return new Room(init);
-  if (typeof init == 'string') {
-    this.host       = init;
+function Room(state) {
+  if (typeof state == 'string') {
+    this.host       = state;
     this.started    = Date.now();
-    this.tournament = Tournament();
+    this.tournament = new Tournament();
   } else {
-    this.host       = init.host;
-    this.started    = init.started;
-    this.tournament = Tournament(init.tournament.options, init.tournament);
+    this.host       = state.host;
+    this.started    = state.started;
+    this.tournament = new Tournament(state.tournament);
   }
 }
 
@@ -31,7 +32,7 @@ Room.prototype.toDTO = function() {
     started   : this.started,
     tournament: {
       status     : this.tournament.status,
-      players    : this.tournament.registeredPlayers,
+      players    : this.tournament.players,
       gameCounter: this.tournament.gameCounter,
     }
   };
@@ -40,7 +41,6 @@ Room.prototype.toDTO = function() {
 
 // RoomManager Class
 function RoomManager(override) {
-  if (!(this instanceof RoomManager)) return new RoomManager(override);
   _.extend(this, override);
   this.rooms = {};
   this.load();
@@ -51,7 +51,7 @@ RoomManager.prototype.exist = function(roomId) {
 };
 
 RoomManager.prototype.add = function(host, cb) {
-  var roomToAdd = Room(host);
+  var roomToAdd = new Room(host);
   this.rooms[roomToAdd.id()] = roomToAdd;
   this.save(roomToAdd, cb);
 };
@@ -78,8 +78,8 @@ RoomManager.prototype.deserialize = function(roomsStr) {
   var roomsIns = {},
       roomsObj = JSON.parse(roomsStr);
 
-  Object.keys(roomsObj).forEach(function(roomKey) {
-    roomsIns[roomKey] = Room(roomsObj[roomKey]);
+  keys(roomsObj).forEach(function(roomKey) {
+    roomsIns[roomKey] = new Room(roomsObj[roomKey]);
   });
 
   return roomsIns;
@@ -110,7 +110,7 @@ RoomManager.prototype.save = function(roomTouched, cb) {
 RoomManager.prototype.getAllRooms = function() {
   var allRooms = [],
       self     = this;
-  Object.keys(this.rooms).forEach(function(key) {
+  keys(this.rooms).forEach(function(key) {
     allRooms.push(self.rooms[key].toDTO());
   });
   return allRooms;

@@ -8,7 +8,7 @@ var keys = Object.keys;
 function getRoundInitialState() {
   var roundInitialState = {
     number       : 0,     // 1: 'preflop' | 2: 'flop' | 3: 'turn' | 4: 'river'
-    roundPlayers : {},    // {position: {actions: String[], bets: Number[]} }
+    actionsInfo  : {},    // {position: {actions: String[], bets: Number[]} }
     positionToAct: null,  // position of Player
     hasActed     : null,  // Number[] with positions that already acted, reinitialized when raise
     betToCall    : null
@@ -24,8 +24,8 @@ function Round(game, state) {
   _.extend(this, getRoundInitialState());
 
   if (!state) {
-    this.number       = this.game.roundCounter;
-    this.roundPlayers = getRoundPlayers( this.game.getPositionsActing() );
+    this.number      = this.game.roundCounter;
+    this.actionsInfo = getActionsInfo( this.game.getPositionsActing() );
   } else {
     _.extend(this, state);
   }
@@ -57,14 +57,14 @@ Round.prototype.start = function(state) {
 Round.prototype.nextPosition = function() {
   var initialPosition = this.positionToAct,
       runningPosition = initialPosition,
-      maximumPosition = Math.max.apply(Math, keys(this.roundPlayers).map(function(key) { return +key; }));
+      maximumPosition = Math.max.apply(Math, keys(this.actionsInfo).map(function(key) { return +key; }));
 
   do {
     ++runningPosition;
     if (runningPosition > maximumPosition ) runningPosition = 1;
 
-    if (this.roundPlayers[runningPosition]) {
-      if (!this.game.gamePlayers[runningPosition].folded && this.tournament.players[runningPosition].chips > 0) {
+    if (this.actionsInfo[runningPosition]) {
+      if (!this.game.handsInfo[runningPosition].folded && this.tournament.players[runningPosition].chips > 0) {
         break;
       }
     }
@@ -94,8 +94,8 @@ Round.prototype.raise = function(position, amount, type) {
   this.betToCall = amount;
 
   // Round player data
-  this.roundPlayers[position].actions.push( 'raise' + (type === 'regular' ? '' : '-' + type) );
-  this.roundPlayers[position].bets.push(amount);
+  this.actionsInfo[position].actions.push( 'raise' + (type === 'regular' ? '' : '-' + type) );
+  this.actionsInfo[position].bets.push(amount);
 
   // hasActed
   if (type === 'regular') {
@@ -109,7 +109,7 @@ Round.prototype.raise = function(position, amount, type) {
 };
 
 Round.prototype.call = function(position) {
-  var amount = this.betToCall - this.game.gamePlayers[position].totalBet;
+  var amount = this.betToCall - this.game.handsInfo[position].totalBet;
 
   if (this.positionToAct !== position) {
     //TODO: emit error
@@ -118,8 +118,8 @@ Round.prototype.call = function(position) {
   //TODO: validate amount <= player.chips
 
   // Round player data
-  this.roundPlayers[position].actions.push( 'call');
-  this.roundPlayers[position].bets.push(amount);
+  this.actionsInfo[position].actions.push( 'call');
+  this.actionsInfo[position].bets.push(amount);
 
   this.hasActed.push(position);
 
@@ -136,7 +136,7 @@ Round.prototype.check = function(position) {
   }
 
   // Round player data
-  this.roundPlayers[position].actions.push('check');
+  this.actionsInfo[position].actions.push('check');
 
   this.hasActed.push(position);
 
@@ -153,7 +153,7 @@ Round.prototype.fold = function(position) {
   }
 
   // Round player data
-  this.roundPlayers[position].actions.push( 'fold');
+  this.actionsInfo[position].actions.push( 'fold');
 
   this.hasActed.push(position);
 
@@ -173,17 +173,17 @@ Round.prototype.toJSON = function() {
 };
 
 // Private
-function getRoundPlayers(activePositions) {
-  var roundPlayers = {};
+function getActionsInfo(activePositions) {
+  var actionsInfo = {};
 
   activePositions.forEach(function(position) {
-    roundPlayers[position] = {
+    actionsInfo[position] = {
       actions: [],
       bets   : []
     };
   });
 
-  return roundPlayers;
+  return actionsInfo;
 }
 
 

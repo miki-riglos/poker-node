@@ -1,28 +1,26 @@
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 DOING
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- shorten property names
-- shorten depth of tournament
-  - currentGame child of tournament- simplify creation of objects
-- initial state in classes: default or json
-- deserialization
-- parameters in constructors
-  - reference to parent object?
-- remove irrelevant classes (Player)
-- Remove check for new in constructors
-
-- manipulate Tournament.players consistently (Tournament, Game, Round)
-
-- var keys = Object.keys
-
-- rename
+* shorten property names
     Tournament.registeredPlayers  -> players
     Tournament.currentGame        -> game
     Game.currentRound             -> round
+    Game.gamePlayers              -> handsInfo
+    Round.roundPlayers            -> actionsInfo
+* initial state in constructors: default or json
+* deserialization
+* parameters in constructors: reference to parent object
+* remove irrelevant classes (Player)
+* Remove check for new in constructors
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TO DO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 + Round.nextPosition
-- RoomManager
-- flow.spec -> integration
++ RoomManager
++ sockets
+- flow.spec -> integration.spec: +[1,2], -[3,13]
+  - sub-directory -> nested describe
+- flow.spec -> events-seq.spec
+
+- validate actions in Round

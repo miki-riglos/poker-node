@@ -12,7 +12,7 @@ var stepsDir = path.join(__dirname, 'flow-steps'),
 
 var Tournament = require('../../poker/tournament').Tournament;
 
-describe('Tournament flow', function() {
+describe.skip('Tournament flow', function() {
 
   var tournament = new Tournament();
 

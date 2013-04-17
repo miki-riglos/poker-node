@@ -3,6 +3,8 @@
 var User        = require('../../infrastructure/user-mgr').User,
     UserManager = require('../../infrastructure/user-mgr').UserManager;
 
+var keys = Object.keys;
+
 describe('UserManager class', function() {
   var userMgr;
   var override = {
@@ -15,7 +17,7 @@ describe('UserManager class', function() {
   };
 
   beforeEach(function() {
-    userMgr = UserManager(override); // Override load and save methods
+    userMgr = new UserManager(override); // Override load and save methods
   });
 
   describe('adding users', function() {
@@ -29,9 +31,8 @@ describe('UserManager class', function() {
     });
 
     it('should add user', function(done) {
-      Object.keys(userAdded).should.include('name');
-      userAdded.name.should.equal('giovana');
-      Object.keys(userAdded).should.not.include('password');
+      userAdded.should.have.property('name', 'giovana');
+      userAdded.should.not.have.property('password');
       userMgr.users['giovana'].name.should.equal(userAdded.name);
       userMgr.users['giovana'].password.should.equal('pass');
       done();
@@ -63,7 +64,7 @@ describe('UserManager class', function() {
     });
 
     afterEach(function() {
-      Object.keys(userMgr.users).should.have.length(1);
+      keys(userMgr.users).should.have.lengthOf(1);
     });
   });
 

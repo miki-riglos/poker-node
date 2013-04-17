@@ -5,8 +5,8 @@ function events(io, override) {
 
   override = override || {};
 
-  var userMgr  = override.userMgr || UserManager(),
-      roomMgr  = override.roomMgr || RoomManager();
+  var userMgr  = override.userMgr || new UserManager(),
+      roomMgr  = override.roomMgr || new RoomManager();
 
   io.sockets.on('connection', function (socket) {
 

@@ -50,14 +50,5 @@ describe('Deck class', function() {
     deck.should.have.lengthOf(51);
   });
 
-  it('should deserialize', function() {
-    var deckSte = JSON.parse( JSON.stringify(deck) );
-    var deckIns = new Deck(deckSte);
-    deckIns.should.be.an.instanceOf(Deck);
-    deckIns.should.have.lengthOf(52);
-    deckIns[0].should.be.an.instanceOf(Card);
-    deckIns.should.eql(deck);
-  });
-
 });
 

@@ -4,23 +4,26 @@ var fs   = require('fs'),
 
 var DATA_FILE = path.join(__dirname, 'db', 'users.json');
 
+var keys = Object.keys;
+
 // User Class
 function User(name, password) {
-  if (!(this instanceof User)) return new User(name, password);
+  if (typeof name == 'object') {
+    var state = name;
+    name     = state.name;
+    password = state.password;
+  }
   this.name     = name;
   this.password = password;
 }
 
 User.prototype.toDTO = function() {
-  return {
-    name: this.name
-  };
+  return _.omit(this, ['password']);
 };
 
 
 // UserManager Class
 function UserManager(override) {
-  if (!(this instanceof UserManager)) return new UserManager(override);
   _.extend(this, override);
   this.users = {};
   this.load();
@@ -34,7 +37,7 @@ UserManager.prototype.exist = function(name) {
 UserManager.prototype.add = function(name, password, cb) {
   name = name.toLowerCase();
   if (!this.exist(name)) {
-    var userToAdd = User(name, password);
+    var userToAdd = new User(name, password);
     this.users[name] = userToAdd;
     this.save(userToAdd, cb);
   } else {
@@ -53,6 +56,11 @@ UserManager.prototype.remove = function(name, cb) {
   }
 };
 
+UserManager.prototype.authenticate = function(name, password) {
+  name = name.toLowerCase();
+  return (this.exist(name) && this.users[name].password === password);
+};
+
 UserManager.prototype.read = function() {
   var usersStr = JSON.stringify({});
   if (fs.existsSync(DATA_FILE)) {
@@ -65,8 +73,8 @@ UserManager.prototype.deserialize = function(usersStr) {
   var usersIns = {},
       usersObj = JSON.parse(usersStr);
 
-  Object.keys(usersObj).forEach(function(userKey) {
-    usersIns[userKey] = User(usersObj[userKey].name, usersObj[userKey].password);
+  keys(usersObj).forEach(function(userKey) {
+    usersIns[userKey] = new User(usersObj[userKey]);
   });
 
   return usersIns;
@@ -92,11 +100,6 @@ UserManager.prototype.save = function(userTouched, cb) {
   this.write(usersStr, function(err) {
     if (cb) cb(err, userTouched.toDTO());
   });
-};
-
-UserManager.prototype.authenticate = function(name, password) {
-  name = name.toLowerCase();
-  return (this.exist(name) && this.users[name].password === password);
 };
 
 

@@ -3,12 +3,9 @@
 var Room        = require('../../infrastructure/room-mgr').Room,
     RoomManager = require('../../infrastructure/room-mgr').RoomManager;
 
-var Tournament = require('../../poker/tournament').Tournament,
-    Player     = require('../../poker/player').Player,
-    Game       = require('../../poker/game').Game,
-    Deck       = require('../../poker/deck').Deck,
-    Card       = require('../../poker/deck').Card,
-    Round      = require('../../poker/round').Round;
+var Tournament = require('../../poker/tournament').Tournament;
+
+var keys = Object.keys;
 
 describe('RoomManager class', function() {
   var roomMgr;
@@ -23,7 +20,7 @@ describe('RoomManager class', function() {
   var roomAdded;
 
   beforeEach(function() {
-    roomMgr = RoomManager(override); // Override load and save methods
+    roomMgr = new RoomManager(override); // Override load and save methods
   });
 
   describe('adding rooms', function() {
@@ -41,7 +38,7 @@ describe('RoomManager class', function() {
     });
 
     afterEach(function() {
-      Object.keys(roomMgr.rooms).should.have.length(1);
+      keys(roomMgr.rooms).should.have.lengthOf(1);
     });
   });
 
@@ -72,115 +69,28 @@ describe('RoomManager class', function() {
     });
 
     afterEach(function() {
-      Object.keys(roomMgr.rooms).should.have.length(0);
+      keys(roomMgr.rooms).should.have.lengthOf(0);
     });
 
   });
 
   describe('deserialization', function() {
     var roomsStr, roomsIns;
-    var expectedRoom, expectedTournament, expectedRegisteredPlayers,
-        actualRoom  , actualTournament  , actualRegisteredPlayers  ;
 
     beforeEach(function(done) {
       roomMgr.add('giovana', function(err, firstRoomAdded) {
         roomAdded = firstRoomAdded;
-        expectedTournament = roomMgr.rooms[roomAdded.id].tournament;
         done();
       });
     });
 
-    function assignExpectedActualVars() {
-      expectedRoom              = roomMgr.rooms[roomAdded.id];
-      expectedTournament        = roomMgr.rooms[roomAdded.id].tournament;
-      expectedRegisteredPlayers = roomMgr.rooms[roomAdded.id].tournament.registeredPlayers;
-
+    it('should deserialize rooms', function() {
       roomsStr = roomMgr.serialize(roomMgr.rooms);
       roomsIns = roomMgr.deserialize(roomsStr);
 
-      actualRoom              = roomsIns[roomAdded.id];
-      actualTournament        = roomsIns[roomAdded.id].tournament;
-      actualRegisteredPlayers = roomsIns[roomAdded.id].tournament.registeredPlayers;
-    }
-
-    function getPositionToAct() {
-      return expectedTournament.currentGame.currentRound.positionToAct;
-    }
-
-    it('should deserialize rooms', function() {
-      assignExpectedActualVars();
-      actualRoom.should.be.instanceOf(Room);
-      actualRoom.should.eql(expectedRoom); // deepEqual
-    });
-
-    it('should deserialize rooms with ongoing tournaments', function(done) {
-      expectedTournament.registerPlayer(1, 'Miki');
-      expectedTournament.registerPlayer(2, 'Giovana');
-      expectedTournament.registerPlayer(3, 'Sofia');
-      expectedTournament.registerPlayer(4, 'Bianca');
-
-      // events fire sequentially (flow.spec.js)
-      expectedTournament.on('tournament-start', function() {
-        assignExpectedActualVars();
-        actualTournament.should.be.an.instanceOf(Tournament);
-        actualTournament.should.have.property('status', expectedTournament.status);
-        [1, 2, 3, 4].forEach(function(position) {
-          actualRegisteredPlayers[position].should.be.an.instanceOf(Player);
-          actualRegisteredPlayers[position].should.have.property('name' , expectedRegisteredPlayers[position].name);
-          actualRegisteredPlayers[position].should.have.property('chips', expectedRegisteredPlayers[position].chips);
-          // Methods for actions
-          ['raises', 'calls', 'checks', 'folds'].forEach(function(method) {
-            actualRegisteredPlayers[position].should.have.property(method);
-          });
-        });
-        actualTournament.should.have.property('gameCounter', actualTournament.gameCounter);
-      });
-
-      expectedTournament.on('tournament-button', function() {
-        assignExpectedActualVars();
-        actualTournament.should.have.property('button', expectedTournament.button);
-      });
-
-      expectedTournament.on('game-start', function() {
-        assignExpectedActualVars();
-
-        actualTournament.should.have.property('gameCounter', expectedTournament.gameCounter);
-
-        actualTournament.currentGame.should.be.an.instanceOf(Game);
-        actualTournament.currentGame.should.have.property('pot', expectedTournament.currentGame.pot);
-        actualTournament.currentGame.deck.should.be.an.instanceOf(Deck);
-        actualTournament.currentGame.should.have.property('roundCounter', expectedTournament.currentGame.roundCounter);
-        actualTournament.currentGame.gamePlayers.should.eql( expectedTournament.currentGame.gamePlayers );
-      });
-
-      expectedTournament.on('round-start', function() {
-        assignExpectedActualVars();
-
-        actualTournament.currentGame.should.have.property('roundCounter', expectedTournament.currentGame.roundCounter);
-
-        actualTournament.currentGame.currentRound.should.be.an.instanceOf(Round);
-        actualTournament.currentGame.currentRound.should.have.property('number', expectedTournament.currentGame.currentRound.number);
-        actualTournament.currentGame.currentRound.should.have.property('positionToAct', expectedTournament.currentGame.currentRound.positionToAct);
-        actualTournament.currentGame.currentRound.should.have.property('finalPosition', expectedTournament.currentGame.currentRound.finalPosition);
-        actualTournament.currentGame.currentRound.should.have.property('betToCall', expectedTournament.currentGame.currentRound.betToCall);
-        done();
-      });
-
-      expectedTournament.once('game-end', function() {
-        // assignExpectedActualVars();
-
-        // actualTournament.should.have.property('gameCounter', expectedTournament.gameCounter);
-        // assert:
-        //  - flop
-        //  - turn
-        //  - river
-        //  - roundPlayers: actions, bets
-        // done();
-      });
-
-      expectedTournament.start();
-      // events up to round-start were fired, blinds are placed
-      // --> advance forward to end the game
+      roomsIns[roomAdded.id].should.be.instanceOf(Room);
+      roomsIns[roomAdded.id].tournament.should.be.instanceOf(Tournament);
+      roomsIns[roomAdded.id].should.eql( roomMgr.rooms[roomAdded.id] );
     });
 
   });
@@ -198,7 +108,7 @@ describe('RoomManager class', function() {
     it('should return all rooms', function() {
       var allRooms = roomMgr.getAllRooms();
       allRooms.should.be.an.instanceOf(Array);
-      allRooms.should.have.length(2);
+      allRooms.should.have.lengthOf(2);
     });
 
   });
