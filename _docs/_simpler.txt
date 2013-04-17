@@ -1,3 +1,6 @@
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+DOING
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 - shorten property names
 - shorten depth of tournament
   - currentGame child of tournament- simplify creation of objects
@@ -16,3 +19,10 @@
     Tournament.registeredPlayers  -> players
     Tournament.currentGame        -> game
     Game.currentRound             -> round
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+TO DO
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
++ Round.nextPosition
+- RoomManager
+- flow.spec -> integration

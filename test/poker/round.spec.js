@@ -33,68 +33,191 @@ describe('nextPosition method', function() {
     tournament.registerPlayer(2, 'Giovana');
     tournament.registerPlayer(3, 'Sofia');
     tournament.registerPlayer(4, 'Bianca');
+    actions = [];
+    tournament.on('round-raise', function(tr, evt) { if (evt.type == 'regular') actions.push({position: evt.position, action: 'raise'}); });
+    tournament.on('round-call',  function(tr, evt) { actions.push({position: evt.position, action: 'call'}); });
+    tournament.on('round-check', function(tr, evt) { actions.push({position: evt.position, action: 'check'}); });
+    tournament.on('round-fold',  function(tr, evt) { actions.push({position: evt.position, action: 'fold'}); });
   });
 
-  it.skip('should finish preflop round when nobody raises', function(done) {
-    actions = [];
-    tournament.on('tournament-button', function() { tournament.button = 1; });
+  describe('after preflop round', function() {
 
-    tournament.on('round-call',  function(trnm, evt) { actions.push({position: evt.position, action: 'call'}); });
-    tournament.on('round-check', function(trnm, evt) { actions.push({position: evt.position, action: 'check'}); });
-
-    tournament.on('round-end', function() {
-      actions.map(function(item) { return item.position }).should.eql([4, 1, 2, 3]);
-      actions.map(function(item) { return item.action   }).should.eql(['call', 'call', 'call', 'check']);
-      done();
+    beforeEach(function() {
+      tournament.on('tournament-button', function() { tournament.button = 1; });
     });
 
-    tournament.start();
-    round = tournament.game.round;
+    it('should finish when nobody raises', function(done) {
+      tournament.on('round-end', function() {
+        actions.map(function(item) { return item.position }).should.eql([4, 1, 2, 3]);
+        actions.map(function(item) { return item.action   }).should.eql(['call', 'call', 'call', 'check']);
+        done();
+      });
 
-    round.positionToAct.should.equal(4);
-    round.call(round.positionToAct);
+      tournament.start();
+      round = tournament.game.round;
 
-    round.positionToAct.should.equal(1);
-    round.call(round.positionToAct);
+      round.positionToAct.should.equal(4);
+      round.call(round.positionToAct);
 
-    round.positionToAct.should.equal(2);
-    round.call(round.positionToAct);
+      round.positionToAct.should.equal(1);
+      round.call(round.positionToAct);
 
-    round.positionToAct.should.equal(3);
-    round.check(round.positionToAct);
+      round.positionToAct.should.equal(2);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(3);
+      round.check(round.positionToAct);
+    });
+
+    it('should finish when 1st to act raises', function(done) {
+      tournament.on('round-end', function() {
+        actions.map(function(item) { return item.position }).should.eql([4, 1, 2, 3]);
+        actions.map(function(item) { return item.action   }).should.eql(['raise', 'call', 'call', 'call']);
+        done();
+      });
+
+      tournament.start();
+      round = tournament.game.round;
+
+      round.positionToAct.should.equal(4);
+      round.raise(round.positionToAct, 100);
+
+      round.positionToAct.should.equal(1);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(2);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(3);
+      round.call(round.positionToAct);
+    });
+
+    it('should finish when someone re-raises', function(done) {
+      tournament.on('round-end', function() {
+        actions.map(function(item) { return item.position }).should.eql(
+          [4, 1, 2, 3, 4, 1]
+        );
+        actions.map(function(item) { return item.action   }).should.eql(
+          ['raise', 'call', 'raise', 'fold', 'call', 'fold']
+        );
+        done();
+      });
+
+      tournament.start();
+      round = tournament.game.round;
+
+      round.positionToAct.should.equal(4);
+      round.raise(round.positionToAct, 100);
+
+      round.positionToAct.should.equal(1);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(2);
+      round.raise(round.positionToAct, 200);
+
+      round.positionToAct.should.equal(3);
+      round.fold(round.positionToAct);
+
+      round.positionToAct.should.equal(4);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(1);
+      round.fold(round.positionToAct);
+    });
+
   });
 
-  it('should finish flop round when everybody checks', function(done) {
-    actions = [];
-    tournament.on('round-start', function() {
-      // overrides to force flop
-      tournament.button = 1;
-      tournament.game.round.number = 2;
-      tournament.game.round.positionToAct = tournament.button;
+  describe('after flop round', function() {
+
+    beforeEach(function() {
+      tournament.on('round-start', function() {
+        // overrides to force flop
+        tournament.button = 1;
+        tournament.game.round.number = 2;
+        tournament.game.round.positionToAct = tournament.button;
+      });
     });
 
-    tournament.on('round-check', function(trnm, evt) { actions.push({position: evt.position, action: 'check'}); });
+    it('should finish when everybody checks', function(done) {
+      tournament.on('round-end', function() {
+        actions.map(function(item) { return item.position }).should.eql([2, 3, 4, 1]);
+        actions.map(function(item) { return item.action   }).should.eql(['check', 'check', 'check', 'check']);
+        done();
+      });
 
-    tournament.on('round-end', function() {
-      actions.map(function(item) { return item.position }).should.eql([2, 3, 4, 1]);
-      actions.map(function(item) { return item.action   }).should.eql(['check', 'check', 'check', 'check']);
-      done();
+      tournament.start();
+      round = tournament.game.round;
+
+      round.positionToAct.should.equal(2);
+      round.check(round.positionToAct);
+
+      round.positionToAct.should.equal(3);
+      round.check(round.positionToAct);
+
+      round.positionToAct.should.equal(4);
+      round.check(round.positionToAct);
+
+      round.positionToAct.should.equal(1);
+      round.check(round.positionToAct);
     });
 
-    tournament.start();
-    round = tournament.game.round;
+    it('should finish when 1st to act raises', function(done) {
+      tournament.on('round-end', function() {
+        actions.map(function(item) { return item.position }).should.eql([2, 3, 4, 1]);
+        actions.map(function(item) { return item.action   }).should.eql(['raise', 'call', 'call', 'call']);
+        done();
+      });
 
-    round.positionToAct.should.equal(2);
-    round.check(round.positionToAct);
+      tournament.start();
+      round = tournament.game.round;
 
-    round.positionToAct.should.equal(3);
-    round.check(round.positionToAct);
+      round.positionToAct.should.equal(2);
+      round.raise(round.positionToAct, 100);
 
-    round.positionToAct.should.equal(4);
-    round.check(round.positionToAct);
+      round.positionToAct.should.equal(3);
+      round.call(round.positionToAct);
 
-    round.positionToAct.should.equal(1);
-    round.check(round.positionToAct);
+      round.positionToAct.should.equal(4);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(1);
+      round.call(round.positionToAct);
+    });
+
+    it('should finish when someone re-raises', function(done) {
+      tournament.on('round-end', function() {
+        actions.map(function(item) { return item.position }).should.eql(
+          [2, 3, 4, 1, 2, 3]
+        );
+        actions.map(function(item) { return item.action   }).should.eql(
+          ['raise', 'call', 'raise', 'fold', 'call', 'fold']
+        );
+        done();
+      });
+
+      tournament.start();
+      round = tournament.game.round;
+
+      round.positionToAct.should.equal(2);
+      round.raise(round.positionToAct, 100);
+
+      round.positionToAct.should.equal(3);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(4);
+      round.raise(round.positionToAct, 200);
+
+      round.positionToAct.should.equal(1);
+      round.fold(round.positionToAct);
+
+      round.positionToAct.should.equal(2);
+      round.call(round.positionToAct);
+
+      round.positionToAct.should.equal(3);
+      round.fold(round.positionToAct);
+    });
+
+
   });
 
 });

@@ -10,7 +10,7 @@ function getRoundInitialState() {
     number       : 0,     // 1: 'preflop' | 2: 'flop' | 3: 'turn' | 4: 'river'
     roundPlayers : {},    // {position: {actions: String[], bets: Number[]} }
     positionToAct: null,  // position of Player
-    finalPosition: null,  // position of Player where the round ends, first time is button+2, next times button
+    hasActed     : null,  // Number[] with positions that already acted, reinitialized when raise
     betToCall    : null
   };
   return roundInitialState;
@@ -37,7 +37,7 @@ util.inherits(Round, events.EventEmitter);
 Round.prototype.start = function(state) {
   this.positionToAct = this.tournament.button;
   this.nextPosition();
-  this.finalPosition = this.positionToAct;
+  this.hasActed = [];
   this.betToCall     = 0;
 
   this.emit('start');
@@ -69,13 +69,13 @@ Round.prototype.nextPosition = function() {
       }
     }
 
-    if (runningPosition === this.finalPosition) break;
+    if (_.contains(this.hasActed, runningPosition)) break;
 
   } while (runningPosition != initialPosition);
 
   this.positionToAct = runningPosition;
 
-  if (this.positionToAct === this.finalPosition) {
+  if (_.contains(this.hasActed, this.positionToAct)) {
     this.end();
   }
 };
@@ -91,12 +91,16 @@ Round.prototype.raise = function(position, amount, type) {
     return;
   }
   type = type || 'regular';
-  this.finalPosition = position;
-  this.betToCall     = amount;
+  this.betToCall = amount;
 
   // Round player data
   this.roundPlayers[position].actions.push( 'raise' + (type === 'regular' ? '' : '-' + type) );
   this.roundPlayers[position].bets.push(amount);
+
+  // hasActed
+  if (type === 'regular') {
+    this.hasActed = [position];
+  }
 
   // Handler updates game and tournament data
   this.emit('raise', {position: position, amount: amount, type: type});
@@ -117,6 +121,8 @@ Round.prototype.call = function(position) {
   this.roundPlayers[position].actions.push( 'call');
   this.roundPlayers[position].bets.push(amount);
 
+  this.hasActed.push(position);
+
   // Handler updates game and tournament data
   this.emit('call', {position: position, amount: amount});
 
@@ -132,6 +138,8 @@ Round.prototype.check = function(position) {
   // Round player data
   this.roundPlayers[position].actions.push('check');
 
+  this.hasActed.push(position);
+
   // Handler updates game and tournament data
   this.emit('check', {position: position});
 
@@ -146,6 +154,8 @@ Round.prototype.fold = function(position) {
 
   // Round player data
   this.roundPlayers[position].actions.push( 'fold');
+
+  this.hasActed.push(position);
 
   // Handler updates game and tournament data
   this.emit('fold', {position: position});
