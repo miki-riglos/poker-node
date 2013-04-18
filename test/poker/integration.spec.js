@@ -16,16 +16,16 @@ function renderTests(directory, title) {
         type        : 'it',
         fileName    : stepFile,
         name        : stepModule.name,
-        initialState: stepModule.initialState,
+        initialState: stepModule.getInitialState(),
         forward     : stepModule.forward,
-        finalState  : stepModule.finalState
+        finalState  : stepModule.getFinalState()
       };
 
     } else {
       return {
-        type       : 'describe',
-        directory  : filePath,
-        title      : stepFile
+        type     : 'describe',
+        directory: filePath,
+        title    : stepFile.substr(3).replace('-',': ').split('_').join(' ')
       };
 
     }
@@ -41,13 +41,16 @@ function renderTests(directory, title) {
 
       if (step.type === 'it') {
 
-        it('Step ' + step.fileName.substring(0, 2) + ': ' + step.name, function() {
+        it('Step ' + step.fileName.substr(0, 2) + ': ' + step.name, function() {
           var tournament = new Tournament(step.initialState);
           step.forward(tournament);
 
-          tournament.stringify(['game', '_events']).should.equal( step.finalState.stringify(['game']) );
-          if (tournament.game) {
+          if (!tournament.game) {
+            tournament.stringify(['_events']).should.equal( step.finalState.stringify() );
+          } else {
+            tournament.stringify(['game', '_events']).should.equal( step.finalState.stringify(['game']) );
             tournament.game.stringify(['deck', 'round', '_events']).should.equal( step.finalState.game.stringify(['deck', 'round']) );
+            tournament.game.deck.stringify().should.equal( step.finalState.game.deck.stringify() );
             tournament.game.round.stringify(['_events']).should.equal( step.finalState.game.round.stringify() );
           }
         });

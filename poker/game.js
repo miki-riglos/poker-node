@@ -136,7 +136,7 @@ Game.prototype.startRound = function(state) {
   });
 
   // No need to start round with state,
-  // new Game() and new Round() is re-states everything
+  // new Game() and new Round() re-state everything
   if (!state) {
     self.dealCards[self.roundCounter](self);
     round.start();

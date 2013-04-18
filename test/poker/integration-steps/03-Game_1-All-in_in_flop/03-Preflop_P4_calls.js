@@ -1,22 +1,11 @@
-var Deck = require('../../../poker/deck').Deck;
-
 module.exports = {
 
-  name: 'Tournament starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',
+  name: 'Player 4 (Bianca) calls 25',
 
-  getInitialState: require('./01-players_registration').getFinalState,
+  getInitialState: require('../02-tournament_starts').getFinalState,
 
   forward: function(tournament) {
-    // First button was assigned (Miki), game 1 starts
-    // Bets of small and big blinds are placed
-
-    tournament.on('tournament-button', function() {
-      tournament.button = 1;  // Reassign for testing
-    });
-    tournament.on('game-start', function() {
-      tournament.game.deck = new Deck(); // Reassign for testing (not shuffled)
-    });
-    tournament.start();
+    tournament.players[4].calls();
   },
 
   getFinalState: function() {
@@ -39,7 +28,7 @@ module.exports = {
         '1': { name: 'Miki',    chips: 10000 },
         '2': { name: 'Giovana', chips:  9990 },
         '3': { name: 'Sofia',   chips:  9975 },
-        '4': { name: 'Bianca',  chips: 10000 }
+        '4': { name: 'Bianca',  chips:  9975 }
       },
       gameCounter: 1,
       game: {
@@ -56,11 +45,11 @@ module.exports = {
                  totalBet: 25 },
           '4': { hand    : [ {rank: '6', suit: 'C'}, {rank: '10', suit: 'C'} ],
                  folded  : false,
-                 totalBet: 0 }
+                 totalBet: 25 }
         },
-        pot: 35,
+        pot: 60,
         deck: (function() {
-          var Deck = require('../../../poker/deck').Deck,
+          var Deck = require('../../../../poker/deck').Deck,
               deck = new Deck();
           deck.splice(0, 9);
           return JSON.parse(JSON.stringify(deck));
@@ -80,11 +69,11 @@ module.exports = {
                    bets    : [10] },
             '3': { actions : ['raise-bb'],
                    bets    : [25] },
-            '4': { actions : [],
-                   bets    : [] }
+            '4': { actions : ['call'],
+                   bets    : [25] }
           },
-          positionToAct: 4,
-          hasActed : [],
+          positionToAct: 1,
+          hasActed : [4],
           betToCall: 25
         }
       }

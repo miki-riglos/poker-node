@@ -92,7 +92,7 @@ var stepGame = {
   turn : {},
   river: {},
 
-  burnt: [ {'rank':'2','suit':'C'} ],
+  burnt: [ {rank:'2', suit:'C'} ],
 
   winners: [],
 

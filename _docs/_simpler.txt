@@ -19,8 +19,9 @@ TO DO
 + Round.nextPosition
 + RoomManager
 + sockets
-- flow.spec -> integration.spec: +[1,2], -[3,13]
-  - sub-directory -> nested describe
+- flow.spec -> integration.spec: +[1,7], -[8,13]
+  - finalState modified in process.nextTick()
+  + sub-directory -> nested describe
 - flow.spec -> events-seq.spec
 
 - validate actions in Round
