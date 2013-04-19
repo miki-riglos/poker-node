@@ -1,5 +1,3 @@
-var Deck = require('../../../poker/deck').Deck;
-
 module.exports = {
 
   name: 'Tournament starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',
@@ -14,6 +12,7 @@ module.exports = {
       tournament.button = 1;  // Reassign for testing
     });
     tournament.once('game-start', function() {
+      var Deck = require('../../../poker/deck').Deck;
       tournament.game.deck = new Deck(); // Reassign for testing (not shuffled)
     });
     tournament.start();

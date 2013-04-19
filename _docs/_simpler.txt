@@ -20,9 +20,10 @@ TO DO
 + RoomManager
 + sockets
 
-- flow.spec -> integration.spec: +[1,8], -[9,13]
+- flow.spec -> integration.spec: +[1,12], -[12next]
   + sub-directory -> nested describe
   + finalState modified in process.nextTick()
+    - nextStep: initialStep should be clean
 
 - flow.spec -> events-seq.spec
 

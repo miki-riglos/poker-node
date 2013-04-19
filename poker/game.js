@@ -129,7 +129,7 @@ Game.prototype.startRound = function(state) {
       self.winners = positionsActing;
       // Pot distribution
       self.winners.forEach(function(winnerPosition) {
-        self.registeredPlayers[winnerPosition].chips += self.pot / positionsActing.length;
+        self.tournament.players[winnerPosition].chips += self.pot / positionsActing.length;
       });
       self.end();
     }
