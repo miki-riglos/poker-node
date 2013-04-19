@@ -2,7 +2,7 @@ module.exports = {
 
   name: 'Flop was dealt, new round initialized, Player 2 (Giovana) checks',
 
-  getInitialState: require('./07-Preflop_P4_folds').getFinalState,
+  initialStep: require('./07-Preflop_P4_folds'),
 
   forward: function(tournament) {
     tournament.players[2].checks();
@@ -50,13 +50,13 @@ module.exports = {
         pot: 3100,
         deck: (function() {
           var Deck = require('../../../../poker/deck').Deck, deck = new Deck();
-          deck.splice(0, 9);
+          deck.splice(0, 13);
           return JSON.parse(JSON.stringify(deck));
         })(),
-        flop : [ {rank: 'J', suit: 'C'}, {rank: 'Q', suit: 'C'}, {rank: 'K', suit: 'C'} ],
+        flop : [ {rank:'Q', suit:'C'}, {rank:'K', suit:'C'}, {rank:'A', suit:'C'} ],
         turn : {},
         river: {},
-        burnt: [ {rank:'2', suit:'C'} ],
+        burnt: [ {rank:'2', suit:'C'}, {rank:'J', suit:'C'} ],
         winners: [],
         roundCounter: 2,
         round: {

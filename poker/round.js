@@ -63,13 +63,13 @@ Round.prototype.nextPosition = function() {
     ++runningPosition;
     if (runningPosition > maximumPosition ) runningPosition = 1;
 
+    if (_.contains(this.hasActed, runningPosition)) break;
+
     if (this.actionsInfo[runningPosition]) {
       if (!this.game.handsInfo[runningPosition].folded && this.tournament.players[runningPosition].chips > 0) {
         break;
       }
     }
-
-    if (_.contains(this.hasActed, runningPosition)) break;
 
   } while (runningPosition != initialPosition);
 

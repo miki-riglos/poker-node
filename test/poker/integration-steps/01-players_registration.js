@@ -2,7 +2,7 @@ module.exports = {
 
   name: 'Initial state after players registration',
 
-  getInitialState: function() { return undefined; },
+  initialStep: { getFinalState: function() { return undefined; } },
 
   forward: function(tournament) {
     tournament.registerPlayer(1, 'Miki');

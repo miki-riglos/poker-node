@@ -4,16 +4,16 @@ module.exports = {
 
   name: 'Tournament starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',
 
-  getInitialState: require('./01-players_registration').getFinalState,
+  initialStep: require('./01-players_registration'),
 
   forward: function(tournament) {
     // First button was assigned (Miki), game 1 starts
     // Bets of small and big blinds are placed
 
-    tournament.on('tournament-button', function() {
+    tournament.once('tournament-button', function() {
       tournament.button = 1;  // Reassign for testing
     });
-    tournament.on('game-start', function() {
+    tournament.once('game-start', function() {
       tournament.game.deck = new Deck(); // Reassign for testing (not shuffled)
     });
     tournament.start();

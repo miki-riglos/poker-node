@@ -10,8 +10,8 @@ Object.defineProperties(Object.prototype, {
     enumerable: false
   },
   "stringify": {
-    value: function(exclusions) {
-      exclusions = exclusions || [];
+    value: function() {
+      var exclusions = Array.prototype.slice.call(arguments);
       return JSON.stringify(this, function(key, value) { return exclusions.indexOf(key) != -1 ? undefined : value }, 2);
     },
     enumerable: false

@@ -2,7 +2,7 @@ module.exports = {
 
   name: 'Player 2 (Giovana) calls',
 
-  getInitialState: require('./04-Preflop_P1_raises').getFinalState,
+  initialStep: require('./04-Preflop_P1_raises'),
 
   forward: function(tournament) {
     tournament.players[2].calls();
