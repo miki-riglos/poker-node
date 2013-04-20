@@ -82,8 +82,9 @@ module.exports = {
   },
 
   nextStep: {
-    name: 'Round of Game 2 starts',
-    on  : 'round-start',
+    name  : 'Round of Game 2 starts',
+    on    : 'round-raise',
+    isDone: function(tournament, evt) { return (evt.type == 'bb'); },
     getFinalState: function() {
       return {
       options: {

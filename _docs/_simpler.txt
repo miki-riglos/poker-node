@@ -24,7 +24,7 @@ TO DO
   + sub-directory -> nested describe
   + finalState modified in process.nextTick()
     + nextStep: initialStep should be clean
-  - Step 12: assert after 'round-start' event
+  - Step 12: assert after 'round-start' and 'round-raise' event
     - 'next-position' event?
   - test only one file/directory?
 

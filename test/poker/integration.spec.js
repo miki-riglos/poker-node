@@ -20,6 +20,7 @@ function fileToStep(directory, stepFile) {
       nextStep        : stepMod.nextStep ? {
                           name         : stepMod.nextStep.name,
                           on           : stepMod.nextStep.on,
+                          isDone       : stepMod.nextStep.isDone ? stepMod.nextStep.isDone : function() { return true; },
                           getFinalState: stepMod.nextStep.getFinalState
                         } : null
     };
@@ -39,7 +40,6 @@ function renderAsserts(tournament, finalState) {
     tournament.stringify('_events').should.equal( finalState.stringify() );
   } else {
     tournament.stringify('game', '_events').should.equal( finalState.stringify('game') );
-    // tournament.players.stringify().should.equal( finalState.players.stringify() );
     tournament.game.stringify('deck', 'round', '_events').should.equal( finalState.game.stringify('deck', 'round') );
     tournament.game.deck.stringify().should.equal( finalState.game.deck.stringify() );
     tournament.game.round.stringify('_events').should.equal( finalState.game.round.stringify() );
@@ -60,8 +60,10 @@ function renderNextIt(step) {
     var tournament = new Tournament(step.getInitialState());
 
     tournament.on(step.nextStep.on, function() {
-      renderAsserts(tournament, step.nextStep.getFinalState());
-      done();
+      if (step.nextStep.isDone.apply(tournament, arguments)) {
+        renderAsserts(tournament, step.nextStep.getFinalState());
+        done();
+      }
     });
 
     step.forward(tournament);
