@@ -36,9 +36,9 @@ util.inherits(Round, events.EventEmitter);
 
 Round.prototype.start = function(state) {
   this.positionToAct = this.tournament.button;
-  this.nextPosition();
-  this.hasActed = [];
+  this.hasActed      = [];
   this.betToCall     = 0;
+  this.nextPosition();
 
   this.emit('start');
 

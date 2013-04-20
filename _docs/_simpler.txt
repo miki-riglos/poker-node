@@ -23,7 +23,10 @@ TO DO
 - flow.spec -> integration.spec: +[1,12], -[12next]
   + sub-directory -> nested describe
   + finalState modified in process.nextTick()
-    - nextStep: initialStep should be clean
+    + nextStep: initialStep should be clean
+  - Step 12: assert after 'round-start' event
+    - 'next-position' event?
+  - test only one file/directory?
 
 - flow.spec -> events-seq.spec
 
