@@ -19,7 +19,7 @@ function getTournamentInitialState() {
     status     : 'open',  // 'open' || 'start' || 'end'
     button     : null,    // position of player (key of this.players)
     blinds     : {},      // running blinds
-    players    : {},      // {position: {name: String, chips: Number} }
+    players    : {},      // {position: {name: String, chips: Number}}
     gameCounter: 0,
     game       : null     // Game
   };

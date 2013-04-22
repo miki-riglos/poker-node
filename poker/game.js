@@ -12,7 +12,7 @@ var keys = Object.keys;
 function getGameInitialState() {
   var gameInitialState = {
     number      : 0,
-    handsInfo   : {},     // {position: {hand: Card[], folded: Boolean, totalBet: Number} }
+    handsInfo   : {},     // {position: {hand: Card[], folded: Boolean, totalBet: Number}}
     pot         : 0,
     deck        : [],     // Deck, Card[]
     flop        : [],     // Card

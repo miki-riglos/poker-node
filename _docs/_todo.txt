@@ -7,17 +7,7 @@ Experimenting using only socket.io for all server/client communication.
   Commeting out unneccesary Express middleware
 -------------------------------------------------------------------------------
 
-- Round.nextPosition bug
-  - in preflop when nobody raises, big blind position doesn't have chance to act
-  - test/poker/round.spec.js
-  - test/infrastructure/room-mgr.spec.js
-
-- infrastructure
-  - Deserialize rooms(nested); recreate instances of Room
-  - Serialize: exclude redundant properties on currentGame and currentRound?
-
-- room-mgr
-  - save one room per file
+- Validate actions in Round
 
 - When logged in
   - Mark rooms where user is in
@@ -32,6 +22,8 @@ Experimenting using only socket.io for all server/client communication.
 - infrastructure/room-mgr: remove room when its tournament's status is not open or start
 - Client session, reconnections / refresh
   - cookies? socket.io handshake?
+- room-mgr: save one room per file?
+
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
@@ -47,17 +39,9 @@ TODO
   - end of tournament
   - all events
 
-- Save/Load game state to resume
-
-- underscore dependency?
-    _.merge
-    _.size
-    _.groupBy? -> handEval
-    - use _.size instead of [].length?
-    - use _.keys instead of Objecy.keys?
+- When to Save room state?
 
 - Poker
-  - Event for player registration?
   - Tie, pot distribution
   - Define how blinds increase (when and how)
   - Multiple pots (all ins)
@@ -68,7 +52,6 @@ TODO
   - jade dependency
 
 - Acceptance test / automate browser (CasperJS)
-
 
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

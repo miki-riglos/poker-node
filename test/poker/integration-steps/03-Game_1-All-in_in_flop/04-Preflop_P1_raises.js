@@ -49,7 +49,8 @@ module.exports = {
         },
         pot: 1085,
         deck: (function() {
-          var Deck = require('../../../../poker/deck').Deck, deck = new Deck();
+          var Deck = require('../../../../poker/deck').Deck,
+              deck = new Deck();
           deck.splice(0, 9);
           return JSON.parse(JSON.stringify(deck));
         })(),

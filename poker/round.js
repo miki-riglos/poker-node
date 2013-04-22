@@ -8,7 +8,7 @@ var keys = Object.keys;
 function getRoundInitialState() {
   var roundInitialState = {
     number       : 0,     // 1: 'preflop' | 2: 'flop' | 3: 'turn' | 4: 'river'
-    actionsInfo  : {},    // {position: {actions: String[], bets: Number[]} }
+    actionsInfo  : {},    // {position: {actions: String[], bets: Number[]}}
     positionToAct: null,  // position of Player
     hasActed     : null,  // Number[] with positions that already acted, reinitialized when raise
     betToCall    : null
