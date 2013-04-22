@@ -20,14 +20,11 @@ TO DO
 + RoomManager
 + sockets
 
-- flow.spec -> integration.spec: +[1,12], -[12next]
++ flow.spec -> integration.spec: +[1,12], -[12next]
   + sub-directory -> nested describe
   + finalState modified in process.nextTick()
-    + nextStep: initialStep should be clean
-  - Step 12: assert after 'round-start' and 'round-raise' event
-    - 'next-position' event?
-  - test only one file/directory?
+  + Step 12: assert in 'round-next' event
 
-- flow.spec -> events-seq.spec
++ flow.spec -> events-seq.spec
 
 - validate actions in Round

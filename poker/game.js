@@ -94,6 +94,10 @@ Game.prototype.startRound = function(state) {
     self.emit('round-start');
   });
 
+  round.on('next', function() {
+    self.emit('round-next');
+  });
+
   round.on('raise', function(evt) {
     self.pot += evt.amount;
     self.handsInfo[evt.position].totalBet += evt.amount;

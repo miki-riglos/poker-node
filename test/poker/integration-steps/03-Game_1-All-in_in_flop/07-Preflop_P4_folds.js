@@ -82,8 +82,9 @@ module.exports = {
   },
 
   nextStep: {
-    name: 'Flop round starts',
-    on  : 'round-start',
+    name         : 'Flop round starts',
+    eventName    : 'round-next',
+    isFinalEvent : function(tournament) { return (tournament.gameCounter === 1 && tournament.game.round.positionToAct === 2); },
     getFinalState: function() {
       return {
         options: {

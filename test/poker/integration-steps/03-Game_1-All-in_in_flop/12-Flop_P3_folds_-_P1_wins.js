@@ -82,9 +82,9 @@ module.exports = {
   },
 
   nextStep: {
-    name  : 'Round of Game 2 starts',
-    on    : 'round-raise',
-    isDone: function(tournament, evt) { return (evt.type == 'bb'); },
+    name         : 'Round of Game 2 starts',
+    eventName    : 'round-next',
+    isFinalEvent : function(tournament) { return (tournament.gameCounter === 2 && tournament.game.round.positionToAct === 1); },
     getFinalState: function() {
       return {
       options: {
@@ -109,7 +109,7 @@ module.exports = {
       },
       gameCounter: 2,
       game: {
-        number: 1,
+        number: 2,
         handsInfo: {
           '1': { hand    : [ {rank: '3', suit: 'C'}, {rank: '7', suit: 'C'} ],
                  folded  : false,

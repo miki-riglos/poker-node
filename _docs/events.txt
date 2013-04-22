@@ -2,6 +2,7 @@ Round
 -----
 emit('start')
 emit('error') //TODO
+emit('next')
 emit('raise', {position: position, amount: amount, type: type})
 emit('call' , {position: position, amount: amount});
 emit('check', {position: position});
@@ -13,6 +14,7 @@ Game
 emit('start')
 emit('round-start')
 emit('round-error') //TODO
+emit('round-next')
 emit('round-raise', evt);
 emit('round-call' , evt);
 emit('round-check', evt);
@@ -28,6 +30,7 @@ emit('tournament-button', this)
 emit('game-start'       , this)
 emit('round-start'      , this)
 emit('round-error'      , this) //TODO
+emit('round-next'       , this)
 emit('round-raise'      , this, evt);
 emit('round-call'       , this, evt);
 emit('round-check'      , this, evt);

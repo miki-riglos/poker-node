@@ -158,6 +158,10 @@ Tournament.prototype.startGame = function(state) {
     self.emit('round-start', self);
   });
 
+  game.on('round-next', function() {
+    self.emit('round-next', self);
+  });
+
   game.on('round-raise', function(evt) {
     self.players[evt.position].chips -= evt.amount;
     self.emit('round-raise', self, evt);

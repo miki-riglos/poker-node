@@ -19,8 +19,8 @@ function fileToStep(directory, stepFile) {
       getFinalState   : stepMod.getFinalState,
       nextStep        : stepMod.nextStep ? {
                           name         : stepMod.nextStep.name,
-                          on           : stepMod.nextStep.on,
-                          isDone       : stepMod.nextStep.isDone ? stepMod.nextStep.isDone : function() { return true; },
+                          eventName    : stepMod.nextStep.eventName,
+                          isFinalEvent : stepMod.nextStep.isFinalEvent,
                           getFinalState: stepMod.nextStep.getFinalState
                         } : null
     };
@@ -46,7 +46,7 @@ function renderAsserts(tournament, finalState) {
   }
 }
 
-function renderIt(step, tournament) {
+function renderIt(step) {
   it('Step ' + step.fileName.substr(0, 2) + ': ' + step.name, function() {
     var tournament = new Tournament(step.getInitialState());
     step.forward(tournament);
@@ -59,8 +59,8 @@ function renderNextIt(step) {
   it('Step ' + step.fileName.substr(0, 2) + ': ' + step.name + ' -- Next: ' + step.nextStep.name, function(done) {
     var tournament = new Tournament(step.getInitialState());
 
-    tournament.on(step.nextStep.on, function() {
-      if (step.nextStep.isDone.apply(tournament, arguments)) {
+    tournament.on(step.nextStep.eventName, function() {
+      if (step.nextStep.isFinalEvent.apply(tournament, arguments)) {
         renderAsserts(tournament, step.nextStep.getFinalState());
         done();
       }

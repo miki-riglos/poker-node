@@ -35,21 +35,18 @@ function Round(game, state) {
 util.inherits(Round, events.EventEmitter);
 
 Round.prototype.start = function(state) {
-  this.positionToAct = this.tournament.button;
   this.hasActed      = [];
   this.betToCall     = 0;
-  this.nextPosition();
 
   this.emit('start');
 
+  this.positionToAct = this.tournament.button;
+  this.nextPosition();
+
   // If preflop place blinds
   if (this.number === 1) {
-    // small blind
     this.raise(this.positionToAct, this.tournament.blinds.small, 'sb');
-    // big blind
     this.raise(this.positionToAct, this.tournament.blinds.big, 'bb');
-  } else {
-    this.nextPosition();
   }
 
 };
@@ -77,6 +74,8 @@ Round.prototype.nextPosition = function() {
 
   if (_.contains(this.hasActed, this.positionToAct)) {
     this.end();
+  } else {
+    this.emit('next');
   }
 };
 
