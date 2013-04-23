@@ -5,8 +5,6 @@ module.exports = {
   initialStep: require('./06-Preflop_P3_calls'),
 
   forward: function(tournament) {
-    tournament.on('round-start', function() {
-    });
     tournament.players[4].folds();
   },
 

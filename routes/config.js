@@ -4,7 +4,7 @@ var UserManager = require('../infrastructure/user-mgr').UserManager;
 
 function config(app) {
   //TODO: implement override
-  var userMgr = UserManager();
+  var userMgr = new UserManager();
 
   // GET home
   app.get('/', function(req, res) {
