@@ -6,7 +6,14 @@ define(['require'], function(require) {
 
     it('should return the id of template element', function(done) {
       require(['loadTmpl!login'], function(loginTmplId) {
-        loginTmplId.should.be.ok;
+        loginTmplId.should.equal('loginTmpl');
+        done();
+      });
+    });
+
+    it('should return the id of template element, replacing dash and camelCase', function(done) {
+      require(['loadTmpl!logged-in'], function(loginTmplId) {
+        loginTmplId.should.equal('loggedInTmpl');
         done();
       });
     });

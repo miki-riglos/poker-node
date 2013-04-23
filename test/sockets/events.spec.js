@@ -35,8 +35,8 @@ var overrideRoomMgr = {
 };
 
 var override = {
-  userMgr: UserManager(overrideUserMgr),
-  roomMgr: RoomManager(overrideRoomMgr),
+  userMgr: new UserManager(overrideUserMgr),
+  roomMgr: new RoomManager(overrideRoomMgr),
 };
 
 io.set("log level", 0);

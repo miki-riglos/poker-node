@@ -38,3 +38,33 @@ emit('round-fold'       , this, evt);
 emit('round-end'        , this)
 emit('game-end'         , this)
 emit('tournament-end'   , this);
+
+
+Synchronicity
+=============
+tournament.start()                                -> emit('tournament-start')
+tournament.startGame()
+  game = new Game()
+    game.start()                                  -> emit('game-start')
+    game.startRound()
+      game.round = new Round()
+        round.start()                             -> emit('round-start')
+        round.nextPosition();                     -> emit('round-next')   <- async finish if not preflop
+        if preflop
+          round.raise(sb)                         -> emit('round-next')
+          round.raise(bb)                         -> emit('round-next')   <- async finish if preflop
+        ...
+        if another action
+          round.nextPosition();                   -> emit('round-next')
+        else                                       or
+          round.end()                             -> emit('round-end')
+      game.round.on('end')
+        if another round
+          process.nextTick game.startRound()      -> async
+        else                                       or
+          game.end()                              -> emit('game-end')
+    game.on('end')
+      if another game
+        process.nextTick tournament.startGame()   -> async
+      else                                         or
+        tournament.end()                          -> emit('game-end')

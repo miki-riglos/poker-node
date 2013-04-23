@@ -32,8 +32,7 @@ Room.prototype.toDTO = function() {
     started   : this.started,
     tournament: {
       status     : this.tournament.status,
-      players    : this.tournament.players,
-      gameCounter: this.tournament.gameCounter,
+      players    : this.tournament.players
     }
   };
 };
@@ -115,22 +114,6 @@ RoomManager.prototype.getAllRooms = function() {
   });
   return allRooms;
 };
-
-//TODO: move to client
-//--------------------
-// RoomManager.prototype.getRoomsPlayedBy = function(playerName) {
-//   var playerRooms = [],
-//       self        = this;
-//   Object.keys(this.rooms).forEach(function(key) {
-//     var allPlayerNames = Object.keys(self.rooms[key].tournament.registeredPlayers).map(function(position) {
-//       return self.rooms[key].tournament.registeredPlayers[position].name;
-//     });
-//     if (allPlayerNames.indexOf(playerName) !== -1) {
-//       playerRooms.push( self.rooms[key] );
-//     }
-//   });
-//   return playerRooms;
-// };
 
 
 // Exports

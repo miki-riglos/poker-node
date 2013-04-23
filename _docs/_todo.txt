@@ -9,11 +9,11 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+- Add Room and the Tournament.registerPlayer?
 - When logged in
   - Mark rooms where user is in
   - Filter rooms of the user/player, move logic to client
     - room.tournament.players: {} or []
-  - Enable button to activate new room
   - Remove room, only by host if status is open (not start)
   - Rooms with open tournament (not start)
     - Enable button to join

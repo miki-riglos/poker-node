@@ -1,7 +1,23 @@
-define(['knockout', 'socket', 'user', 'loadTmpl!roomlist'], function(ko, socket, user, roomlistTmplId) {
+define(['knockout', 'socket', 'user', 'loadTmpl!room-list'], function(ko, socket, user, roomListTmplId) {
+
+  function RoomListItem(roomDTO) {
+    this.id        = roomDTO.id;
+    this.host      = roomDTO.host;
+    this.started   = roomDTO.started;
+
+    this.tournamentStatus  = ko.observable(roomDTO.tournament.status);
+
+    var playersArray = [];
+    Object.keys(roomDTO.tournament.players).forEach(function(key) {
+      playersArray.push(roomDTO.tournament.players[key].name);
+    });
+    this.tournamentPlayers = ko.observableArray(playersArray);
+
+    this.tournamentPlayersList = ko.computed(function() {return this.tournamentPlayers().join(', ')}, this);
+  }
 
   var roomList = {
-    templateId   : roomlistTmplId,
+    templateId   : roomListTmplId,
     allRooms     : ko.observableArray([]),
     onlyUserRooms: ko.observable(false),
 
@@ -30,11 +46,11 @@ define(['knockout', 'socket', 'user', 'loadTmpl!roomlist'], function(ko, socket,
   });
 
   socket.on('room-list', function(rooms) {
-    roomList.allRooms(rooms);
+    roomList.allRooms( rooms.map(function(roomDTO) { return new RoomListItem(roomDTO); }) );
   });
 
   socket.on('room-added', function(roomAdded) {
-    roomList.allRooms.push(roomAdded);
+    roomList.allRooms.push( new RoomListItem(roomAdded) );
   });
 
   return roomList;
