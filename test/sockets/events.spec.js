@@ -10,10 +10,10 @@ var socketsEvents = require('../../sockets/events');
 var UserManager = require('../../infrastructure/user-mgr').UserManager,
     RoomManager = require('../../infrastructure/room-mgr').RoomManager;
 
-var host        = process.env.IP || 'localhost',
-    port        = process.env.PORT || 3000,
-    ios         = 'http://' + host + ':' + port,
-    ioc_options = {'transports': ['websocket'], 'force new connection': true};
+var host       = process.env.IP || 'localhost',
+    port       = process.env.PORT || 3000,
+    serverURI  = 'http://' + host + ':' + port,
+    clientOpts = {'transports': ['websocket'], 'force new connection': true};
 
 // Override load and save methods for UserManager
 var overrideUserMgr = {
@@ -36,7 +36,7 @@ var overrideRoomMgr = {
 
 var override = {
   userMgr: new UserManager(overrideUserMgr),
-  roomMgr: new RoomManager(overrideRoomMgr),
+  roomMgr: new RoomManager(overrideRoomMgr)
 };
 
 io.set("log level", 0);
@@ -52,7 +52,7 @@ describe('Socket events', function() {
   });
 
   beforeEach(function() {
-    socket = ioc.connect(ios, ioc_options);
+    socket = ioc.connect(serverURI, clientOpts);
   });
 
   describe('User events', function() {
@@ -77,50 +77,104 @@ describe('Socket events', function() {
   describe('Room List events', function() {
 
     it('should receive array of rooms', function(done) {
-      socket.on('room-list', function(roomListDn) {
-        roomListDn.should.be.an.instanceOf(Array);
+      socket.on('room-list', function(rooms) {
+        rooms.should.be.an.instanceOf(Array);
         done();
       });
     });
 
-    it('should respond to new room and notify others', function(done) {
-      var targetSocket = ioc.connect(ios, ioc_options),
-          counter      = 0,
-          roomAddedInCallback,
-          roomAddedInEvent;
+    describe('Add room', function() {
 
-      socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
-        socket.emit('room-new', 'miki', function(roomNewRet) {
-          roomNewRet.success.should.be.true;
-          roomNewRet.roomAdded.should.be.an.instanceOf(Object);
-          roomAddedInCallback = roomNewRet.roomAdded;
-          ++counter;
-          if (counter === 2) EmittedAndNotified();
+      it('should add room and notify others', function(done) {
+        var otherSocket = ioc.connect(serverURI, clientOpts),
+            counter     = 0,
+            roomAddedInCallback,
+            roomAddedInEvent;
+
+        socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+          socket.emit('room-add', 'miki', function(roomAddRet) {
+            roomAddRet.success.should.be.true;
+            roomAddRet.roomAdded.should.be.an.instanceOf(Object);
+            roomAddedInCallback = roomAddRet.roomAdded;
+            ++counter;
+            if (counter === 2) EmittedAndNotified();
+          });
+
+          otherSocket.on('room-added', function(roomAdded) {
+            roomAdded.should.be.an.instanceOf(Object);
+            roomAddedInEvent = roomAdded;
+            ++counter;
+            if (counter === 2) EmittedAndNotified();
+          });
+
+          function EmittedAndNotified() {
+            roomAddedInCallback.host.should.equal(roomAddedInEvent.host);
+            otherSocket.disconnect();
+            done();
+          }
+        });
+      });
+
+      it('should not add room when host is not equal to player name', function(done) {
+        socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+          socket.emit('room-add', 'another', function(roomAddRet) {
+            roomAddRet.success.should.be.false;
+            roomAddRet.should.have.property('message');
+            done();
+          });
+        });
+      });
+
+    });
+
+    describe('Remove room', function() {
+
+      it('should remove room and notify others', function(done) {
+        var otherSocket = ioc.connect(serverURI, clientOpts),
+            counter     = 0,
+            roomRemovedIdInCallback,
+            roomRemovedIdInEvent;
+
+        socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+          socket.emit('room-add', 'miki', function(roomAddRet) {
+            var remove = {
+              host  : 'miki',
+              roomId: roomAddRet.roomAdded.id
+            };
+            socket.emit('room-remove', remove, function(roomRemoveRet) {
+              roomRemoveRet.success.should.be.true;
+              roomRemoveRet.roomRemovedId.should.be.ok;
+              roomRemovedIdInCallback = roomRemoveRet.roomRemovedId;
+              ++counter;
+              if (counter === 2) EmittedAndNotified();
+            });
+          });
         });
 
-        targetSocket.on('room-added', function(roomAdded) {
-          roomAdded.should.be.an.instanceOf(Object);
-          roomAddedInEvent = roomAdded;
+        otherSocket.on('room-removed', function(roomRemovedId) {
+          roomRemovedId.should.be.ok;
+          roomRemovedIdInEvent = roomRemovedId;
           ++counter;
           if (counter === 2) EmittedAndNotified();
         });
 
         function EmittedAndNotified() {
-          roomAddedInCallback.host.should.equal(roomAddedInEvent.host);
-          targetSocket.disconnect();
+          roomRemovedIdInCallback.should.equal(roomRemovedIdInEvent);
+          otherSocket.disconnect();
           done();
         }
       });
-    });
 
-    it('should reject new room if host is not equal to player name', function(done) {
-      socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
-        socket.emit('room-new', 'another', function(roomNewRet) {
-          roomNewRet.success.should.be.false;
-          roomNewRet.should.have.property('message');
-          done();
+      it('should not remove room when host is not equal to player name', function(done) {
+        socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+          socket.emit('room-remove', 'another', function(roomRemoveRet) {
+            roomRemoveRet.success.should.be.false;
+            roomRemoveRet.should.have.property('message');
+            done();
+          });
         });
       });
+
     });
 
   });

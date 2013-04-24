@@ -1,4 +1,4 @@
-<input type='checkbox' data-bind='checked: onlyUserRooms'>Only rooms I'm playing</input>
+<input type='checkbox' data-bind='checked: onlyUserRooms, enable: isUserLoggedIn'>Only my rooms</input>
 <hr/>
 <table>
   <thead>
@@ -7,6 +7,7 @@
       <td>Started</td>
       <td>Status</td>
       <td>Players</td>
+      <td>Remove</td>
     </tr>
   </thead>
   <tbody data-bind='foreach: roomsToShow'>
@@ -15,6 +16,9 @@
       <td data-bind='text: started'></td>
       <td data-bind='text: tableStatus'></td>
       <td data-bind='text: tablePlayersList'></td>
+      <td>
+        <button data-bind='click:$parent.remove'>Remove</button>
+      </td>
     </tr>
   </tbody>
 </table>

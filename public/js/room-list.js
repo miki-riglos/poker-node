@@ -1,56 +1,87 @@
 define(['knockout', 'socket', 'user', 'loadTmpl!room-list'], function(ko, socket, user, roomListTmplId) {
 
-  function RoomListItem(roomDTO) {
-    this.id        = roomDTO.id;
-    this.host      = roomDTO.host;
-    this.started   = roomDTO.started;
-
-    this.tableStatus  = ko.observable(roomDTO.table.status);
-
+  function playersToArray(players) {
     var playersArray = [];
-    Object.keys(roomDTO.table.players).forEach(function(key) {
-      playersArray.push(roomDTO.table.players[key].name);
+    Object.keys(players).forEach(function(key) {
+      playersArray.push(players[key].name);
     });
-    this.tablePlayers = ko.observableArray(playersArray);
-
-    this.tablePlayersList = ko.computed(function() {return this.tablePlayers().join(', ')}, this);
+    return playersArray;
   }
 
-  var roomList = {
-    templateId   : roomListTmplId,
-    allRooms     : ko.observableArray([]),
-    onlyUserRooms: ko.observable(false),
+  function formatDate(date) {
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return  [months[date.getMonth()], date.getDate()].join(' ')
+            + ', ' +
+            [('0'+date.getHours()).substr(-2), ('0'+date.getMinutes()).substr(-2)].join(':');
+  }
 
-    add: function() {
-      var self = this;
-      socket.emit('room-new', user.name(), function(newRoomResp) {
-        if (newRoomResp.success) {
-          self.allRooms.push(newRoomResp.roomAdded);
+  function RoomListItem(roomDTO) {
+    this.id      = roomDTO.id;
+    this.host    = roomDTO.host;
+    this.started = formatDate(new Date(roomDTO.started));
+    this.tableStatus      = ko.observable(roomDTO.table.status);
+    this.tablePlayers     = ko.observableArray( playersToArray(roomDTO.table.players) );
+    this.tablePlayersList = ko.computed( function() {return this.tablePlayers().join(', ')}, this );
+  }
+
+  function RoomList() {
+    var self = this;
+    self.templateId     = roomListTmplId;
+    self.allRooms       = ko.observableArray([]);
+    self.onlyUserRooms  = ko.observable(false);
+    self.isUserLoggedIn = user.isLoggedIn;
+
+    self.roomsToShow = ko.computed(function() {
+      if (!self.onlyUserRooms()) {
+        return self.allRooms();
+      } else {
+        return self.allRooms().filter(function(roomListItem) {
+          return roomListItem.host === user.name() || roomListItem.tablePlayers().indexOf(user.name()) !== -1 ;
+        });
+      }
+    });
+
+    self.add = function() {
+      socket.emit('room-add', user.name(), function(roomAddRet) {
+        if (roomAddRet.success) {
+          self.allRooms.push( new RoomListItem(roomAddRet.roomAdded) );
         } else {
           //TODO: replace alert
-          alert(newRoomResp.message);
+          alert(roomAddRet.message);
         }
       });
-    },
+    };
 
-    isUserLoggedIn: user.loggedIn
-  };
+    self.remove = function(room) {
+      var remove = {
+        host  : user.name(),
+        roomId: room.id
+      };
+      socket.emit('room-remove', remove, function(roomRemoveRet) {
+        if (roomRemoveRet.success) {
+          self.allRooms.remove(room);
+        } else {
+          //TODO: replace alert
+          alert(roomRemoveRet.message);
+        }
+      });
+    };
+  }
 
-  roomList.roomsToShow = ko.computed(function() {
-    if (!roomList.onlyUserRooms()) {
-      return roomList.allRooms();
-    } else {
-      //TODO: filter array
-      return roomList.allRooms();
-    }
-  });
+
+  var roomList = new RoomList();
 
   socket.on('room-list', function(rooms) {
-    roomList.allRooms( rooms.map(function(roomDTO) { return new RoomListItem(roomDTO); }) );
+    roomList.allRooms( rooms.map(function(room) { return new RoomListItem(room); }) );
   });
 
   socket.on('room-added', function(roomAdded) {
     roomList.allRooms.push( new RoomListItem(roomAdded) );
+  });
+
+  socket.on('room-removed', function(roomRemovedId) {
+    var roomRemoved = ko.utils.arrayFirst(roomList.allRooms(), function(room) { return room.id = roomRemovedId; });
+    roomList.allRooms.remove(roomRemoved);
   });
 
   return roomList;

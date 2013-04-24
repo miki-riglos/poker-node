@@ -45,7 +45,7 @@ function events(io, override) {
     var allRoomsDTO = roomMgr.getAllRooms();
     socket.emit('room-list', allRoomsDTO);
 
-    socket.on('room-new', function(host, cb) {
+    socket.on('room-add', function(host, cb) {
       socket.get('username', function(err, username) {
         if (host === username) {
           roomMgr.add(host, function(err, roomAddedDTO) {
@@ -53,8 +53,24 @@ function events(io, override) {
               cb({success: false, message: err.message});
             } else {
               cb({success: true, roomAdded: roomAddedDTO});
-              // Notify the others
               socket.broadcast.emit('room-added', roomAddedDTO);
+            }
+          });
+        } else {
+         cb({success: false, message: 'Invalid host'});
+        }
+      });
+    });
+
+    socket.on('room-remove', function(remove, cb) {
+      socket.get('username', function(err, username) {
+        if (remove.host === username) {
+          roomMgr.remove(remove.roomId, function(err, roomRemovedDTO) {
+            if (err) {
+              cb({success: false, message: err.message});
+            } else {
+              cb({success: true, roomRemovedId: roomRemovedDTO.id});
+              socket.broadcast.emit('room-removed', roomRemovedDTO.id);
             }
           });
         } else {

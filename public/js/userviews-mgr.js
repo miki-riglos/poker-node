@@ -7,21 +7,21 @@ function(ko, user, registration, loginTmplId, registerTmplId, loggedInTmplId) {
     actions: [{
       name: 'Login',
       action: function() { userViewsMgr.activate('login'); },
-      enable: ko.computed( function() {return !user.loggedIn();} )
+      enable: ko.computed( function() {return !user.isLoggedIn();} )
     }, {
       name: 'Register',
       action: function() { userViewsMgr.activate('register'); },
-      enable: ko.computed( function() {return !user.loggedIn();} )
+      enable: ko.computed( function() {return !user.isLoggedIn();} )
     }, {
       name: 'Logout',
       action: function() { user.logout(); },
-      enable: ko.computed( function() {return user.loggedIn();} )
+      enable: ko.computed( function() {return user.isLoggedIn();} )
     }],
 
     views: {
       'login'   : {templateId: loginTmplId,    viewModel: user},
       'register': {templateId: registerTmplId, viewModel: registration},
-      'loggedin': {templateId: loggedInTmplId, viewModel: user}
+      'loggedIn': {templateId: loggedInTmplId, viewModel: user}
     },
 
     activeView: ko.observable(),
@@ -32,9 +32,9 @@ function(ko, user, registration, loginTmplId, registerTmplId, loggedInTmplId) {
   };
 
   // Update view after user login/logout
-  user.loggedIn.subscribe(function(newValue) {
+  user.isLoggedIn.subscribe(function(newValue) {
     if (newValue) {
-      userViewsMgr.activate('loggedin');
+      userViewsMgr.activate('loggedIn');
     } else {
       userViewsMgr.activate('login');
     }
@@ -44,7 +44,7 @@ function(ko, user, registration, loginTmplId, registerTmplId, loggedInTmplId) {
   registration.afterRegister = function(name, password) {
     user.name(name);
     user.password(password);
-    user.loggedIn(true);
+    user.isLoggedIn(true);
   };
 
   // Initial view

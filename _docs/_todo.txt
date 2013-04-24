@@ -9,15 +9,20 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- client: add room and the Table.registerPlayer (host)?
+- UI:
+  - show server socket.get('username', cb)
+  - indicator of socket connection
+
 - When logged in
-  - Mark rooms where user is in
-  - Filter rooms of the user/player, move logic to client
-    - room.table.players: {} or []
-  - Remove room, only by host if status is open (not start)
+  - Can delete other user's room?
+  - Remove room, warning if status is open
   - Rooms with open table (not start)
     - Enable button to join
     - Game flow
+- client: add room and the Table.registerPlayer (host)?
+- public/js: group view models and templates in folders?
+
+- CLI to manipulate io in server?
 
 - web server, validate API
   - return error || emit error event <- TODOs
