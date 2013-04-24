@@ -1,21 +1,21 @@
 module.exports = {
 
-  name: 'Tournament starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',
+  name: 'Table starts, Player 1 (Miki) is button, Player 2 (Giovana) small blind 10, Player 3 (Sofia) big blind 25',
 
   initialStep: require('./01-players_registration'),
 
-  forward: function(tournament) {
+  forward: function(table) {
     // First button was assigned (Miki), game 1 starts
     // Bets of small and big blinds are placed
 
-    tournament.once('tournament-button', function() {
-      tournament.button = 1;  // Reassign for testing
+    table.once('table-button', function() {
+      table.button = 1;  // Reassign for testing
     });
-    tournament.once('game-start', function() {
+    table.once('game-start', function() {
       var Deck = require('../../../poker/deck').Deck;
-      tournament.game.deck = new Deck(); // Reassign for testing (not shuffled)
+      table.game.deck = new Deck(); // Reassign for testing (not shuffled)
     });
-    tournament.start();
+    table.start();
   },
 
   getFinalState: function() {

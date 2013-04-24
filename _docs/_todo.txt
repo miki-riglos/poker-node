@@ -9,20 +9,20 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- Add Room and the Tournament.registerPlayer?
+- client: add room and the Table.registerPlayer (host)?
 - When logged in
   - Mark rooms where user is in
   - Filter rooms of the user/player, move logic to client
-    - room.tournament.players: {} or []
+    - room.table.players: {} or []
   - Remove room, only by host if status is open (not start)
-  - Rooms with open tournament (not start)
+  - Rooms with open table (not start)
     - Enable button to join
     - Game flow
 
 - web server, validate API
   - return error || emit error event <- TODOs
 
-- infrastructure/room-mgr: remove room when its tournament's status is not open or start
+- infrastructure/room-mgr: remove room when its table's status is not open or start
 - Client session, reconnections / refresh
   - cookies? socket.io handshake?
 - room-mgr: save one room per file?
@@ -33,7 +33,7 @@ TODO
 
 - integration-steps
   - turn, river
-  - end of tournament
+  - end of table
 
 - when to save room state?
   - after 'round-next' (preflop <> flop, turn, river)

@@ -5,15 +5,15 @@ define(['knockout', 'socket', 'user', 'loadTmpl!room-list'], function(ko, socket
     this.host      = roomDTO.host;
     this.started   = roomDTO.started;
 
-    this.tournamentStatus  = ko.observable(roomDTO.tournament.status);
+    this.tableStatus  = ko.observable(roomDTO.table.status);
 
     var playersArray = [];
-    Object.keys(roomDTO.tournament.players).forEach(function(key) {
-      playersArray.push(roomDTO.tournament.players[key].name);
+    Object.keys(roomDTO.table.players).forEach(function(key) {
+      playersArray.push(roomDTO.table.players[key].name);
     });
-    this.tournamentPlayers = ko.observableArray(playersArray);
+    this.tablePlayers = ko.observableArray(playersArray);
 
-    this.tournamentPlayersList = ko.computed(function() {return this.tournamentPlayers().join(', ')}, this);
+    this.tablePlayersList = ko.computed(function() {return this.tablePlayers().join(', ')}, this);
   }
 
   var roomList = {

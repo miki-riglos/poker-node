@@ -3,7 +3,7 @@
 var fs   = require('fs'),
     path = require('path');
 
-var Tournament = require('../../poker/tournament').Tournament;
+var Table = require('../../poker/table').Table;
 
 function fileToStep(directory, stepFile) {
   var filePath = path.join(directory, stepFile);
@@ -35,38 +35,38 @@ function fileToStep(directory, stepFile) {
   }
 }
 
-function renderAsserts(tournament, finalState) {
-  if (!tournament.game) {
-    tournament.stringify('_events').should.equal( finalState.stringify() );
+function renderAsserts(table, finalState) {
+  if (!table.game) {
+    table.stringify('_events').should.equal( finalState.stringify() );
   } else {
-    tournament.stringify('game', '_events').should.equal( finalState.stringify('game') );
-    tournament.game.stringify('deck', 'round', '_events').should.equal( finalState.game.stringify('deck', 'round') );
-    tournament.game.deck.stringify().should.equal( finalState.game.deck.stringify() );
-    tournament.game.round.stringify('_events').should.equal( finalState.game.round.stringify() );
+    table.stringify('game', '_events').should.equal( finalState.stringify('game') );
+    table.game.stringify('deck', 'round', '_events').should.equal( finalState.game.stringify('deck', 'round') );
+    table.game.deck.stringify().should.equal( finalState.game.deck.stringify() );
+    table.game.round.stringify('_events').should.equal( finalState.game.round.stringify() );
   }
 }
 
 function renderIt(step) {
   it('Step ' + step.fileName.substr(0, 2) + ': ' + step.name, function() {
-    var tournament = new Tournament(step.getInitialState());
-    step.forward(tournament);
+    var table = new Table(step.getInitialState());
+    step.forward(table);
 
-    renderAsserts(tournament, step.getFinalState());
+    renderAsserts(table, step.getFinalState());
   });
 }
 
 function renderNextIt(step) {
   it('Step ' + step.fileName.substr(0, 2) + ': ' + step.name + ' -- Next: ' + step.nextStep.name, function(done) {
-    var tournament = new Tournament(step.getInitialState());
+    var table = new Table(step.getInitialState());
 
-    tournament.on(step.nextStep.eventName, function() {
-      if (step.nextStep.isFinalEvent.apply(tournament, arguments)) {
-        renderAsserts(tournament, step.nextStep.getFinalState());
+    table.on(step.nextStep.eventName, function() {
+      if (step.nextStep.isFinalEvent.apply(table, arguments)) {
+        renderAsserts(table, step.nextStep.getFinalState());
         done();
       }
     });
 
-    step.forward(tournament);
+    step.forward(table);
   });
 }
 
@@ -90,4 +90,4 @@ function renderDescribe(directory, title) {
 
 }
 
-renderDescribe(path.join(__dirname, 'integration-steps'), 'Integration: Poker tournament');
+renderDescribe(path.join(__dirname, 'integration-steps'), 'Integration: Poker table');

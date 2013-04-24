@@ -4,8 +4,8 @@ module.exports = {
 
   initialStep: require('./09-Flop_P3_checks'),
 
-  forward: function(tournament) {
-    tournament.players[1].raises( tournament.players[1].chips );
+  forward: function(table) {
+    table.players[1].raises( table.players[1].chips );
   },
 
   getFinalState: function() {

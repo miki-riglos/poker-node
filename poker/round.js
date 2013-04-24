@@ -18,7 +18,7 @@ function getRoundInitialState() {
 
 // Round class
 function Round(game, state) {
-  this.tournament = game.tournament;
+  this.table = game.table;
   this.game       = game;
 
   _.extend(this, getRoundInitialState());
@@ -40,13 +40,13 @@ Round.prototype.start = function(state) {
 
   this.emit('start');
 
-  this.positionToAct = this.tournament.button;
+  this.positionToAct = this.table.button;
   this.nextPosition();
 
   // If preflop place blinds
   if (this.number === 1) {
-    this.raise(this.positionToAct, this.tournament.blinds.small, 'sb');
-    this.raise(this.positionToAct, this.tournament.blinds.big, 'bb');
+    this.raise(this.positionToAct, this.table.blinds.small, 'sb');
+    this.raise(this.positionToAct, this.table.blinds.big, 'bb');
   }
 
 };
@@ -63,7 +63,7 @@ Round.prototype.nextPosition = function() {
     if (_.contains(this.hasActed, runningPosition)) break;
 
     if (this.actionsInfo[runningPosition]) {
-      if (!this.game.handsInfo[runningPosition].folded && this.tournament.players[runningPosition].chips > 0) {
+      if (!this.game.handsInfo[runningPosition].folded && this.table.players[runningPosition].chips > 0) {
         break;
       }
     }
@@ -101,7 +101,7 @@ Round.prototype.raise = function(position, amount, type) {
     this.hasActed = [position];
   }
 
-  // Handler updates game and tournament data
+  // Handler updates game and table data
   this.emit('raise', {position: position, amount: amount, type: type});
 
   this.nextPosition();
@@ -122,7 +122,7 @@ Round.prototype.call = function(position) {
 
   this.hasActed.push(position);
 
-  // Handler updates game and tournament data
+  // Handler updates game and table data
   this.emit('call', {position: position, amount: amount});
 
   this.nextPosition();
@@ -139,7 +139,7 @@ Round.prototype.check = function(position) {
 
   this.hasActed.push(position);
 
-  // Handler updates game and tournament data
+  // Handler updates game and table data
   this.emit('check', {position: position});
 
   this.nextPosition();
@@ -156,7 +156,7 @@ Round.prototype.fold = function(position) {
 
   this.hasActed.push(position);
 
-  // Handler updates game and tournament data
+  // Handler updates game and table data
   this.emit('fold', {position: position});
 
   this.nextPosition();
@@ -168,7 +168,7 @@ Round.prototype.end = function() {
 };
 
 Round.prototype.toJSON = function() {
-  return _.omit(this, ['tournament', 'game', '_events']);
+  return _.omit(this, ['table', 'game', '_events']);
 };
 
 // Private

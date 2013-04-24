@@ -3,7 +3,7 @@
 var fs   = require('fs'),
     path = require('path');
 
-var Tournament = require('../../poker/tournament').Tournament;
+var Table = require('../../poker/table').Table;
 
 function getSteps() {
   var files1, files2,
@@ -26,27 +26,27 @@ function getSteps() {
 describe('Events sequence', function() {
 
   it('should fire events in order', function(done) {
-    var tournament = new Tournament(),
+    var table = new Table(),
         steps      = getSteps();
 
     var expectedCounter  = {
-            tournament: {start: 1, button: 2, end: 1},
+            table: {start: 1, button: 2, end: 1},
             game      : {start: 2, end: 1},
             round     : {start: 3, end: 2}
           },
-        expectedSequence = ['tournament-start',
-                            'tournament-button',
+        expectedSequence = ['table-start',
+                            'table-button',
                               'game-start|1',
                                 'round-start|1.1', 'round-end|1.1',
                                 'round-start|1.2', 'round-end|1.2',
                               'game-end|1',
-                            'tournament-button',
+                            'table-button',
                               'game-start|2',
                                 'round-start|2.1',
-                            'tournament-end'];
+                            'table-end'];
 
     var actualCounter = {
-            tournament: {start: 0, button: 0, end: 0},
+            table: {start: 0, button: 0, end: 0},
             game      : {start: 0, end: 0},
             round     : {start: 0, end: 0}
           },
@@ -58,18 +58,18 @@ describe('Events sequence', function() {
 
       ++actualCounter[parts[0]][parts[1]];
 
-      if (['game', 'round'].indexOf(parts[0]) != -1) game_round += tournament.gameCounter;
-      if (parts[0] === 'round') game_round += '.' + tournament.game.roundCounter;
+      if (['game', 'round'].indexOf(parts[0]) != -1) game_round += table.gameCounter;
+      if (parts[0] === 'round') game_round += '.' + table.game.roundCounter;
       actualSequence.push(eventName + (game_round ? '|' + game_round : ''));
     }
 
-    tournament.on('tournament-start',  function() { updateActual('tournament-start'); });
-    tournament.on('tournament-button', function() { updateActual('tournament-button'); });
-    tournament.on(  'game-start',      function() { updateActual('game-start'); });
-    tournament.on(    'round-start',   function() { updateActual('round-start'); });
-    tournament.on(    'round-end',     function() { updateActual('round-end'); });
-    tournament.on(  'game-end',        function() { updateActual('game-end'); });
-    tournament.on('tournament-end',    function() { updateActual('tournament-end');
+    table.on('table-start',  function() { updateActual('table-start'); });
+    table.on('table-button', function() { updateActual('table-button'); });
+    table.on(  'game-start',      function() { updateActual('game-start'); });
+    table.on(    'round-start',   function() { updateActual('round-start'); });
+    table.on(    'round-end',     function() { updateActual('round-end'); });
+    table.on(  'game-end',        function() { updateActual('game-end'); });
+    table.on('table-end',    function() { updateActual('table-end');
       actualCounter.stringify().should.equal( expectedCounter.stringify() );
       actualSequence.stringify().should.equal( expectedSequence.stringify() );
       done();
@@ -78,27 +78,27 @@ describe('Events sequence', function() {
     function nextStep() {
       var step = steps.shift();
       if (!step) {
-        tournament.end();
+        table.end();
         return;
       }
 
       if (!step.nextStep) {
-        step.forward(tournament);
+        step.forward(table);
         nextStep();
       } else {
         var eventHandler = function() {
-          if (step.nextStep.isFinalEvent.apply(tournament, arguments)) {
-            tournament.removeListener(step.nextStep.eventName, eventHandler);
-            nextStep(tournament);
+          if (step.nextStep.isFinalEvent.apply(table, arguments)) {
+            table.removeListener(step.nextStep.eventName, eventHandler);
+            nextStep(table);
           }
         };
-        tournament.on(step.nextStep.eventName, eventHandler);
-        step.forward(tournament);
+        table.on(step.nextStep.eventName, eventHandler);
+        step.forward(table);
       }
     }
 
-    tournament.start();
-    nextStep(tournament);
+    table.start();
+    nextStep(table);
 
   });
 

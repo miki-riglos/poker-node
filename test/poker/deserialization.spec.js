@@ -1,7 +1,7 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 var _ = require('underscore');
 
-var Tournament = require('../../poker/tournament').Tournament,
+var Table = require('../../poker/table').Table,
     Game       = require('../../poker/game').Game,
     Round      = require('../../poker/round').Round,
     Deck       = require('../../poker/deck').Deck,
@@ -23,42 +23,42 @@ describe('Deserialization', function() {
     });
   });
 
-  describe('Tournament, Game and Round', function() {
-    var tournament;
-    var tournamentSte,
-        tournamentIns;
+  describe('Table, Game and Round', function() {
+    var table;
+    var tableSte,
+        tableIns;
 
     beforeEach(function() {
-      tournament = new Tournament();
-      tournament.registerPlayer(1, 'Sofia');
-      tournament.registerPlayer(2, 'Bianca');
+      table = new Table();
+      table.registerPlayer(1, 'Sofia');
+      table.registerPlayer(2, 'Bianca');
     });
 
-    it('should deserialize when tournament has not started', function() {
-      tournamentSte = JSON.parse( JSON.stringify(tournament) );
-      tournamentIns = new Tournament(tournamentSte);
-      tournamentIns.should.be.an.instanceOf(Tournament);
-      tournamentIns.should.eql(tournament);
+    it('should deserialize when table has not started', function() {
+      tableSte = JSON.parse( JSON.stringify(table) );
+      tableIns = new Table(tableSte);
+      tableIns.should.be.an.instanceOf(Table);
+      tableIns.should.eql(table);
     });
 
-    describe('Deserialization after tournament has started', function() {
+    describe('Deserialization after table has started', function() {
       var omits;
 
       beforeEach(function() {
-        tournament.start();
-        tournamentSte = JSON.parse( JSON.stringify(tournament) );
-        tournamentIns = new Tournament(tournamentSte);
+        table.start();
+        tableSte = JSON.parse( JSON.stringify(table) );
+        tableIns = new Table(tableSte);
       });
 
-      it('should deserialize tournament', function() {
-        tournamentIns.should.be.an.instanceOf(Tournament);
+      it('should deserialize table', function() {
+        tableIns.should.be.an.instanceOf(Table);
 
         omits = ['players', 'game', '_events'];
-        _.omit(tournamentIns, omits).should.eql( _.omit(tournament, omits) );
+        _.omit(tableIns, omits).should.eql( _.omit(table, omits) );
 
-        keys(tournament.players).forEach(function(position) {
-          var playerIns     = tournamentIns.players[position],
-              player        = tournament.players[position],
+        keys(table.players).forEach(function(position) {
+          var playerIns     = tableIns.players[position],
+              player        = table.players[position],
               playerDataIns = _.omit(playerIns, _.functions(playerIns)),
               playerData    = _.omit(player   , _.functions(player)),
               playerMtdsIns = _.functions(playerIns),
@@ -74,26 +74,26 @@ describe('Deserialization', function() {
       });
 
       it('should deserialize game', function() {
-        tournamentIns.game.should.be.an.instanceOf(Game);
+        tableIns.game.should.be.an.instanceOf(Game);
 
-        omits = ['tournament', 'handsInfo', 'round', '_events'];
-        _.omit(tournamentIns.game, omits).should.eql( _.omit(tournament.game, omits) );
+        omits = ['table', 'handsInfo', 'round', '_events'];
+        _.omit(tableIns.game, omits).should.eql( _.omit(table.game, omits) );
 
         // handsInfo
-        keys(tournament.game.handsInfo).forEach(function(position) {
-          tournamentIns.game.handsInfo[position].hand[0].should.be.an.instanceOf(Card);
-          tournamentIns.game.handsInfo[position].hand[1].should.be.an.instanceOf(Card);
-          tournamentIns.game.handsInfo[position].should.eql( tournament.game.handsInfo[position] );
+        keys(table.game.handsInfo).forEach(function(position) {
+          tableIns.game.handsInfo[position].hand[0].should.be.an.instanceOf(Card);
+          tableIns.game.handsInfo[position].hand[1].should.be.an.instanceOf(Card);
+          tableIns.game.handsInfo[position].should.eql( table.game.handsInfo[position] );
         });
         // Deck
-        tournamentIns.game.deck.should.be.an.instanceOf(Deck);
+        tableIns.game.deck.should.be.an.instanceOf(Deck);
       });
 
       it('should deserialize round', function() {
-        tournamentIns.game.round.should.be.an.instanceOf(Round);
+        tableIns.game.round.should.be.an.instanceOf(Round);
 
-        omits = ['tournament', 'game', 'actionsInfo', '_events'];
-        _.omit(tournamentIns.game.round, omits).should.eql( _.omit(tournament.game.round, omits) );
+        omits = ['table', 'game', 'actionsInfo', '_events'];
+        _.omit(tableIns.game.round, omits).should.eql( _.omit(table.game.round, omits) );
       });
 
     });

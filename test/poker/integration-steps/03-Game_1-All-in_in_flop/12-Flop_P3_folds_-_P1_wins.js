@@ -4,12 +4,12 @@ module.exports = {
 
   initialStep: require('./11-Flop_P2_folds'),
 
-  forward: function(tournament) {
-    tournament.once('game-start', function() {
+  forward: function(table) {
+    table.once('game-start', function() {
       var Deck = require('../../../../poker/deck').Deck;
-      tournament.game.deck = new Deck(); // Reassign for testing (not shuffled)
+      table.game.deck = new Deck(); // Reassign for testing (not shuffled)
     });
-    tournament.players[3].folds();
+    table.players[3].folds();
   },
 
   getFinalState: function() {
@@ -85,7 +85,7 @@ module.exports = {
   nextStep: {
     name         : 'Round of Game 2 starts',
     eventName    : 'round-next',
-    isFinalEvent : function(tournament) { return (tournament.gameCounter === 2 && tournament.game.round.positionToAct === 1); },
+    isFinalEvent : function(table) { return (table.gameCounter === 2 && table.game.round.positionToAct === 1); },
     getFinalState: function() {
       return {
       options: {

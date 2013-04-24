@@ -22,11 +22,11 @@ emit('round-fold' , evt);
 emit('round-end';
 emit('end'  )
 
-Tournament
+Table
 ----------
-emit('tournament-start' , this);
-emit('tournament-error' , this);
-emit('tournament-button', this)
+emit('table-start' , this);
+emit('table-error' , this);
+emit('table-button', this)
 emit('game-start'       , this)
 emit('round-start'      , this)
 emit('round-error'      , this) //TODO
@@ -37,13 +37,13 @@ emit('round-check'      , this, evt);
 emit('round-fold'       , this, evt);
 emit('round-end'        , this)
 emit('game-end'         , this)
-emit('tournament-end'   , this);
+emit('table-end'   , this);
 
 
 Synchronicity
 =============
-tournament.start()                                -> emit('tournament-start')
-tournament.startGame()
+table.start()                                -> emit('table-start')
+table.startGame()
   game = new Game()
     game.start()                                  -> emit('game-start')
     game.startRound()
@@ -65,6 +65,6 @@ tournament.startGame()
           game.end()                              -> emit('game-end')
     game.on('end')
       if another game
-        process.nextTick tournament.startGame()   -> async
+        process.nextTick table.startGame()   -> async
       else                                         or
-        tournament.end()                          -> emit('game-end')
+        table.end()                          -> emit('game-end')

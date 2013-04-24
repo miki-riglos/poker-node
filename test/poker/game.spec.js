@@ -1,14 +1,14 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
 var Game       = require('../../poker/game').Game,
-    Tournament = require('../../poker/tournament').Tournament;
+    Table = require('../../poker/table').Table;
 
 describe('Game class', function() {
-var tournament, game;
+var table, game;
 
   beforeEach(function() {
-    tournament = new Tournament();
-    game       = new Game(tournament);
+    table = new Table();
+    game       = new Game(table);
   });
 
   it('should create new instance', function() {

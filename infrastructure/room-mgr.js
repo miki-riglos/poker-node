@@ -4,7 +4,7 @@ var fs   = require('fs'),
 
 var DATA_FILE = path.join(__dirname, 'db', 'rooms.json');
 
-var Tournament = require('../poker/tournament').Tournament;
+var Table = require('../poker/table').Table;
 
 var keys = Object.keys;
 
@@ -13,11 +13,11 @@ function Room(state) {
   if (typeof state == 'string') {
     this.host       = state;
     this.started    = Date.now();
-    this.tournament = new Tournament();
+    this.table = new Table();
   } else {
     this.host       = state.host;
     this.started    = state.started;
-    this.tournament = new Tournament(state.tournament);
+    this.table = new Table(state.table);
   }
 }
 
@@ -30,9 +30,9 @@ Room.prototype.toDTO = function() {
     id        : this.id(),
     host      : this.host,
     started   : this.started,
-    tournament: {
-      status     : this.tournament.status,
-      players    : this.tournament.players
+    table: {
+      status     : this.table.status,
+      players    : this.table.players
     }
   };
 };

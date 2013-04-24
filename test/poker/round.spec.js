@@ -2,15 +2,15 @@
 
 var Round      = require('../../poker/round').Round,
     Game       = require('../../poker/game').Game,
-    Tournament = require('../../poker/tournament').Tournament;
+    Table = require('../../poker/table').Table;
 
-var tournament, game, round;
+var table, game, round;
 
 describe('Round class', function() {
 
   beforeEach(function() {
-    tournament = new Tournament();
-    game       = new Game(tournament);
+    table = new Table();
+    game       = new Game(table);
     round      = new Round(game);
   });
 
@@ -28,36 +28,36 @@ describe('nextPosition method', function() {
   var nexts, actions;
 
   beforeEach(function() {
-    tournament = new Tournament();
-    tournament.registerPlayer(1, 'Miki');
-    tournament.registerPlayer(2, 'Giovana');
-    tournament.registerPlayer(3, 'Sofia');
-    tournament.registerPlayer(4, 'Bianca');
+    table = new Table();
+    table.registerPlayer(1, 'Miki');
+    table.registerPlayer(2, 'Giovana');
+    table.registerPlayer(3, 'Sofia');
+    table.registerPlayer(4, 'Bianca');
     nexts = [];
-    tournament.on('round-next',  function() { nexts.push(tournament.game.round.positionToAct); });
+    table.on('round-next',  function() { nexts.push(table.game.round.positionToAct); });
     actions = [];
-    tournament.on('round-raise', function(trmt, evt) { if (evt.type == 'regular') actions.push({position: evt.position, action: 'raise'}); });
-    tournament.on('round-call',  function(trmt, evt) { actions.push({position: evt.position, action: 'call'}); });
-    tournament.on('round-check', function(trmt, evt) { actions.push({position: evt.position, action: 'check'}); });
-    tournament.on('round-fold',  function(trmt, evt) { actions.push({position: evt.position, action: 'fold'}); });
+    table.on('round-raise', function(table, evt) { if (evt.type == 'regular') actions.push({position: evt.position, action: 'raise'}); });
+    table.on('round-call',  function(table, evt) { actions.push({position: evt.position, action: 'call'}); });
+    table.on('round-check', function(table, evt) { actions.push({position: evt.position, action: 'check'}); });
+    table.on('round-fold',  function(table, evt) { actions.push({position: evt.position, action: 'fold'}); });
   });
 
   describe('after preflop round', function() {
 
     beforeEach(function() {
-      tournament.on('tournament-button', function() { tournament.button = 1; });
+      table.on('table-button', function() { table.button = 1; });
     });
 
     it('should finish when nobody raises', function(done) {
-      tournament.on('round-end', function() {
+      table.on('round-end', function() {
         nexts.should.eql( [2, 3, 4, 1, 2, 3] );
         actions.map(function(item) { return item.position }).should.eql([4, 1, 2, 3]);
         actions.map(function(item) { return item.action   }).should.eql(['call', 'call', 'call', 'check']);
         done();
       });
 
-      tournament.start();
-      round = tournament.game.round;
+      table.start();
+      round = table.game.round;
 
       round.positionToAct.should.equal(4);
       round.call(round.positionToAct);
@@ -73,15 +73,15 @@ describe('nextPosition method', function() {
     });
 
     it('should finish when 1st to act raises', function(done) {
-      tournament.on('round-end', function() {
+      table.on('round-end', function() {
         nexts.should.eql( [2, 3, 4, 1, 2, 3] );
         actions.map(function(item) { return item.position }).should.eql([4, 1, 2, 3]);
         actions.map(function(item) { return item.action   }).should.eql(['raise', 'call', 'call', 'call']);
         done();
       });
 
-      tournament.start();
-      round = tournament.game.round;
+      table.start();
+      round = table.game.round;
 
       round.positionToAct.should.equal(4);
       round.raise(round.positionToAct, 100);
@@ -97,7 +97,7 @@ describe('nextPosition method', function() {
     });
 
     it('should finish when someone re-raises', function(done) {
-      tournament.on('round-end', function() {
+      table.on('round-end', function() {
         nexts.should.eql( [2, 3, 4, 1, 2, 3, 4, 1] );
         actions.map(function(item) { return item.position }).should.eql(
           [4, 1, 2, 3, 4, 1]
@@ -108,8 +108,8 @@ describe('nextPosition method', function() {
         done();
       });
 
-      tournament.start();
-      round = tournament.game.round;
+      table.start();
+      round = table.game.round;
 
       round.positionToAct.should.equal(4);
       round.raise(round.positionToAct, 100);
@@ -135,24 +135,24 @@ describe('nextPosition method', function() {
   describe('after flop round', function() {
 
     beforeEach(function() {
-      tournament.on('round-start', function() {
+      table.on('round-start', function() {
         // overrides to force flop
-        tournament.button = 1;
-        tournament.game.round.number = 2;
-        tournament.game.round.positionToAct = tournament.button;
+        table.button = 1;
+        table.game.round.number = 2;
+        table.game.round.positionToAct = table.button;
       });
     });
 
     it('should finish when everybody checks', function(done) {
-      tournament.on('round-end', function() {
+      table.on('round-end', function() {
         nexts.should.eql( [2, 3, 4, 1] );
         actions.map(function(item) { return item.position }).should.eql([2, 3, 4, 1]);
         actions.map(function(item) { return item.action   }).should.eql(['check', 'check', 'check', 'check']);
         done();
       });
 
-      tournament.start();
-      round = tournament.game.round;
+      table.start();
+      round = table.game.round;
 
       round.positionToAct.should.equal(2);
       round.check(round.positionToAct);
@@ -168,15 +168,15 @@ describe('nextPosition method', function() {
     });
 
     it('should finish when 1st to act raises', function(done) {
-      tournament.on('round-end', function() {
+      table.on('round-end', function() {
         nexts.should.eql( [2, 3, 4, 1] );
         actions.map(function(item) { return item.position }).should.eql([2, 3, 4, 1]);
         actions.map(function(item) { return item.action   }).should.eql(['raise', 'call', 'call', 'call']);
         done();
       });
 
-      tournament.start();
-      round = tournament.game.round;
+      table.start();
+      round = table.game.round;
 
       round.positionToAct.should.equal(2);
       round.raise(round.positionToAct, 100);
@@ -192,7 +192,7 @@ describe('nextPosition method', function() {
     });
 
     it('should finish when someone re-raises', function(done) {
-      tournament.on('round-end', function() {
+      table.on('round-end', function() {
         nexts.should.eql( [2, 3, 4, 1, 2, 3] );
         actions.map(function(item) { return item.position }).should.eql(
           [2, 3, 4, 1, 2, 3]
@@ -203,8 +203,8 @@ describe('nextPosition method', function() {
         done();
       });
 
-      tournament.start();
-      round = tournament.game.round;
+      table.start();
+      round = table.game.round;
 
       round.positionToAct.should.equal(2);
       round.raise(round.positionToAct, 100);

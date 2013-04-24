@@ -27,14 +27,14 @@ function getGameInitialState() {
 }
 
 // Game class
-function Game(tournament, state) {
-  this.tournament = tournament;
+function Game(table, state) {
+  this.table = table;
 
   _.extend(this, getGameInitialState());
 
   if (!state) {
-    this.number    = this.tournament.gameCounter;
-    this.handsInfo = getHandsInfo( this.tournament.getPositionsWithChips() );
+    this.number    = this.table.gameCounter;
+    this.handsInfo = getHandsInfo( this.table.getPositionsWithChips() );
     this.deck      = new Deck().shuffle();
   } else {
     _.extend(this, _.omit(state, ['handsInfo', 'deck', 'flop', 'turn', 'river', 'burnt', 'round']));
@@ -50,7 +50,7 @@ function Game(tournament, state) {
     if (keys(state.turn).length)  this.turn  = new Card(state.turn);
     if (keys(state.river).length) this.river = new Card(state.river);
     this.burnt = state.burnt.map(function(stateBurntCard) { return new Card(stateBurntCard) });
-    // round re-stated by Tournament.start()
+    // round re-stated by Table.start()
   }
 
   events.EventEmitter.call(this);
@@ -133,7 +133,7 @@ Game.prototype.startRound = function(state) {
       self.winners = positionsActing;
       // Pot distribution
       self.winners.forEach(function(winnerPosition) {
-        self.tournament.players[winnerPosition].chips += self.pot / positionsActing.length;
+        self.table.players[winnerPosition].chips += self.pot / positionsActing.length;
       });
       self.end();
     }
@@ -180,7 +180,7 @@ Game.prototype.end = function() {
 };
 
 Game.prototype.toJSON = function() {
-  return _.omit(this, ['tournament', 'dealCards', '_events']);
+  return _.omit(this, ['table', 'dealCards', '_events']);
 };
 
 // Private

@@ -4,8 +4,8 @@ module.exports = {
 
   initialStep: require('./06-Preflop_P3_calls'),
 
-  forward: function(tournament) {
-    tournament.players[4].folds();
+  forward: function(table) {
+    table.players[4].folds();
   },
 
   getFinalState: function() {
@@ -82,7 +82,7 @@ module.exports = {
   nextStep: {
     name         : 'Flop round starts',
     eventName    : 'round-next',
-    isFinalEvent : function(tournament) { return (tournament.gameCounter === 1 && tournament.game.round.positionToAct === 2); },
+    isFinalEvent : function(table) { return (table.gameCounter === 1 && table.game.round.positionToAct === 2); },
     getFinalState: function() {
       return {
         options: {

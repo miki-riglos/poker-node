@@ -3,7 +3,7 @@
 var Room        = require('../../infrastructure/room-mgr').Room,
     RoomManager = require('../../infrastructure/room-mgr').RoomManager;
 
-var Tournament = require('../../poker/tournament').Tournament;
+var Table = require('../../poker/table').Table;
 
 var keys = Object.keys;
 
@@ -89,7 +89,7 @@ describe('RoomManager class', function() {
       roomsIns = roomMgr.deserialize(roomsStr);
 
       roomsIns[roomAdded.id].should.be.instanceOf(Room);
-      roomsIns[roomAdded.id].tournament.should.be.instanceOf(Tournament);
+      roomsIns[roomAdded.id].table.should.be.instanceOf(Table);
       roomsIns[roomAdded.id].should.eql( roomMgr.rooms[roomAdded.id] );
     });
 

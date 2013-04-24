@@ -4,8 +4,8 @@ module.exports = {
 
   initialStep: require('./10-Flop_P1_raises_All-in'),
 
-  forward: function(tournament) {
-    tournament.players[2].folds();
+  forward: function(table) {
+    table.players[2].folds();
   },
 
   getFinalState: function() {

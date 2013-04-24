@@ -4,11 +4,11 @@ module.exports = {
 
   initialStep: { getFinalState: function() { return undefined; } },
 
-  forward: function(tournament) {
-    tournament.registerPlayer(1, 'Miki');
-    tournament.registerPlayer(2, 'Giovana');
-    tournament.registerPlayer(3, 'Sofia');
-    tournament.registerPlayer(4, 'Bianca');
+  forward: function(table) {
+    table.registerPlayer(1, 'Miki');
+    table.registerPlayer(2, 'Giovana');
+    table.registerPlayer(3, 'Sofia');
+    table.registerPlayer(4, 'Bianca');
   },
 
   getFinalState: function() {

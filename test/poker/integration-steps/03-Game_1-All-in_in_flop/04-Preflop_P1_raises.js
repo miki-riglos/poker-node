@@ -4,8 +4,8 @@ module.exports = {
 
   initialStep: require('./03-Preflop_P4_calls'),
 
-  forward: function(tournament) {
-    tournament.players[1].raises(1025);
+  forward: function(table) {
+    table.players[1].raises(1025);
   },
 
   getFinalState: function() {

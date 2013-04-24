@@ -8,9 +8,9 @@ var Game       = require('./game').Game,
 
 var keys = Object.keys;
 
-// Tournament initial state
-function getTournamentInitialState() {
-  var tournamentInitialState = {
+// Table initial state
+function getTableInitialState() {
+  var tableInitialState = {
     options: {
       initialChips  : 10000,
       maximumPlayers: 10,
@@ -23,14 +23,14 @@ function getTournamentInitialState() {
     gameCounter: 0,
     game       : null     // Game
   };
-  tournamentInitialState.blinds.small = tournamentInitialState.options.initialBlinds.small;
-  tournamentInitialState.blinds.big   = tournamentInitialState.options.initialBlinds.big;
-  return tournamentInitialState;
+  tableInitialState.blinds.small = tableInitialState.options.initialBlinds.small;
+  tableInitialState.blinds.big   = tableInitialState.options.initialBlinds.big;
+  return tableInitialState;
 }
 
-// Tournament class
-function Tournament(state) {
-  _.extend(this, getTournamentInitialState());
+// Table class
+function Table(state) {
+  _.extend(this, getTableInitialState());
 
   if (state) {
     _.extend(this, _.omit(state, ['status', 'game']));
@@ -41,9 +41,9 @@ function Tournament(state) {
 
   events.EventEmitter.call(this);
 }
-util.inherits(Tournament, events.EventEmitter);
+util.inherits(Table, events.EventEmitter);
 
-Tournament.prototype.registerPlayer = function(position, name) {
+Table.prototype.registerPlayer = function(position, name) {
   //Don't overwrite position
   if (this.players[position]) {
     return {errorMessage: 'Position ' + position + ' already taken'};
@@ -53,9 +53,9 @@ Tournament.prototype.registerPlayer = function(position, name) {
     return {errorMessage: 'Invalid Position'};
   }
 
-  //Don't allow registration after tournament starts (gameCounter > 0)
+  //Don't allow registration after table starts (gameCounter > 0)
   if (this.gameCounter) {
-    return {errorMessage: 'Tournament already started'};
+    return {errorMessage: 'Table already started'};
   }
 
   this.players[position] = {
@@ -65,7 +65,7 @@ Tournament.prototype.registerPlayer = function(position, name) {
   return {errorMessage: ''};
 };
 
-Tournament.prototype.addActionsToPlayers = function() {
+Table.prototype.addActionsToPlayers = function() {
   // adding methods such as registeredPlayers[1].raises()
   var self = this;
   keys(this.players).forEach(function(position) {
@@ -79,30 +79,30 @@ Tournament.prototype.addActionsToPlayers = function() {
   });
 };
 
-Tournament.prototype.start = function(state) {
+Table.prototype.start = function(state) {
   if (this.status === 'open' &&  keys(this.players).length > 1) {
     this.status = 'start';
     this.addActionsToPlayers();
 
-    this.emit('tournament-start', this);
+    this.emit('table-start', this);
     this.startGame(state);
   } else {
-    this.emit('tournament-error', this);
+    this.emit('table-error', this);
   }
 };
 
-Tournament.prototype.setButton = function() {
+Table.prototype.setButton = function() {
   if (this.gameCounter === 1) {
     var draw = buttonDraw( this.getPositionsWithChips(), new Deck().shuffle() );
     this.button = draw.winner;
-    this.emit('tournament-button', this, draw);
+    this.emit('table-button', this, draw);
   } else {
     this.nextButton();
-    this.emit('tournament-button', this);
+    this.emit('table-button', this);
   }
 };
 
-Tournament.prototype.nextButton = function() {
+Table.prototype.nextButton = function() {
   var initialPosition = this.button,
       runningPosition = initialPosition,
       maximumPosition = Math.max.apply(Math, keys(this.players).map(function(key) { return +key; }));
@@ -122,7 +122,7 @@ Tournament.prototype.nextButton = function() {
   this.button = runningPosition;
 };
 
-Tournament.prototype.getPositionsWithChips = function() {
+Table.prototype.getPositionsWithChips = function() {
   var positionsWithChips = [],
       position;
 
@@ -135,7 +135,7 @@ Tournament.prototype.getPositionsWithChips = function() {
   return positionsWithChips;
 };
 
-Tournament.prototype.startGame = function(state) {
+Table.prototype.startGame = function(state) {
   var self = this,
       game;
 
@@ -201,17 +201,17 @@ Tournament.prototype.startGame = function(state) {
   }
 };
 
-Tournament.prototype.end = function() {
+Table.prototype.end = function() {
   this.status = 'end';
-  this.emit('tournament-end', this);
+  this.emit('table-end', this);
 };
 
-Tournament.prototype.toJSON = function() {
+Table.prototype.toJSON = function() {
   return _.omit(this, ['_events']);
 };
 
 // Exports
 module.exports = {
-  Tournament: Tournament
+  Table: Table
 };
 

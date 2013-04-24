@@ -4,8 +4,8 @@ module.exports = {
 
   initialStep: require('./07-Preflop_P4_folds'),
 
-  forward: function(tournament) {
-    tournament.players[2].checks();
+  forward: function(table) {
+    table.players[2].checks();
   },
 
   getFinalState: function() {
