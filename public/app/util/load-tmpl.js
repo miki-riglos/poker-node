@@ -1,7 +1,6 @@
 define(['text', 'jquery'], function(text, $) {
 
   var defaults = {
-    path     : '../tmpl/',
     ext      : '.html',
     idSuffix : 'Tmpl',
     container: 'body'
@@ -10,9 +9,10 @@ define(['text', 'jquery'], function(text, $) {
   return {
     load: function(name, req, onLoad, config) {
 
-      var filename = config.baseUrl + defaults.path + name + defaults.ext,
+      var filename = config.baseUrl + name + defaults.ext,
           tmplId   = name.toLowerCase()
-                         .replace(/-(.)/g, function(match, group1) { return group1.toUpperCase(); }) // replace dash and camelCase
+                         .split('/').join('_')
+                         .replace(/-(.)/g, function(match, group1) { return group1.toUpperCase(); }) // remove dash and camelCase
                          + defaults.idSuffix;
 
       text.get(filename, function(tmplString){

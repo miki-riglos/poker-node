@@ -1,5 +1,4 @@
-define(['knockout', 'user', 'registration',
-        'loadTmpl!login', 'loadTmpl!register', 'loadTmpl!logged-in'],
+define(['knockout', 'user/user', 'user/registration', 'loadTmpl!user/login', 'loadTmpl!user/register', 'loadTmpl!user/logged-in'],
 function(ko, user, registration, loginTmplId, registerTmplId, loggedInTmplId) {
 
   var userViewsMgr = {

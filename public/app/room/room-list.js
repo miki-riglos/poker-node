@@ -1,4 +1,4 @@
-define(['knockout', 'socket', 'user', 'loadTmpl!room-list'], function(ko, socket, user, roomListTmplId) {
+define(['knockout', 'socket', '../user/user', 'loadTmpl!room/room-list'], function(ko, socket, user, roomListTmplId) {
 
   function playersToArray(players) {
     var playersArray = [];
@@ -72,7 +72,6 @@ define(['knockout', 'socket', 'user', 'loadTmpl!room-list'], function(ko, socket
       });
     };
   }
-
 
   var roomList = new RoomList();
 

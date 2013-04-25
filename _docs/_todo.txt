@@ -11,11 +11,11 @@ TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 - When logged in
   - Rooms with open table (not start)
-    - Enable button to join
+    - Enable button to enter
     - Game flow
 
-- client: add room and the Table.registerPlayer (host)?
-- public/js: group view models and templates in folders?
+- test public with fake socket?
+
 - remove room: warning if status is open
 
 - CLI to manipulate io in server?
@@ -26,7 +26,7 @@ TODO
 - infrastructure/room-mgr: remove room when its table's status is not open or start
 - Client session, reconnections / refresh
   - cookies? socket.io handshake?
-- room-mgr: save one room per file?
+- infrastructure/room-mgr: save one room per file?
 
 - Validate actions in Round
 

@@ -27,28 +27,12 @@
 
       <hr/>
 
-      <!-- TODO -->
-      <!-- Rooms -->
-      <ul id='rooms' data-bind="foreach: $data">
-        <li>
-          <!-- Table -->
-          <div>
-            <!-- Header -->
-            <div>
-              <div>Table Host: <span data-bind="text: host"></span> </div>
-              <div>Players: <span data-bind='text: players().length'> </div>
-            <div>
-            <!-- Players -->
-            <ul data-bind="foreach: players">
-              <li>
-                <span data-bind="text: name"></span>
-                <span data-bind="text: chips"></span>
-              </li>
-            </ul>
-          </div>
-        </li>
-      </ul>
+      <!-- room list view -->
+      <div id='roomMgrView'>
+        <div data-bind='template: {name: templateId}'></div>
+      </div>
 
-      <script data-main="js/main" src="js/ext/require.js"></script>
+      <!-- require -->
+      <script data-main="app/main" src="js/require.js"></script>
     </body>
 </html>
