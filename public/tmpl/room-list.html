@@ -8,6 +8,7 @@
       <td>Status</td>
       <td>Players</td>
       <td>Remove</td>
+      <td>Enter</td>
     </tr>
   </thead>
   <tbody data-bind='foreach: roomsToShow'>
@@ -17,7 +18,10 @@
       <td data-bind='text: tableStatus'></td>
       <td data-bind='text: tablePlayersList'></td>
       <td>
-        <button data-bind='click:$parent.remove'>Remove</button>
+        <button data-bind='click:$parent.remove, enable: isUserHost'>Remove</button>
+      </td>
+      <td>
+        <button>Enter</button>
       </td>
     </tr>
   </tbody>

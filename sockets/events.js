@@ -47,35 +47,43 @@ function events(io, override) {
 
     socket.on('room-add', function(host, cb) {
       socket.get('username', function(err, username) {
-        if (host === username) {
-          roomMgr.add(host, function(err, roomAddedDTO) {
-            if (err) {
-              cb({success: false, message: err.message});
-            } else {
-              cb({success: true, roomAdded: roomAddedDTO});
-              socket.broadcast.emit('room-added', roomAddedDTO);
-            }
-          });
-        } else {
-         cb({success: false, message: 'Invalid host'});
+        if (host !== username) {
+          cb({success: false, message: 'User is not logged-in user'});
+          return;
         }
+        roomMgr.add(host, function(err, roomAddedDTO) {
+          if (err) {
+            cb({success: false, message: err.message});
+            return;
+          }
+          cb({success: true, roomAdded: roomAddedDTO});
+          socket.broadcast.emit('room-added', roomAddedDTO);
+        });
       });
     });
 
     socket.on('room-remove', function(remove, cb) {
       socket.get('username', function(err, username) {
-        if (remove.host === username) {
-          roomMgr.remove(remove.roomId, function(err, roomRemovedDTO) {
-            if (err) {
-              cb({success: false, message: err.message});
-            } else {
-              cb({success: true, roomRemovedId: roomRemovedDTO.id});
-              socket.broadcast.emit('room-removed', roomRemovedDTO.id);
-            }
-          });
-        } else {
-         cb({success: false, message: 'Invalid host'});
+        if (remove.host !== username) {
+          cb({success: false, message: 'User is not logged-in user'});
+          return;
         }
+        if (!roomMgr.exist(remove.roomId)) {
+          cb({success: false, message: 'Room does not exist anymore'});
+          return;
+        }
+        if (roomMgr.rooms[remove.roomId].host !== username) {
+          cb({success: false, message: 'User is not room host'});
+          return;
+        }
+        roomMgr.remove(remove.roomId, function(err, roomRemovedDTO) {
+          if (err) {
+            cb({success: false, message: err.message});
+            return;
+          }
+          cb({success: true, roomRemovedId: roomRemovedDTO.id});
+          socket.broadcast.emit('room-removed', roomRemovedDTO.id);
+        });
       });
     });
 

@@ -12,16 +12,21 @@ define(['knockout', 'socket', 'user', 'loadTmpl!room-list'], function(ko, socket
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return  [months[date.getMonth()], date.getDate()].join(' ')
             + ', ' +
-            [('0'+date.getHours()).substr(-2), ('0'+date.getMinutes()).substr(-2)].join(':');
+            [('0' + date.getHours()  ).substr(-2),
+             ('0' + date.getMinutes()).substr(-2),
+             ('0' + date.getSeconds()).substr(-2)].join(':');
   }
 
   function RoomListItem(roomDTO) {
-    this.id      = roomDTO.id;
-    this.host    = roomDTO.host;
-    this.started = formatDate(new Date(roomDTO.started));
-    this.tableStatus      = ko.observable(roomDTO.table.status);
-    this.tablePlayers     = ko.observableArray( playersToArray(roomDTO.table.players) );
-    this.tablePlayersList = ko.computed( function() {return this.tablePlayers().join(', ')}, this );
+    var self = this;
+    self.id      = roomDTO.id;
+    self.host    = roomDTO.host;
+    self.started = formatDate(new Date(roomDTO.started));
+    self.tableStatus      = ko.observable(roomDTO.table.status);
+    self.tablePlayers     = ko.observableArray( playersToArray(roomDTO.table.players) );
+    self.tablePlayersList = ko.computed(function() { return self.tablePlayers().join(', '); });
+
+    self.isUserHost = ko.computed(function() { return user.isLoggedIn() && self.host === user.name(); });
   }
 
   function RoomList() {
@@ -80,7 +85,7 @@ define(['knockout', 'socket', 'user', 'loadTmpl!room-list'], function(ko, socket
   });
 
   socket.on('room-removed', function(roomRemovedId) {
-    var roomRemoved = ko.utils.arrayFirst(roomList.allRooms(), function(room) { return room.id = roomRemovedId; });
+    var roomRemoved = ko.utils.arrayFirst(roomList.allRooms(), function(room) { return room.id === roomRemovedId; });
     roomList.allRooms.remove(roomRemoved);
   });
 
