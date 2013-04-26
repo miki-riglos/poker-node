@@ -8,7 +8,7 @@ function events(io, override) {
   var userMgr  = override.userMgr || new UserManager(),
       roomMgr  = override.roomMgr || new RoomManager();
 
-  io.sockets.on('connection', function (socket) {
+  io.sockets.on('connection', function(socket) {
 
     // User events
     socket.on('login', function(login, cb) {
@@ -41,7 +41,8 @@ function events(io, override) {
       });
     });
 
-    // Room List events
+    // Room
+    // -- list events
     var allRoomsDTO = roomMgr.getAllRooms();
     socket.emit('room-list', allRoomsDTO);
 
@@ -87,8 +88,32 @@ function events(io, override) {
       });
     });
 
-  });
+    // -- Table events
+    socket.on('room-register-player', function(registerPlayer, cb) {
+      socket.get('username', function(err, username) {
+        if (registerPlayer.user !== username) {
+          cb({success: false, message: 'User is not logged-in user'});
+          return;
+        }
+        if (!roomMgr.exist(registerPlayer.roomId)) {
+          cb({success: false, message: 'Room does not exist anymore'});
+          return;
+        }
+        var table = roomMgr.rooms[registerPlayer.roomId].table;
+        var registerResults = table.registerPlayer(registerPlayer.position, registerPlayer.user);
+        cb(registerResults);
+        if (registerResults.success) {
+          socket.broadcast.emit('room-registered-player', {
+            roomId  : registerPlayer.roomId,
+            position: registerPlayer.position,
+            name    : registerPlayer.user,
+            chips   : table.players[registerPlayer.position].chips
+          });
+        }
+      });
+    });
 
+  });
 }
 
 // Exports

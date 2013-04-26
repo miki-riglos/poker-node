@@ -42,7 +42,7 @@ describe('nextPosition method', function() {
     table.on('round-fold',  function(table, evt) { actions.push({position: evt.position, action: 'fold'}); });
   });
 
-  describe('after preflop round', function() {
+  describe('After preflop round', function() {
 
     beforeEach(function() {
       table.on('table-button', function() { table.button = 1; });
@@ -132,7 +132,7 @@ describe('nextPosition method', function() {
 
   });
 
-  describe('after flop round', function() {
+  describe('After flop round', function() {
 
     beforeEach(function() {
       table.on('round-start', function() {

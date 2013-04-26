@@ -46,23 +46,23 @@ util.inherits(Table, events.EventEmitter);
 Table.prototype.registerPlayer = function(position, name) {
   //Don't overwrite position
   if (this.players[position]) {
-    return {errorMessage: 'Position ' + position + ' already taken'};
+    return {success: false, message: 'Position ' + position + ' already taken'};
   }
   //Validate position range
   if (position < 1 || position > this.options.maximumPlayers) {
-    return {errorMessage: 'Invalid Position'};
+    return {success: false, message: 'Invalid Position'};
   }
 
   //Don't allow registration after table starts (gameCounter > 0)
   if (this.gameCounter) {
-    return {errorMessage: 'Table already started'};
+    return {success: false, message: 'Table already started'};
   }
 
   this.players[position] = {
     name : name,
     chips: this.options.initialChips
   };
-  return {errorMessage: ''};
+  return {success: true};
 };
 
 Table.prototype.addActionsToPlayers = function() {

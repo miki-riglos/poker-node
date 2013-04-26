@@ -14,7 +14,7 @@
 */
 function buttonDraw(positions, deck) {
   var roundCounter = 0,
-      draw = { winner: 0, cards: [] },
+      draw          = { winner: 0, cards: [] },
       tiedPositions = positions,
       currentCard,
       dealt,

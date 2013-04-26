@@ -1,4 +1,5 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
+var _ = require('underscore');
 
 var Room        = require('../../infrastructure/room-mgr').Room,
     RoomManager = require('../../infrastructure/room-mgr').RoomManager;
@@ -23,7 +24,7 @@ describe('RoomManager class', function() {
     roomMgr = new RoomManager(override); // Override load and save methods
   });
 
-  describe('adding rooms', function() {
+  describe('Adding rooms', function() {
 
     beforeEach(function(done) {
       roomMgr.add('giovana', function(err, firstRoomAdded) {
@@ -32,9 +33,8 @@ describe('RoomManager class', function() {
       });
     });
 
-    it('should add room', function(done) {
+    it('should add room', function() {
       roomAdded.host.should.equal('giovana');
-      done();
     });
 
     afterEach(function() {
@@ -42,7 +42,7 @@ describe('RoomManager class', function() {
     });
   });
 
-  describe('removing rooms', function() {
+  describe('Removing rooms', function() {
 
     beforeEach(function(done) {
       roomMgr.add('giovana', function(err, firstRoomAdded) {
@@ -74,7 +74,7 @@ describe('RoomManager class', function() {
 
   });
 
-  describe('deserialization', function() {
+  describe('Deserialization', function() {
     var roomsStr, roomsIns;
 
     beforeEach(function(done) {
@@ -90,12 +90,14 @@ describe('RoomManager class', function() {
 
       roomsIns[roomAdded.id].should.be.instanceOf(Room);
       roomsIns[roomAdded.id].table.should.be.instanceOf(Table);
-      roomsIns[roomAdded.id].should.eql( roomMgr.rooms[roomAdded.id] );
+
+      _.omit(roomsIns[roomAdded.id], 'table').should.eql( _.omit(roomMgr.rooms[roomAdded.id], 'table') );
+      // table deserialization in test/poker/deserialization.spec.js
     });
 
   });
 
-  describe('getting array of rooms', function() {
+  describe('Getting array of rooms', function() {
 
     beforeEach(function(done) {
       roomMgr.add('giovana', function(err, firstRoomAdded) {
@@ -109,6 +111,74 @@ describe('RoomManager class', function() {
       var allRooms = roomMgr.getAllRooms();
       allRooms.should.be.an.instanceOf(Array);
       allRooms.should.have.lengthOf(2);
+    });
+
+  });
+
+  describe('Room events', function() {
+    var room1, room2; // instances of Room, not DTO
+
+    beforeEach(function(done) {
+      roomMgr.add('giovana', function(err, roomAdded) {
+        room1 = roomMgr.rooms[roomAdded.id];
+        roomMgr.add('miki', function(err, roomAdded) {
+          room2 = roomMgr.rooms[roomAdded.id];
+          done();
+        });
+      });
+    });
+
+    it('should emit events of rooms in RoomManager', function(done) {
+      var counter = 0;
+      roomMgr.on('table-start', function() {
+        counter++;
+        if (counter === 2) {
+          done();
+        }
+      });
+      room1.table.registerPlayer(1, 'Giovana'); room1.table.registerPlayer(2, 'Miki');
+      room1.table.start();
+      room2.table.registerPlayer(1, 'Giovana'); room2.table.registerPlayer(2, 'Miki');
+      room2.table.start();
+    });
+
+    it('should not emit events of rooms removed from RoomManager', function(done) {
+      var counter = {start: 0, end: 0};
+      roomMgr.on('table-start', function() {
+        counter.start++;
+      });
+      roomMgr.on('table-end', function() {
+        counter.end++;
+        counter.start.should.equal(2);
+        counter.end.should.equal(1);
+        done();
+      });
+      room1.table.registerPlayer(1, 'Giovana'); room1.table.registerPlayer(2, 'Miki');
+      room1.table.start();
+      room2.table.registerPlayer(1, 'Giovana'); room2.table.registerPlayer(2, 'Miki');
+      room2.table.start();
+
+      roomMgr.remove(room1.id(), function(err, roomRemoved) {
+        room1.table.end();  // should not fire event
+        room2.table.end();
+      });
+
+    });
+
+    it('should pass parameters', function(done) {
+      roomMgr.on('table-start', function(roomId, table) {
+        roomId.should.equal(room1.id());
+        table.should.be.an.instanceOf(Table);
+      });
+      roomMgr.on('round-check', function(roomId, table, evt) {
+        roomId.should.equal(room1.id());
+        table.should.be.an.instanceOf(Table);
+        evt.should.have.property('position');
+        done();
+      });
+      room1.table.registerPlayer(1, 'Giovana'); room1.table.registerPlayer(2, 'Miki');
+      room1.table.start();
+      room1.table.game.round.check( room1.table.game.round.positionToAct );
     });
 
   });

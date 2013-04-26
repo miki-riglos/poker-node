@@ -20,7 +20,7 @@ describe('UserManager class', function() {
     userMgr = new UserManager(override); // Override load and save methods
   });
 
-  describe('adding users', function() {
+  describe('Adding users', function() {
     var userAdded;
 
     beforeEach(function(done) {
@@ -30,12 +30,11 @@ describe('UserManager class', function() {
       });
     });
 
-    it('should add user', function(done) {
+    it('should add user', function() {
       userAdded.should.have.property('name', 'giovana');
       userAdded.should.not.have.property('password');
       userMgr.users['giovana'].name.should.equal(userAdded.name);
       userMgr.users['giovana'].password.should.equal('pass');
-      done();
     });
 
     it('should error out when adding existing user name', function(done) {
@@ -54,7 +53,7 @@ describe('UserManager class', function() {
       });
     });
 
-    describe('authenticating users', function() {
+    describe('Authenticating users', function() {
       it('should authenticate user', function() {
         userMgr.authenticate('giovana', 'pass').should.be.true;
         userMgr.authenticate('Giovana', 'pass').should.be.true;
@@ -68,7 +67,7 @@ describe('UserManager class', function() {
     });
   });
 
-  describe('removing users', function() {
+  describe('Removing users', function() {
 
     beforeEach(function(done) {
       userMgr.add('giovana', 'pass', done);
@@ -104,14 +103,14 @@ describe('UserManager class', function() {
 
   });
 
-  describe('deserialization', function() {
+  describe('Deserialization', function() {
 
     beforeEach(function(done) {
       userMgr.add('giovana', 'pass', done);
     });
 
     it('should deserialize users', function() {
-      var usersStr  = userMgr.serialize(userMgr.users),
+      var usersStr = userMgr.serialize(userMgr.users),
           usersIns = userMgr.deserialize(usersStr);
 
       usersIns['giovana'].should.be.an.instanceOf(User);

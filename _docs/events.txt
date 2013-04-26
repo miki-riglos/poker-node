@@ -27,16 +27,16 @@ Table
 emit('table-start' , this);
 emit('table-error' , this);
 emit('table-button', this)
-emit('game-start'       , this)
-emit('round-start'      , this)
-emit('round-error'      , this) //TODO
-emit('round-next'       , this)
-emit('round-raise'      , this, evt);
-emit('round-call'       , this, evt);
-emit('round-check'      , this, evt);
-emit('round-fold'       , this, evt);
-emit('round-end'        , this)
-emit('game-end'         , this)
+emit('game-start'  , this)
+emit('round-start' , this)
+emit('round-error' , this) //TODO
+emit('round-next'  , this)
+emit('round-raise' , this, evt);
+emit('round-call'  , this, evt);
+emit('round-check' , this, evt);
+emit('round-fold'  , this, evt);
+emit('round-end'   , this)
+emit('game-end'    , this)
 emit('table-end'   , this);
 
 
