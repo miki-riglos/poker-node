@@ -19,7 +19,7 @@ function getRoundInitialState() {
 // Round class
 function Round(game, state) {
   this.table = game.table;
-  this.game       = game;
+  this.game  = game;
 
   _.extend(this, getRoundInitialState());
 

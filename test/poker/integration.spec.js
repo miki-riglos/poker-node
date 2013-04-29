@@ -1,9 +1,9 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
+var Table = require('../../poker/table').Table;
+
 var fs   = require('fs'),
     path = require('path');
-
-var Table = require('../../poker/table').Table;
 
 function fileToStep(directory, stepFile) {
   var filePath = path.join(directory, stepFile);

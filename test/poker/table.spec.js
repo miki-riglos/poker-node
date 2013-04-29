@@ -4,9 +4,8 @@ var Table = require('../../poker/table').Table;
 
 var keys = Object.keys;
 
-var table;
-
 describe('Table class', function() {
+  var table;
 
   beforeEach(function() {
     table = new Table();

@@ -1,8 +1,8 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
 var buttonDraw = require('../../poker/button-draw'),
-    Card = require('../../poker/deck').Card,
-    Deck = require('../../poker/deck').Deck;
+    Card       = require('../../poker/deck').Card,
+    Deck       = require('../../poker/deck').Deck;
 
 describe('buttonDraw function', function() {
   var deck;

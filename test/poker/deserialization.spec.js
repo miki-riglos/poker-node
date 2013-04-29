@@ -1,11 +1,12 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
-var _ = require('underscore');
 
-var Table = require('../../poker/table').Table,
-    Game       = require('../../poker/game').Game,
-    Round      = require('../../poker/round').Round,
-    Deck       = require('../../poker/deck').Deck,
-    Card       = require('../../poker/deck').Card;
+var Deck  = require('../../poker/deck').Deck,
+    Card  = require('../../poker/deck').Card,
+    Table = require('../../poker/table').Table,
+    Game  = require('../../poker/game').Game,
+    Round = require('../../poker/round').Round;
+
+var _ = require('underscore');
 
 var keys = Object.keys;
 

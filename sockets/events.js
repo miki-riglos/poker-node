@@ -91,7 +91,7 @@ function events(io, override) {
     // -- Table events
     socket.on('room-register-player', function(registerPlayer, cb) {
       socket.get('username', function(err, username) {
-        if (registerPlayer.user !== username) {
+        if (registerPlayer.name !== username) {
           cb({success: false, message: 'User is not logged-in user'});
           return;
         }
@@ -100,13 +100,13 @@ function events(io, override) {
           return;
         }
         var table = roomMgr.rooms[registerPlayer.roomId].table;
-        var registerResults = table.registerPlayer(registerPlayer.position, registerPlayer.user);
+        var registerResults = table.registerPlayer(registerPlayer.position, registerPlayer.name);
         cb(registerResults);
         if (registerResults.success) {
           socket.broadcast.emit('room-registered-player', {
             roomId  : registerPlayer.roomId,
             position: registerPlayer.position,
-            name    : registerPlayer.user,
+            name    : registerPlayer.name,
             chips   : table.players[registerPlayer.position].chips
           });
         }

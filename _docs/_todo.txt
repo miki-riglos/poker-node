@@ -9,7 +9,11 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- test for socket event 'room-register-player'
+- enter room event, use socket.join('room')
+  - in validate 'room-register-player' validate user has joined the room
+    - use io.sockets.manager.roomClients[socket.id]
+- leave room, use socket.leave('room')
+
 - When logged in
   - Rooms with open table (not start)
     - Enable button to enter
@@ -47,7 +51,7 @@ TODO
   - Player inactive, automatic checks/folds
   - Game status: all players are All in, show hands
 
-- Remove views? routes?
+- Remove views? routes? || remove express?
   - jade dependency
 
 - Acceptance test / automate browser (CasperJS)

@@ -1,20 +1,13 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-var User        = require('../../infrastructure/user-mgr').User,
-    UserManager = require('../../infrastructure/user-mgr').UserManager;
+var UserManager = require('../../infrastructure/user-mgr').UserManager,
+    override    = require('./setup/user-mgr.over'),
+    User        = require('../../infrastructure/user-mgr').User;
 
 var keys = Object.keys;
 
 describe('UserManager class', function() {
   var userMgr;
-  var override = {
-    load: function() {
-      this.users = {};
-    },
-    save: function(userTouched, cb) {
-      if (cb) cb(null, userTouched.toDTO());
-    }
-  };
 
   beforeEach(function() {
     userMgr = new UserManager(override); // Override load and save methods

@@ -1,9 +1,9 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
+var Table = require('../../poker/table').Table;
+
 var fs   = require('fs'),
     path = require('path');
-
-var Table = require('../../poker/table').Table;
 
 function getSteps() {
   var files1, files2,
@@ -27,7 +27,7 @@ describe('Events sequence', function() {
 
   it('should fire events in order', function(done) {
     var table = new Table(),
-        steps      = getSteps();
+        steps = getSteps();
 
     var expectedCounter  = {
             table: {start: 1, button: 2, end: 1},

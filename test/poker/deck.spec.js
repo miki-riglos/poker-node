@@ -1,7 +1,7 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-var Card = require('../../poker/deck').Card,
-    Deck = require('../../poker/deck').Deck;
+var Deck = require('../../poker/deck').Deck,
+    Card = require('../../poker/deck').Card;
 
 describe('Card class', function() {
 

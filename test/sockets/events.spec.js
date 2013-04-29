@@ -1,45 +1,15 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-var http    = require('http'),
-    server  = http.createServer(),
-    io      = require('socket.io').listen(server),
-    ioc     = require('../../node_modules/socket.io/node_modules/socket.io-client');
+var socketsEvents = require('../../sockets/events'),
+    override      = require('./setup/events.over'),
+    port          = require('./setup/port');
 
-var socketsEvents = require('../../sockets/events');
+var getClientSocket = require('./setup/get-client-socket');
 
-var UserManager = require('../../infrastructure/user-mgr').UserManager,
-    RoomManager = require('../../infrastructure/room-mgr').RoomManager;
+var server = require('http').createServer(),
+    io     = require('socket.io').listen(server);
 
-var host       = process.env.IP || 'localhost',
-    port       = process.env.PORT || 3000,
-    serverURI  = 'http://' + host + ':' + port,
-    clientOpts = {'transports': ['websocket'], 'force new connection': true};
-
-// Override load and save methods for UserManager
-var overrideUserMgr = {
-  load: function() {
-    this.users = {"miki": {"name": "miki", "password": "pass"} };
-  },
-  save: function(userTouched, cb) {
-    if (cb) cb(null, userTouched.toDTO());
-  }
-};
-
-var overrideRoomMgr = {
-  load: function() {
-    this.rooms = {};
-  },
-  save: function(roomTouched, cb) {
-    if (cb) cb(null, roomTouched.toDTO());
-  }
-};
-
-var override = {
-  userMgr: new UserManager(overrideUserMgr),
-  roomMgr: new RoomManager(overrideRoomMgr)
-};
-
-io.set("log level", 0);
+io.set('log level', 0);
 
 // Config events
 socketsEvents(io, override);
@@ -52,7 +22,7 @@ describe('Socket events', function() {
   });
 
   beforeEach(function() {
-    socket = ioc.connect(serverURI, clientOpts);
+    socket = getClientSocket();
   });
 
   describe('User events', function() {
@@ -86,7 +56,7 @@ describe('Socket events', function() {
     describe('Add room', function() {
 
       it('should add room and notify others', function(done) {
-        var otherSocket = ioc.connect(serverURI, clientOpts),
+        var otherSocket = getClientSocket(),
             counter     = 0,
             roomAddedInCallback,
             roomAddedInEvent;
@@ -130,7 +100,7 @@ describe('Socket events', function() {
     describe('Remove room', function() {
 
       it('should remove room and notify others', function(done) {
-        var otherSocket = ioc.connect(serverURI, clientOpts),
+        var otherSocket = getClientSocket(),
             counter     = 0,
             roomRemovedIdInCallback,
             roomRemovedIdInEvent;

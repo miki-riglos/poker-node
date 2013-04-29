@@ -1,7 +1,7 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-var Round      = require('../../poker/round').Round,
-    Game       = require('../../poker/game').Game,
+var Round = require('../../poker/round').Round,
+    Game  = require('../../poker/game').Game,
     Table = require('../../poker/table').Table;
 
 var table, game, round;
@@ -10,8 +10,8 @@ describe('Round class', function() {
 
   beforeEach(function() {
     table = new Table();
-    game       = new Game(table);
-    round      = new Round(game);
+    game  = new Game(table);
+    round = new Round(game);
   });
 
   it('should create new instance', function() {

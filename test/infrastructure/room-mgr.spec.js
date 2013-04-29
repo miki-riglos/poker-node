@@ -1,24 +1,17 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
+
+var RoomManager = require('../../infrastructure/room-mgr').RoomManager,
+    override    = require('./setup/room-mgr.over'),
+    Room        = require('../../infrastructure/room-mgr').Room,
+    Table       = require('../../poker/table').Table;
+
 var _ = require('underscore');
-
-var Room        = require('../../infrastructure/room-mgr').Room,
-    RoomManager = require('../../infrastructure/room-mgr').RoomManager;
-
-var Table = require('../../poker/table').Table;
 
 var keys = Object.keys;
 
 describe('RoomManager class', function() {
-  var roomMgr;
-  var override = {
-    load: function() {
-      this.rooms = {};
-    },
-    save: function(roomTouched, cb) {
-      if (cb) cb(null, roomTouched.toDTO());
-    }
-  };
-  var roomAdded;
+  var roomMgr,
+      roomAdded;
 
   beforeEach(function() {
     roomMgr = new RoomManager(override); // Override load and save methods
@@ -116,13 +109,13 @@ describe('RoomManager class', function() {
   });
 
   describe('Room events', function() {
-    var room1, room2; // instances of Room, not DTO
+    var roomGiova, roomSofia; // instances of Room, not DTO
 
     beforeEach(function(done) {
-      roomMgr.add('giovana', function(err, roomAdded) {
-        room1 = roomMgr.rooms[roomAdded.id];
-        roomMgr.add('miki', function(err, roomAdded) {
-          room2 = roomMgr.rooms[roomAdded.id];
+      roomMgr.add('giova', function(err, roomAdded) {
+        roomGiova = roomMgr.rooms[roomAdded.id];
+        roomMgr.add('sofia', function(err, roomAdded) {
+          roomSofia = roomMgr.rooms[roomAdded.id];
           done();
         });
       });
@@ -136,10 +129,10 @@ describe('RoomManager class', function() {
           done();
         }
       });
-      room1.table.registerPlayer(1, 'Giovana'); room1.table.registerPlayer(2, 'Miki');
-      room1.table.start();
-      room2.table.registerPlayer(1, 'Giovana'); room2.table.registerPlayer(2, 'Miki');
-      room2.table.start();
+      roomGiova.table.registerPlayer(1, 'Giovana'); roomGiova.table.registerPlayer(2, 'Miki');
+      roomGiova.table.start();
+      roomSofia.table.registerPlayer(1, 'Giovana'); roomSofia.table.registerPlayer(2, 'Miki');
+      roomSofia.table.start();
     });
 
     it('should not emit events of rooms removed from RoomManager', function(done) {
@@ -153,32 +146,32 @@ describe('RoomManager class', function() {
         counter.end.should.equal(1);
         done();
       });
-      room1.table.registerPlayer(1, 'Giovana'); room1.table.registerPlayer(2, 'Miki');
-      room1.table.start();
-      room2.table.registerPlayer(1, 'Giovana'); room2.table.registerPlayer(2, 'Miki');
-      room2.table.start();
+      roomGiova.table.registerPlayer(1, 'Giovana'); roomGiova.table.registerPlayer(2, 'Miki');
+      roomGiova.table.start();
+      roomSofia.table.registerPlayer(1, 'Giovana'); roomSofia.table.registerPlayer(2, 'Miki');
+      roomSofia.table.start();
 
-      roomMgr.remove(room1.id(), function(err, roomRemoved) {
-        room1.table.end();  // should not fire event
-        room2.table.end();
+      roomMgr.remove(roomGiova.id(), function(err, roomRemoved) {
+        roomGiova.table.end();  // should not fire event
+        roomSofia.table.end();
       });
 
     });
 
     it('should pass parameters', function(done) {
       roomMgr.on('table-start', function(roomId, table) {
-        roomId.should.equal(room1.id());
+        roomId.should.equal(roomGiova.id());
         table.should.be.an.instanceOf(Table);
       });
       roomMgr.on('round-check', function(roomId, table, evt) {
-        roomId.should.equal(room1.id());
+        roomId.should.equal(roomGiova.id());
         table.should.be.an.instanceOf(Table);
         evt.should.have.property('position');
         done();
       });
-      room1.table.registerPlayer(1, 'Giovana'); room1.table.registerPlayer(2, 'Miki');
-      room1.table.start();
-      room1.table.game.round.check( room1.table.game.round.positionToAct );
+      roomGiova.table.registerPlayer(1, 'Giovana'); roomGiova.table.registerPlayer(2, 'Miki');
+      roomGiova.table.start();
+      roomGiova.table.game.round.check( roomGiova.table.game.round.positionToAct );
     });
 
   });
