@@ -88,6 +88,15 @@ function events(io, override) {
       });
     });
 
+    // -- Enter/leave events
+    socket.on('room-enter', function(roomId) {
+      socket.join(roomId);
+    });
+
+    socket.on('room-leave', function(roomId) {
+      socket.leave(roomId);
+    });
+
     // -- Table events
     socket.on('room-register-player', function(registerPlayer, cb) {
       socket.get('username', function(err, username) {

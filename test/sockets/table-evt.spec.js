@@ -31,6 +31,17 @@ describe('Socket events of tables', function() {
     });
   });
 
+
+  // describe('Enter/leave room events', function() {
+
+  //   it('should allow entering and leaving a room', function() {
+  //     console.log(io.sockets.clients(room.id));
+  //     socket.emit('room-enter', room.id);
+  //     console.log(io.sockets.clients(room.id));
+  //   });
+
+  // });
+
   describe('Player registration', function() {
 
     it('should register in table and notify others', function(done) {
@@ -63,6 +74,7 @@ describe('Socket events of tables', function() {
           done();
         }
       });
+
     });
 
   });
