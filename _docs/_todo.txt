@@ -9,23 +9,16 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- test socket.io-client: error disconnecting in 2nd afterEach
-  - io.connect return socketNamespace
-    - connect/disconnect events?
-
-- enter room event, use socket.join('room')
-- leave room, use socket.leave('room')
-
 - test public with fake socket?
 - client:
   - enter/leave room
   - register in room table
 
-- test/_helper; toInspect parameters
-
 - rename socket events with prefix?
+  - rename test/sockets/events* / split files
+  - document sockets events
+
 - pass userMgr and roomMgr to sockets/events and routes/config
-- rename test/sockets/events*
 
 - When logged in
   - Rooms with open table (not start)
@@ -68,6 +61,25 @@ TODO
 - Acceptance test / automate browser (CasperJS)
 - Code analysis (Plato)?
 
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Notes
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+socket.io-client holds off emits until socket connects
+Socket connects first and then login:
+
+  var socket = io.connect();
+  console.log('pre-connect');
+  socket.on('connect', function() {
+    console.log('connect');
+  });
+  var login = {
+    name    : 'miki',
+    password: 'pass'
+  };
+  console.log('pre-login');
+  socket.emit('login', login, function(loginRet) {
+    console.log('login');
+  });
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 CasperJS

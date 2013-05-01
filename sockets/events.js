@@ -89,12 +89,14 @@ function events(io, override) {
     });
 
     // -- Enter/leave events
-    socket.on('room-enter', function(roomId) {
+    socket.on('room-enter', function(roomId, cb) {
       socket.join(roomId);
+      cb({success: true});
     });
 
-    socket.on('room-leave', function(roomId) {
+    socket.on('room-leave', function(roomId, cb) {
       socket.leave(roomId);
+      cb({success: true});
     });
 
     // -- Table events

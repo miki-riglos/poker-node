@@ -15,73 +15,86 @@ io.set('log level', 0);
 socketsEvents(io, override);
 
 describe('Socket events of tables', function() {
-  var socket,
-      room,
-      roomMgr = override.roomMgr;
+  var roomMgr = override.roomMgr,
+      socket,
+      roomGiova;
 
   before(function(done) {
     server.listen(port, done);
   });
 
   beforeEach(function(done) {
-    socket = getClientSocket();
     roomMgr.add('giovana', function(err, roomAdded) {
-      room = roomAdded;
-      done();
+      roomGiova = roomAdded;
+
+      socket = getClientSocket();
+      socket.on('connect', done);
     });
   });
 
+  describe('Enter/leave room events', function() {
 
-  // describe('Enter/leave room events', function() {
+    it('should allow entering and leaving a room', function(done) {
+      var socketId = socket.socket.sessionid;
 
-  //   it('should allow entering and leaving a room', function() {
-  //     console.log(io.sockets.clients(room.id));
-  //     socket.emit('room-enter', room.id);
-  //     console.log(io.sockets.clients(room.id));
-  //   });
+      socket.emit('room-enter', roomGiova.id, function(roomEnterRet) {
+        roomEnterRet.success.should.be.true;
+        io.sockets.manager.roomClients[socketId].should.have.property('/' + roomGiova.id);
 
-  // });
+        socket.emit('room-leave', roomGiova.id, function(roomLeaveRet) {
+          roomLeaveRet.success.should.be.true;
+          io.sockets.manager.roomClients[socketId].should.not.have.property('/' + roomGiova.id);
+          done();
+        });
+      });
+    });
+
+  });
 
   describe('Player registration', function() {
 
     it('should register in table and notify others', function(done) {
-      var otherSocket = getClientSocket(),
-          counter     = 0;
+      var otherSocket = getClientSocket();
 
-      socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
-        var registerPlayer = {
-          name    : 'miki',
-          roomId  : room.id,
-          position: 1
-        };
-        socket.emit('room-register-player', registerPlayer, function(registerPlayerRet) {
-          registerPlayerRet.success.should.be.true;
-          ++counter;
-          if (counter === 2) EmittedAndNotified();
+      otherSocket.on('connect', function() {
+        socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
+          var wasCalled = {callback: false, event: false};
+          var registerPlayer = {
+            name    : 'miki',
+            roomId  : roomGiova.id,
+            position: 1
+          };
+
+          socket.emit('room-register-player', registerPlayer, function(registerPlayerRet) {
+            registerPlayerRet.success.should.be.true;
+            calling('callback');
+          });
+
+          otherSocket.on('room-registered-player', function(registeredPlayer) {
+            registeredPlayer.name.should.equal('miki');
+            registeredPlayer.roomId.should.equal(roomGiova.id);
+            registeredPlayer.position.should.equal(1);
+            registeredPlayer.should.have.property('chips');
+            calling('event');
+          });
+
+          function calling(who) {
+            wasCalled[who] = true;
+            if (wasCalled.callback && wasCalled.event) otherSocket.disconnect();
+          }
         });
-
-        otherSocket.on('room-registered-player', function(registeredPlayer) {
-          registeredPlayer.name.should.equal('miki');
-          registeredPlayer.roomId.should.equal(room.id);
-          registeredPlayer.position.should.equal(1);
-          registeredPlayer.should.have.property('chips');
-          ++counter;
-          if (counter === 2) EmittedAndNotified();
-        });
-
-        function EmittedAndNotified() {
-          otherSocket.disconnect();
-          done();
-        }
       });
 
+      otherSocket.on('disconnect', function(reason) { done(); });
     });
 
   });
 
   afterEach(function(done) {
-    socket.disconnect();
-    roomMgr.remove(room.id, done);
+    socket.on('disconnect', function(reason) { done(); });
+    roomMgr.remove(roomGiova.id, function() {
+      socket.disconnect();
+    });
   });
 
   after(function(done) {

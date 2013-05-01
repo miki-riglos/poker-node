@@ -3,9 +3,9 @@ var inspect = require("util").inspect;
 // Helpers for testing/debugging
 Object.defineProperties(Object.prototype, {
   "toInspect": {
-    value: function(message, showHidden, depth) {
+    value: function(message, depth) {
       console.log("\n", message ? message + "\n " : "",
-                  inspect(this, {showHidden: showHidden, depth: depth, colors: true}), "\n");
+                  inspect(this, {showHidden: false, depth: depth || 4, colors: true}), "\n");
     },
     enumerable: false
   },

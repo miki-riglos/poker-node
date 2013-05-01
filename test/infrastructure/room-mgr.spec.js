@@ -11,7 +11,7 @@ var keys = Object.keys;
 
 describe('RoomManager class', function() {
   var roomMgr,
-      roomAdded;
+      roomGiova;
 
   beforeEach(function() {
     roomMgr = new RoomManager(override); // Override load and save methods
@@ -20,14 +20,14 @@ describe('RoomManager class', function() {
   describe('Adding rooms', function() {
 
     beforeEach(function(done) {
-      roomMgr.add('giovana', function(err, firstRoomAdded) {
-        roomAdded = firstRoomAdded;
+      roomMgr.add('giovana', function(err, roomAdded) {
+        roomGiova = roomAdded;
         done();
       });
     });
 
     it('should add room', function() {
-      roomAdded.host.should.equal('giovana');
+      roomGiova.host.should.equal('giovana');
     });
 
     afterEach(function() {
@@ -38,22 +38,22 @@ describe('RoomManager class', function() {
   describe('Removing rooms', function() {
 
     beforeEach(function(done) {
-      roomMgr.add('giovana', function(err, firstRoomAdded) {
-        roomAdded = firstRoomAdded;
+      roomMgr.add('giovana', function(err, roomAdded) {
+        roomGiova = roomAdded;
         done();
       });
     });
 
     it('should remove room', function(done) {
-      roomMgr.remove(roomAdded.id, function(err, roomRemoved) {
+      roomMgr.remove(roomGiova.id, function(err, roomRemoved) {
         roomRemoved.host.should.equal('giovana');
         done();
       });
     });
 
     it('should error out when removing non-existing room', function(done) {
-      roomMgr.remove(roomAdded.id, function(err, roomRemoved) {
-        roomMgr.remove(roomAdded.id, function(err, roomRemoved) {
+      roomMgr.remove(roomGiova.id, function(err, roomRemoved) {
+        roomMgr.remove(roomGiova.id, function(err, roomRemoved) {
           err.should.be.an.instanceOf(Error);
           err.should.have.property('message');
           done();
@@ -71,8 +71,8 @@ describe('RoomManager class', function() {
     var roomsStr, roomsIns;
 
     beforeEach(function(done) {
-      roomMgr.add('giovana', function(err, firstRoomAdded) {
-        roomAdded = firstRoomAdded;
+      roomMgr.add('giovana', function(err, roomAdded) {
+        roomGiova = roomAdded;
         done();
       });
     });
@@ -81,10 +81,10 @@ describe('RoomManager class', function() {
       roomsStr = roomMgr.serialize(roomMgr.rooms);
       roomsIns = roomMgr.deserialize(roomsStr);
 
-      roomsIns[roomAdded.id].should.be.instanceOf(Room);
-      roomsIns[roomAdded.id].table.should.be.instanceOf(Table);
+      roomsIns[roomGiova.id].should.be.instanceOf(Room);
+      roomsIns[roomGiova.id].table.should.be.instanceOf(Table);
 
-      _.omit(roomsIns[roomAdded.id], 'table').should.eql( _.omit(roomMgr.rooms[roomAdded.id], 'table') );
+      _.omit(roomsIns[roomGiova.id], 'table').should.eql( _.omit(roomMgr.rooms[roomGiova.id], 'table') );
       // table deserialization in test/poker/deserialization.spec.js
     });
 
@@ -93,10 +93,8 @@ describe('RoomManager class', function() {
   describe('Getting array of rooms', function() {
 
     beforeEach(function(done) {
-      roomMgr.add('giovana', function(err, firstRoomAdded) {
-        roomMgr.add('miki', function(err, secondRoomAdded) {
-          done();
-        });
+      roomMgr.add('giovana', function(err, roomAdded) {
+        roomMgr.add('miki', done);
       });
     });
 
