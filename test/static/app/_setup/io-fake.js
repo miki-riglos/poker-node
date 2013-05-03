@@ -31,7 +31,7 @@ define(function() {
   };
 
   function delay(fn) {
-    window.setTimeout(fn, 250);
+    window.setTimeout(fn, 100);
   }
 
   socket.on('login', function(login, fn) {
@@ -40,6 +40,14 @@ define(function() {
     } else {
       delay(fn({success: false, message:'Invalid credentials'}));
     }
+  });
+
+  socket.on('logout', function(logout, fn) {
+    delay(fn({success: true}));
+  });
+
+  socket.on('register', function(register, fn) {
+    delay(fn({success: true}));
   });
 
   return {

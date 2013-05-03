@@ -12,6 +12,7 @@ require.config({
 
 var tests = [
   '../../test/static/app/util/load-tmpl.spec',
+  '../../test/static/app/user/view-mgr.spec',
   '../../test/static/app/user/user.spec'
 ];
 

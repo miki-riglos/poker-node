@@ -9,8 +9,10 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- test public (view models) with fake socket
-  - configure all events
+- test public/static (view-models) with fake socket
+  - configure all socket events
+  - view-models: use constructor instead of singleton,
+    - it is easier to dispose an instance than reset singleton state
 
 - client:
   - enter/leave room

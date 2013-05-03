@@ -2,7 +2,7 @@
 
 define(['user/user'], function(user) {
 
-  describe('user view model', function() {
+  describe('user view-model', function() {
 
     it('should login', function(done) {
       user.name('miki');
@@ -11,11 +11,18 @@ define(['user/user'], function(user) {
       var subscription = user.isLoggedIn.subscribe(function(newValue) {
         user.isLoggedIn().should.be.true;
         subscription.dispose();
-        user.logout();  // reset user, can be re-used later (singleton)
         done();
       });
 
       user.login();
+    });
+
+    afterEach(function(done) {
+      var subscription = user.isLoggedIn.subscribe(function(newValue) {
+        subscription.dispose();
+        done();
+      });
+      user.logout();  // reset user, can be re-used
     });
 
   });

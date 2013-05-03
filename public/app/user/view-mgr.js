@@ -1,15 +1,15 @@
 define(['knockout', 'user/user', 'user/registration', 'loadTmpl!user/login', 'loadTmpl!user/register', 'loadTmpl!user/logged-in'],
 function(ko, user, registration, loginTmplId, registerTmplId, loggedInTmplId) {
 
-  var userViewsMgr = {
+  var userViewMgr = {
 
     actions: [{
       name: 'Login',
-      action: function() { userViewsMgr.activate('login'); },
+      action: function() { userViewMgr.activate('login'); },
       enable: ko.computed( function() {return !user.isLoggedIn();} )
     }, {
       name: 'Register',
-      action: function() { userViewsMgr.activate('register'); },
+      action: function() { userViewMgr.activate('register'); },
       enable: ko.computed( function() {return !user.isLoggedIn();} )
     }, {
       name: 'Logout',
@@ -26,16 +26,16 @@ function(ko, user, registration, loginTmplId, registerTmplId, loggedInTmplId) {
     activeView: ko.observable(),
 
     activate: function(viewName) {
-      this.activeView(userViewsMgr.views[viewName]);
+      this.activeView(userViewMgr.views[viewName]);
     }
   };
 
   // Update view after user login/logout
   user.isLoggedIn.subscribe(function(newValue) {
     if (newValue) {
-      userViewsMgr.activate('loggedIn');
+      userViewMgr.activate('loggedIn');
     } else {
-      userViewsMgr.activate('login');
+      userViewMgr.activate('login');
     }
   });
 
@@ -47,7 +47,7 @@ function(ko, user, registration, loginTmplId, registerTmplId, loggedInTmplId) {
   };
 
   // Initial view
-  userViewsMgr.activate('login');
+  userViewMgr.activate('login');
 
-  return userViewsMgr;
+  return userViewMgr;
 });

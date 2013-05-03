@@ -8,12 +8,12 @@ define(['knockout', 'socket'], function(ko, socket) {
     register: function() {
       var self = this;
       //TODO: validate data
-      var registerData = {
+      var register = {
         name    : self.name(),
         password: self.password1()
       };
-      socket.emit('register', registerData, function(registerResp) {
-        if (registerResp.success) {
+      socket.emit('register', register, function(registerRet) {
+        if (registerRet.success) {
           self.afterRegister(self.name(), self.password1());
           //Reset values
           self.name('');
@@ -21,7 +21,7 @@ define(['knockout', 'socket'], function(ko, socket) {
           self.password2('');
         } else {
           //TODO: replace alert
-          alert(registerResp.message);
+          alert(registerRet.message);
         }
       });
     },
