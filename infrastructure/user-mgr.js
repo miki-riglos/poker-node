@@ -34,25 +34,25 @@ UserManager.prototype.exist = function(name) {
   return (name in this.users);
 };
 
-UserManager.prototype.add = function(name, password, cb) {
+UserManager.prototype.add = function(name, password, fn) {
   name = name.toLowerCase();
   if (!this.exist(name)) {
     var userToAdd = new User(name, password);
     this.users[name] = userToAdd;
-    this.save(userToAdd, cb);
+    this.save(userToAdd, fn);
   } else {
-    if (cb) cb(new Error('User name already exist.'));
+    fn && fn(new Error('User name already exist.'));
   }
 };
 
-UserManager.prototype.remove = function(name, cb) {
+UserManager.prototype.remove = function(name, fn) {
   name = name.toLowerCase();
   if (this.exist(name)) {
     var userToRemove = this.users[name];
     delete this.users[name];
-    this.save(userToRemove, cb);
+    this.save(userToRemove, fn);
   } else {
-    if (cb) cb(new Error('User name does not exist.'));
+    fn && fn(new Error('User name does not exist.'));
   }
 };
 
@@ -89,16 +89,16 @@ UserManager.prototype.serialize = function(users) {
   return JSON.stringify(users, null, 2);
 };
 
-UserManager.prototype.write = function(usersStr, cb) {
+UserManager.prototype.write = function(usersStr, fn) {
   fs.writeFile(DATA_FILE, usersStr, function(err) {
-    cb(err);
+    fn(err);
   });
 };
 
-UserManager.prototype.save = function(userTouched, cb) {
+UserManager.prototype.save = function(userTouched, fn) {
   var usersStr = this.serialize(this.users);
   this.write(usersStr, function(err) {
-    if (cb) cb(err, userTouched.toDTO());
+    fn && fn(err, userTouched.toDTO());
   });
 };
 

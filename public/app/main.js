@@ -12,7 +12,7 @@ require.config({
 require(['knockout', 'user/view-mgr', 'room/room-list', 'room/room-mgr'], function(ko, userViewMgr, roomList, roomMgr) {
 
   ko.applyBindings(userViewMgr, document.getElementById('userView'));
-  ko.applyBindings(roomList,     document.getElementById('roomListView'));
-  ko.applyBindings(roomMgr,      document.getElementById('roomMgrView'));
+  ko.applyBindings(roomList, document.getElementById('roomListView'));
+  ko.applyBindings(roomMgr, document.getElementById('roomMgrView'));
 
 });

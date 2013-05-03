@@ -94,21 +94,21 @@ RoomManager.prototype.offTableEvents = function(roomId) {
   delete this.eventHandlers[roomId];
 };
 
-RoomManager.prototype.add = function(host, cb) {
+RoomManager.prototype.add = function(host, fn) {
   var roomToAdd = new Room(host);
   this.rooms[roomToAdd.id()] = roomToAdd;
   this.onTableEvents(roomToAdd);
-  this.save(roomToAdd, cb);
+  this.save(roomToAdd, fn);
 };
 
-RoomManager.prototype.remove = function(roomId, cb) {
+RoomManager.prototype.remove = function(roomId, fn) {
   if (this.exist(roomId)) {
     var roomToRemove = this.rooms[roomId];
     this.offTableEvents(roomId);
     delete this.rooms[roomId];
-    this.save(roomToRemove, cb);
+    this.save(roomToRemove, fn);
   } else {
-    if (cb) cb(new Error('Room does not exist.'));
+    fn && fn(new Error('Room does not exist.'));
   }
 };
 
@@ -141,16 +141,16 @@ RoomManager.prototype.serialize = function(rooms) {
   return JSON.stringify(rooms, null, 2);
 };
 
-RoomManager.prototype.write = function(roomsStr, cb) {
+RoomManager.prototype.write = function(roomsStr, fn) {
   fs.writeFile(DATA_FILE, roomsStr, function(err) {
-    cb(err);
+    fn(err);
   });
 };
 
-RoomManager.prototype.save = function(roomTouched, cb) {
+RoomManager.prototype.save = function(roomTouched, fn) {
   var roomsStr = this.serialize(this.rooms);
   this.write(roomsStr, function(err) {
-    if (cb) cb(err, roomTouched.toDTO());
+    fn && fn(err, roomTouched.toDTO());
   });
 };
 

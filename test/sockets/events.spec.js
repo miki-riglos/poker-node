@@ -1,10 +1,10 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
 var socketsEvents = require('../../sockets/events'),
-    override      = require('./setup/events.over'),
-    port          = require('./setup/port');
+    override      = require('./_setup/events.over'),
+    port          = require('./_setup/port');
 
-var getClientSocket = require('./setup/get-client-socket');
+var getClientSocket = require('./_setup/get-client-socket');
 
 var server = require('http').createServer(),
     io     = require('socket.io').listen(server);

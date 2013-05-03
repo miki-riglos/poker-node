@@ -1,7 +1,7 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
 var UserManager = require('../../infrastructure/user-mgr').UserManager,
-    override    = require('./setup/user-mgr.over'),
+    override    = require('./_setup/user-mgr.over'),
     User        = require('../../infrastructure/user-mgr').User;
 
 var keys = Object.keys;

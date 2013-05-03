@@ -9,7 +9,9 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- test public with fake socket?
+- test public (view models) with fake socket
+  - configure all events
+
 - client:
   - enter/leave room
   - register in room table

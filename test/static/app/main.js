@@ -2,7 +2,7 @@ require.config({
     baseUrl: '../../public/app',
 
     paths: {
-//      io      : '/socket.io/socket.io',
+      io      : '../../test/static/app/_setup/io-fake',
       knockout: '../js/knockout-2.2.1',
       jquery  : '../js/jquery-1.9.1.min',
       text    : '../js/text',
@@ -11,7 +11,8 @@ require.config({
 });
 
 var tests = [
-  '../../test/static/app/util/load-tmpl.spec'
+  '../../test/static/app/util/load-tmpl.spec',
+  '../../test/static/app/user/user.spec'
 ];
 
 require(tests, function() {

@@ -5,8 +5,8 @@ var overrideUserMgr = {
   load: function() {
     this.users = {"miki": {"name": "miki", "password": "pass"} };
   },
-  save: function(userTouched, cb) {
-    if (cb) cb(null, userTouched.toDTO());
+  save: function(userTouched, fn) {
+    fn && fn(null, userTouched.toDTO());
   }
 };
 
@@ -14,8 +14,8 @@ var overrideRoomMgr = {
   load: function() {
     this.rooms = {};
   },
-  save: function(roomTouched, cb) {
-    if (cb) cb(null, roomTouched.toDTO());
+  save: function(roomTouched, fn) {
+    fn && fn(null, roomTouched.toDTO());
   }
 };
 

@@ -1,7 +1,7 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
 var RoomManager = require('../../infrastructure/room-mgr').RoomManager,
-    override    = require('./setup/room-mgr.over'),
+    override    = require('./_setup/room-mgr.over'),
     Room        = require('../../infrastructure/room-mgr').Room,
     Table       = require('../../poker/table').Table;
 
