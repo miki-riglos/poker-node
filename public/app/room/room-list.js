@@ -1,4 +1,4 @@
-define(['knockout', 'socket', '../user/user', 'loadTmpl!room/room-list'], function(ko, socket, user, roomListTmplId) {
+define(['knockout', 'socket', 'loadTmpl!room/room-list'], function(ko, socket, roomListTmplId) {
 
   function playersToArray(players) {
     var playersArray = [];
@@ -17,8 +17,10 @@ define(['knockout', 'socket', '../user/user', 'loadTmpl!room/room-list'], functi
              ('0' + date.getSeconds()).substr(-2)].join(':');
   }
 
-  function RoomListItem(roomDTO) {
+  function RoomListItem(roomDTO, user) {
     var self = this;
+    self.user = user;
+
     self.id      = roomDTO.id;
     self.host    = roomDTO.host;
     self.started = formatDate(new Date(roomDTO.started));
@@ -26,30 +28,31 @@ define(['knockout', 'socket', '../user/user', 'loadTmpl!room/room-list'], functi
     self.tablePlayers     = ko.observableArray( playersToArray(roomDTO.table.players) );
     self.tablePlayersList = ko.computed(function() { return self.tablePlayers().join(', '); });
 
-    self.isUserHost = ko.computed(function() { return user.isLoggedIn() && self.host === user.name(); });
+    self.isUserHost = ko.computed(function() { return self.user.isLoggedIn() && self.host === self.user.name(); });
   }
 
-  function RoomList() {
+  function RoomList(user) {
     var self = this;
+    self.user = user;
+
     self.templateId     = roomListTmplId;
     self.allRooms       = ko.observableArray([]);
     self.onlyUserRooms  = ko.observable(false);
-    self.isUserLoggedIn = user.isLoggedIn;
 
     self.roomsToShow = ko.computed(function() {
       if (!self.onlyUserRooms()) {
         return self.allRooms();
       } else {
         return self.allRooms().filter(function(roomListItem) {
-          return roomListItem.host === user.name() || roomListItem.tablePlayers().indexOf(user.name()) !== -1 ;
+          return roomListItem.host === self.user.name() || roomListItem.tablePlayers().indexOf(self.user.name()) !== -1 ;
         });
       }
     });
 
     self.add = function() {
-      socket.emit('room-add', user.name(), function(roomAddRet) {
+      socket.emit('room-add', self.user.name(), function(roomAddRet) {
         if (roomAddRet.success) {
-          self.allRooms.push( new RoomListItem(roomAddRet.roomAdded) );
+          self.allRooms.push( new RoomListItem(roomAddRet.roomAdded, self.user) );
         } else {
           //TODO: replace alert
           alert(roomAddRet.message);
@@ -71,22 +74,20 @@ define(['knockout', 'socket', '../user/user', 'loadTmpl!room/room-list'], functi
         }
       });
     };
+
+    socket.on('room-list', function(rooms) {
+      self.allRooms( rooms.map(function(room) { return new RoomListItem(room, self.user); }) );
+    });
+
+    socket.on('room-added', function(roomAdded) {
+      self.allRooms.push( new RoomListItem(roomAdded, self.user) );
+    });
+
+    socket.on('room-removed', function(roomRemovedId) {
+      var roomRemoved = ko.utils.arrayFirst(self.allRooms(), function(room) { return room.id === roomRemovedId; });
+      self.allRooms.remove(roomRemoved);
+    });
   }
 
-  var roomList = new RoomList();
-
-  socket.on('room-list', function(rooms) {
-    roomList.allRooms( rooms.map(function(room) { return new RoomListItem(room); }) );
-  });
-
-  socket.on('room-added', function(roomAdded) {
-    roomList.allRooms.push( new RoomListItem(roomAdded) );
-  });
-
-  socket.on('room-removed', function(roomRemovedId) {
-    var roomRemoved = ko.utils.arrayFirst(roomList.allRooms(), function(room) { return room.id === roomRemovedId; });
-    roomList.allRooms.remove(roomRemoved);
-  });
-
-  return roomList;
+  return RoomList;
 });

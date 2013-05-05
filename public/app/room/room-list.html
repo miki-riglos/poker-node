@@ -1,4 +1,4 @@
-<input type='checkbox' data-bind='checked: onlyUserRooms, enable: isUserLoggedIn'>Only my rooms</input>
+<input type='checkbox' data-bind='checked: onlyUserRooms, enable: user.isLoggedIn'>Only my rooms</input>
 <hr/>
 <table>
   <thead>
@@ -27,4 +27,4 @@
   </tbody>
 </table>
 
-<button data-bind='click:add, enable: isUserLoggedIn'>Add</button>
+<button data-bind='click:add, enable: user.isLoggedIn'>Add</button>

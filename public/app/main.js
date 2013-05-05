@@ -9,7 +9,11 @@ require.config({
     }
 });
 
-require(['knockout', 'user/view-mgr', 'room/room-list', 'room/room-mgr'], function(ko, userViewMgr, roomList, roomMgr) {
+require(['knockout', 'user/view-mgr', 'room/room-list', 'room/room-mgr'], function(ko, UserViewManager, RoomList, RoomManager) {
+
+  var userViewMgr = new UserViewManager(),
+      roomList    = new RoomList(userViewMgr.user),
+      roomMgr     = new RoomManager();
 
   ko.applyBindings(userViewMgr, document.getElementById('userView'));
   ko.applyBindings(roomList, document.getElementById('roomListView'));

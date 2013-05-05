@@ -1,11 +1,13 @@
 define(['knockout', 'socket'], function(ko, socket) {
 
-  var user = {
-    name      : ko.observable(''),
-    password  : ko.observable(''),
-    isLoggedIn: ko.observable(false),
+  function User() {
+    var self = this;
 
-    login: function() {
+    self.name       = ko.observable('');
+    self.password   = ko.observable('');
+    self.isLoggedIn = ko.observable(false);
+
+    self.login = function() {
       var self = this;
       var login = {
         name    : self.name(),
@@ -19,10 +21,9 @@ define(['knockout', 'socket'], function(ko, socket) {
           alert(loginRet.message);
         }
       });
-    },
+    };
 
-    logout: function() {
-      var self = this;
+    self.logout = function() {
       socket.emit('logout', {}, function(logoutRet) {
         if (logoutRet.success) {
           self.isLoggedIn(false);
@@ -31,8 +32,8 @@ define(['knockout', 'socket'], function(ko, socket) {
           self.password('');
         }
       });
-    },
-  };
+    };
+  }
 
-  return user;
+  return User;
 });

@@ -1,12 +1,13 @@
 define(['knockout', 'socket'], function(ko, socket) {
 
-  var registration = {
-    name      : ko.observable(''),
-    password1 : ko.observable(''),
-    password2 : ko.observable(''),
+  function Registration() {
+    var self = this;
 
-    register: function() {
-      var self = this;
+    self.name      = ko.observable('');
+    self.password1 = ko.observable('');
+    self.password2 = ko.observable('');
+
+    self.register = function() {
       //TODO: validate data
       var register = {
         name    : self.name(),
@@ -24,10 +25,10 @@ define(['knockout', 'socket'], function(ko, socket) {
           alert(registerRet.message);
         }
       });
-    },
+    };
 
-    afterRegister: function() {}
-  };
+    self.afterRegister = function() {};
+  }
 
-  return registration;
+  return Registration;
 });

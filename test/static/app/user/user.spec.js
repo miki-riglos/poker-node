@@ -1,28 +1,37 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-define(['user/user'], function(user) {
+define(['user/user'], function(User) {
 
-  describe('user view-model', function() {
+  describe('User viewmodel', function() {
+    var user;
+
+    beforeEach(function() {
+      user = new User();
+    });
 
     it('should login', function(done) {
       user.name('miki');
       user.password('pass');
 
-      var subscription = user.isLoggedIn.subscribe(function(newValue) {
+      user.isLoggedIn.subscribe(function(newValue) {
         user.isLoggedIn().should.be.true;
-        subscription.dispose();
         done();
       });
 
       user.login();
     });
 
-    afterEach(function(done) {
-      var subscription = user.isLoggedIn.subscribe(function(newValue) {
-        subscription.dispose();
+    it('should logout', function(done) {
+      user.name('miki');
+      user.password('pass');
+      user.login();
+
+      user.isLoggedIn.subscribe(function(newValue) {
+        user.isLoggedIn().should.be.false;
         done();
       });
-      user.logout();  // reset user, can be re-used
+
+      user.logout();
     });
 
   });

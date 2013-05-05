@@ -1,23 +1,42 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-define(['user/view-mgr', 'user/user', 'user/registration'], function(userViewMgr, user, registration) {
+define(['user/view-mgr'], function(UserViewManager) {
 
-  describe('user view manager view-model', function() {
+  describe('UserViewManager viewmodel', function() {
+    var userViewMgr;
+
+    beforeEach(function() {
+      userViewMgr = new UserViewManager();
+    });
 
     it('should activate login view at start', function() {
       userViewMgr.activeView().should.equal( userViewMgr.views.login );
     });
 
-    afterEach(function(done) {
-      if (user.isLoggedIn()) {
-        var subscription = user.isLoggedIn.subscribe(function(newValue) {
-          subscription.dispose();
-          done();
-        });
-        user.logout();  // reset user, can be re-used
-      } else {
+    it('should activate loggedIn view after login', function() {
+      userViewMgr.user.isLoggedIn(true);
+      userViewMgr.activeView().should.equal( userViewMgr.views.loggedIn );
+      userViewMgr.user.isLoggedIn(false);
+      userViewMgr.activeView().should.equal( userViewMgr.views.login );
+    });
+
+    it('should activate login view after logout', function() {
+      userViewMgr.user.isLoggedIn(true);
+      userViewMgr.user.isLoggedIn(false);
+      userViewMgr.activeView().should.equal( userViewMgr.views.login );
+    });
+
+    it('should auto-login after register', function(done) {
+      userViewMgr.registration.name('giovana');
+      userViewMgr.registration.password1('pass');
+      userViewMgr.registration.password2('pass');
+
+      userViewMgr.user.isLoggedIn.subscribe(function(newValue) {
+        userViewMgr.user.isLoggedIn().should.be.true;
         done();
-      }
+      });
+
+      userViewMgr.registration.register();
     });
 
   });

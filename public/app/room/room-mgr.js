@@ -29,12 +29,5 @@ define(['knockout', 'socket', 'loadTmpl!room/room-mgr'], function(ko, socket, ro
     };
   }
 
-  var roomMgr = new RoomManager();
-
-  // dummy data
-  roomMgr.enter();
-  roomMgr.rooms()[0].host('miki');
-  roomMgr.rooms()[0].players.push( new Player('miki', 10000) );
-
-  return roomMgr;
+  return RoomManager;
 });
