@@ -42,13 +42,26 @@ define(function() {
     }
   });
 
-  socket.on('logout', function(logout, fn) {
-    delay(fn({success: true}));
-  });
+  socket.on('logout', function(logout, fn) { delay(fn({success: true})); });
 
-  socket.on('register', function(register, fn) {
-    delay(fn({success: true}));
+  socket.on('register', function(register, fn) { delay(fn({success: true})); });
+
+  socket.on('room-add', function(name, fn) {
+    delay(fn({
+      success: true,
+      roomAdded: {
+        id     : name + Date.now(),
+        host   : name,
+        started: Date.now(),
+        table  : {
+          status : 'open',
+          players: []
+        }
+      }
+    }));
   });
+  socket.on('room-remove', function(remove, fn) { delay(fn({success: true})); });
+
 
   return {
     connect: function() {

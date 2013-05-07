@@ -14,7 +14,8 @@ var tests = [
   '../../test/static/app/util/load-tmpl.spec',
   '../../test/static/app/user/user.spec',
   '../../test/static/app/user/registration.spec',
-  '../../test/static/app/user/view-mgr.spec'
+  '../../test/static/app/user/view-mgr.spec',
+  '../../test/static/app/room/room-list.spec'
 ];
 
 require(tests, function() {
