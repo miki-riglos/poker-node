@@ -2,7 +2,8 @@
 
 var userSocEvents = require('../../sockets/user-events'),
     roomSocEvents = require('../../sockets/room-events'),
-    override      = require('./_setup/events.over'),
+    userMgr       = require('./_setup/events.over').userMgr,
+    roomMgr       = require('./_setup/events.over').roomMgr,
     port          = require('./_setup/port');
 
 var getClientSocket = require('./_setup/get-client-socket');
@@ -13,12 +14,11 @@ var server = require('http').createServer(),
 io.set('log level', 0);
 
 // Config events
-userSocEvents(io, override.userMgr);
-roomSocEvents(io, override.roomMgr);
+userSocEvents(io, userMgr);
+roomSocEvents(io, roomMgr);
 
-describe('Socket events of tables', function() {
-  var roomMgr = override.roomMgr,
-      socket,
+describe('Room Table socket events', function() {
+  var socket,
       roomGiova;
 
   before(function(done) {

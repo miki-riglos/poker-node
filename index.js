@@ -1,7 +1,7 @@
 var http = require('http');
 
-var web       = require('./web'),
-    socketIO  = require('socket.io');
+var web      = require('./web'),
+    socketIO = require('socket.io');
     
 var UserManager = require('./infrastructure/user-mgr').UserManager,
     RoomManager = require('./infrastructure/room-mgr').RoomManager;

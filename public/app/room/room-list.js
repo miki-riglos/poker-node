@@ -40,13 +40,17 @@ define(['knockout', 'socket', 'loadTmpl!room/room-list'], function(ko, socket, r
     self.onlyUserRooms  = ko.observable(false);
 
     self.roomsToShow = ko.computed(function() {
-      if (!self.onlyUserRooms()) {
+      if (!self.onlyUserRooms() || !self.user.isLoggedIn()) {
         return self.allRooms();
       } else {
         return self.allRooms().filter(function(roomListItem) {
           return roomListItem.host === self.user.name() || roomListItem.tablePlayers().indexOf(self.user.name()) !== -1 ;
         });
       }
+    });
+
+    self.user.isLoggedIn.subscribe(function(userIsLoggedIn) {
+      if (!userIsLoggedIn) self.onlyUserRooms(false);
     });
 
     self.add = function() {

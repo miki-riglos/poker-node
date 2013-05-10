@@ -9,13 +9,6 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- test/sockets: split/rename
-
-- _setup: return function instead of object
-
-- client: when logout reset 'only my rooms'
-    - do not filter 'only my rooms' if logged out (with only name)
-
 - client:
   - enter/leave room
   - register in room table
