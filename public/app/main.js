@@ -13,7 +13,7 @@ require(['knockout', 'user/view-mgr', 'room/room-list', 'room/room-mgr'], functi
 
   var userViewMgr = new UserViewManager(),
       roomList    = new RoomList(userViewMgr.user),
-      roomMgr     = new RoomManager();
+      roomMgr     = new RoomManager(roomList);
 
   ko.applyBindings(userViewMgr, document.getElementById('userView'));
   ko.applyBindings(roomList, document.getElementById('roomListView'));

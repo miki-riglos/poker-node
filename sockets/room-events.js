@@ -51,7 +51,7 @@ function configRoomEvents(io, roomMgr) {
     // enter/leave events
     socket.on('room-enter', function(roomId, fn) {
       socket.join(roomId);
-      fn && fn({success: true});
+      fn && fn({ success: true, roomEntered: roomMgr.rooms[roomId].toDTO() });
     });
 
     socket.on('room-leave', function(roomId, fn) {

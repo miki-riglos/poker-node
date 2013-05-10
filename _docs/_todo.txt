@@ -10,11 +10,13 @@ Experimenting using only socket.io for all server/client communication.
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 - client:
-  - enter/leave room
+  - enter room: avoid re-enter
+    - disable enter in roomList?
+  - leave room
   - register in room table
 
 - rename socket events with prefix?
-  - document sockets events
+  - document sockets events: flow round -> game -> table -> roomMgr -> socket -> client
 
 - When logged in
   - Rooms with open table (not start)
@@ -22,6 +24,8 @@ TODO
     - Game flow
 
 - remove room: warning if status is open
+
+- client: decouple userviews?
 
 - CLI to manipulate io in server?
   - c9 blocks REPL with banner

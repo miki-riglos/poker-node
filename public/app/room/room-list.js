@@ -1,21 +1,4 @@
-define(['knockout', 'socket', 'loadTmpl!room/room-list'], function(ko, socket, roomListTmplId) {
-
-  function playersToArray(players) {
-    var playersArray = [];
-    Object.keys(players).forEach(function(key) {
-      playersArray.push(players[key].name);
-    });
-    return playersArray;
-  }
-
-  function formatDate(date) {
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return  [months[date.getMonth()], date.getDate()].join(' ')
-            + ', ' +
-            [('0' + date.getHours()  ).substr(-2),
-             ('0' + date.getMinutes()).substr(-2),
-             ('0' + date.getSeconds()).substr(-2)].join(':');
-  }
+define(['knockout', 'socket', 'loadTmpl!room/room-list', 'room/players-to-array', 'room/format-date'], function(ko, socket, roomListTmplId, playersToArray, formatDate) {
 
   function RoomListItem(roomDTO, user) {
     var self = this;
@@ -79,6 +62,12 @@ define(['knockout', 'socket', 'loadTmpl!room/room-list'], function(ko, socket, r
       });
     };
 
+    self.enter = function(room) {
+      self.onEnter(room.id);
+    };
+    
+    self.onEnter = function(roomId) { };
+    
     socket.on('room-list', function(rooms) {
       self.allRooms( rooms.map(function(room) { return new RoomListItem(room, self.user); }) );
     });
