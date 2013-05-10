@@ -1,48 +1,8 @@
-var UserManager = require('../infrastructure/user-mgr').UserManager,
-    RoomManager = require('../infrastructure/room-mgr').RoomManager;
-
-function events(io, override) {
-
-  override = override || {};
-
-  var userMgr  = override.userMgr || new UserManager(),
-      roomMgr  = override.roomMgr || new RoomManager();
+function configRoomEvents(io, roomMgr) {
 
   io.sockets.on('connection', function(socket) {
 
-    // User events
-    socket.on('login', function(login, fn) {
-      if (userMgr.authenticate(login.name, login.password)) {
-        // Save name in socket
-        socket.set('username', login.name, function() {
-          fn({success: true});
-        });
-      } else {
-        fn({success: false, message:'Invalid credentials'});
-      }
-    });
-
-    socket.on('logout', function(logout, fn) {
-      socket.set('username', '', function() {
-        fn({success: true});
-      });
-    });
-
-    socket.on('register', function(register, fn) {
-      userMgr.add(register.name, register.password, function(err, newUser) {
-        if (err) {
-          fn({success: false, message: err.message});
-        } else {
-          // Save name in socket
-          socket.set('username', register.name, function() {
-            fn({success: true});
-          });
-        }
-      });
-    });
-
-    // Room
-    // -- list events
+    // list events
     var allRoomsDTO = roomMgr.getAllRooms();
     socket.emit('room-list', allRoomsDTO);
 
@@ -88,7 +48,7 @@ function events(io, override) {
       });
     });
 
-    // -- Enter/leave events
+    // enter/leave events
     socket.on('room-enter', function(roomId, fn) {
       socket.join(roomId);
       fn && fn({success: true});
@@ -99,7 +59,7 @@ function events(io, override) {
       fn && fn({success: true});
     });
 
-    // -- Table events
+    // table events
     socket.on('room-register-player', function(registerPlayer, fn) {
       socket.get('username', function(err, username) {
         if (registerPlayer.name !== username) {
@@ -128,4 +88,4 @@ function events(io, override) {
 }
 
 // Exports
-module.exports = events;
+module.exports = configRoomEvents;

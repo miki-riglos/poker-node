@@ -1,6 +1,7 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-var socketsEvents = require('../../sockets/events'),
+var userSocEvents = require('../../sockets/user-events'),
+    roomSocEvents = require('../../sockets/room-events'),
     override      = require('./_setup/events.over'),
     port          = require('./_setup/port');
 
@@ -12,7 +13,8 @@ var server = require('http').createServer(),
 io.set('log level', 0);
 
 // Config events
-socketsEvents(io, override);
+userSocEvents(io, override.userMgr);
+roomSocEvents(io, override.roomMgr);
 
 describe('Socket events', function() {
   var socket;

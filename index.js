@@ -1,43 +1,47 @@
-var http    = require('http'),
-    express = require('express'),
-    app     = express(),
-    server  = http.createServer(app),
-    io      = require('socket.io').listen(server);
+var http = require('http');
 
-var routesConfig  = require('./routes/config'),
-    socketsEvents = require('./sockets/events');
+var web       = require('./web'),
+    socketIO  = require('socket.io');
+    
+var UserManager = require('./infrastructure/user-mgr').UserManager,
+    RoomManager = require('./infrastructure/room-mgr').RoomManager;
+    
+var userWebRoutes = require('./web/user-routes'),
+    userSocEvents = require('./sockets/user-events'),
+    roomSocEvents = require('./sockets/room-events');
 
-//var sessionSettings = {
-//  secret: 'secret',
-//  key: 'sid',
-//  store: new express.session.MemoryStore()
-//};
+web.set('port', process.env.PORT || 3000);
 
-app.configure(function() {
-  app.set('port', process.env.PORT || 3000);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-//  app.use(express.bodyParser());
-//  app.use(express.methodOverride());
-//  app.use(express.cookieParser());
-//  app.use(express.session(sessionSettings));
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
+var app = {
+  server: http.createServer(),
+  web   : web,
+  
+  io: null,
+  
+  userMgr: null,
+  roomMgr: null,
+  
+  start: function() {
+    this.userMgr = this.userMgr || new UserManager();
+    this.roomMgr = this.roomMgr || new RoomManager();
+    
+    this.server.on('request', this.web);
+    userWebRoutes(this.web, this.userMgr);
+    
+    this.io = this.io || socketIO.listen(this.server);
+    userSocEvents(this.io, this.userMgr);
+    roomSocEvents(this.io, this.roomMgr);
+    
+    this.server.listen(this.web.get('port'), function() {
+      console.log("Express server listening on port " + web.get('port'));
+    });
+  }
+};
 
-app.configure('development', function() {
-  app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
-});
+if (!module.parent) {
+  app.start();
+}
 
-app.configure('production', function() {
-  app.use(express.errorHandler());
-});
 
-routesConfig(app);
-socketsEvents(io);
-
-server.listen(app.get('port'), function() {
-  console.log("Express server listening on port " + app.get('port'));
-});
+// Exports
+module.exports = app;

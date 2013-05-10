@@ -9,19 +9,19 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- test public/static (view-models) with fake socket
-  - configure all socket events
-  - room-list, room-mgr
+- test/sockets: split/rename
+
+- _setup: return function instead of object
+
+- client: when logout reset 'only my rooms'
+    - do not filter 'only my rooms' if logged out (with only name)
 
 - client:
   - enter/leave room
   - register in room table
 
 - rename socket events with prefix?
-  - rename test/sockets/events* / split files
   - document sockets events
-
-- pass userMgr and roomMgr to sockets/events and routes/config
 
 - When logged in
   - Rooms with open table (not start)
@@ -31,6 +31,7 @@ TODO
 - remove room: warning if status is open
 
 - CLI to manipulate io in server?
+  - c9 blocks REPL with banner
 
 - web server, validate API
   - return error || emit error event <- TODOs
@@ -83,6 +84,12 @@ Socket connects first and then login:
   socket.emit('login', login, function(loginRet) {
     console.log('login');
   });
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+PhantomJS
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Error reinstalling ~1.9.0-0
+It worked with ~1.8.0
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 CasperJS

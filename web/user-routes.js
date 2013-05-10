@@ -1,10 +1,6 @@
 var path = require('path');
 
-var UserManager = require('../infrastructure/user-mgr').UserManager;
-
-function config(app) {
-  //TODO: implement override
-  var userMgr = new UserManager();
+function configUserRoutes(app, userMgr) {
 
   // GET home
   app.get('/', function(req, res) {
@@ -34,4 +30,4 @@ function config(app) {
 }
 
 // Exports
-module.exports = config;
+module.exports = configUserRoutes;
