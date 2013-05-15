@@ -134,7 +134,11 @@ RoomManager.prototype.deserialize = function(roomsStr) {
 RoomManager.prototype.load = function() {
   var roomsStr = this.read();
   this.rooms = this.deserialize(roomsStr);
-  //TODO: events for each room
+  //add listeners for each room
+  var self = this;
+  keys(this.rooms).forEach(function(roomKey) {
+    self.onTableEvents(self.rooms[roomKey]);
+  });
 };
 
 RoomManager.prototype.serialize = function(rooms) {

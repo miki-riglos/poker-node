@@ -27,16 +27,20 @@ define(['knockout', 'socket', 'loadTmpl!room/room-mgr', 'room/players-to-array',
     self.templateId = roomsTmplId;
     self.rooms      = ko.observableArray([]);
 
-    self.enter = function(roomId) {
-      socket.emit('room-enter', roomId, function(roomEnterRet) {
+    self.enter = function(roomEntry) {
+      socket.emit('room-enter', roomEntry.id, function(roomEnterRet) {
         var room = new Room(roomEnterRet.roomEntered);
-        self.rooms.push(room);        
+        self.rooms.push(room);
+        room.roomEntry = roomEntry;
+        room.roomEntry.hasUserEntered(true);
       });
     };
 
     self.leave = function(room) {
-      //socket rooom stuff
-      self.rooms.remove(room);
+      socket.emit('room-leave', room.id, function(roomLeaveRet) {
+        self.rooms.remove(room);
+        room.roomEntry.hasUserEntered(false);
+      });
     };
     
     roomList.onEnter = self.enter;

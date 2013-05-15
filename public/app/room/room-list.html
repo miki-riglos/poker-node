@@ -15,13 +15,13 @@
     <tr>
       <td data-bind='text: host'></td>
       <td data-bind='text: started'></td>
-      <td data-bind='text: tableStatus'></td>
-      <td data-bind='text: tablePlayersList'></td>
+      <td data-bind='text: table.status'></td>
+      <td data-bind='text: table.playersList'></td>
       <td>
         <button data-bind='click:$parent.remove, enable: isUserHost'>Remove</button>
       </td>
       <td>
-        <button data-bind='click:$parent.enter'>Enter</button>
+        <button data-bind='click:$parent.enter, enable: !hasUserEntered()'>Enter</button>
       </td>
     </tr>
   </tbody>

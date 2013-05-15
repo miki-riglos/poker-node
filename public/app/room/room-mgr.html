@@ -1,6 +1,7 @@
 <div data-bind='foreach: rooms'>
 
   <div>Table Host: <span data-bind="text: host"></span> </div>
+  <div>Started: <span data-bind="text: started"></span> </div>
   <div>Players: <span data-bind='text: table.players().length'> </div>
 
   <ul data-bind="foreach: table.players">
@@ -10,5 +11,6 @@
     </li>
   </ul>
 
+  <button data-bind='click:$parent.leave'>Leave</button>
   <hr />
 </div>
