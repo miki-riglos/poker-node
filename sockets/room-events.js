@@ -72,13 +72,12 @@ function configRoomEvents(io, roomMgr) {
         }
         var table = roomMgr.rooms[registerPlayer.roomId].table;
         var registerResults = table.registerPlayer(registerPlayer.position, registerPlayer.name);
-        fn(registerResults);
+        fn && fn(registerResults);
         if (registerResults.success) {
-          socket.broadcast.emit('room-registered-player', {
+          io.sockets.emit('room-registered-player', {
             roomId  : registerPlayer.roomId,
             position: registerPlayer.position,
-            name    : registerPlayer.name,
-            chips   : table.players[registerPlayer.position].chips
+            player  : table.players[registerPlayer.position]
           });
         }
       });

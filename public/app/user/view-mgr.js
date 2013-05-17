@@ -43,9 +43,8 @@ function(ko, User, Registration, loginTmplId, registerTmplId, loggedInTmplId) {
     });
 
     // Auto-login after registration
-    self.registration.afterRegister = function(name, password) {
+    self.registration.afterRegister = function(name) {
       self.user.name(name);
-      self.user.password(password);
       self.user.isLoggedIn(true);
     };
 

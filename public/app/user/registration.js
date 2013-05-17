@@ -15,7 +15,7 @@ define(['knockout', 'socket'], function(ko, socket) {
       };
       socket.emit('register', register, function(registerRet) {
         if (registerRet.success) {
-          self.afterRegister(self.name(), self.password1());
+          self.afterRegister(self.name());
           //Reset values
           self.name('');
           self.password1('');

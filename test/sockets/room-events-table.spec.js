@@ -62,9 +62,9 @@ describe('Room Table socket events', function() {
         socket.emit('login', {name: 'miki', password: 'pass'}, function(loginRet) {
           var wasCalled = {callback: false, event: false};
           var registerPlayer = {
-            name    : 'miki',
             roomId  : roomGiova.id,
-            position: 1
+            position: 1,
+            name    : 'miki'
           };
 
           socket.emit('room-register-player', registerPlayer, function(registerPlayerRet) {
@@ -73,10 +73,10 @@ describe('Room Table socket events', function() {
           });
 
           otherSocket.on('room-registered-player', function(registeredPlayer) {
-            registeredPlayer.name.should.equal('miki');
             registeredPlayer.roomId.should.equal(roomGiova.id);
             registeredPlayer.position.should.equal(1);
-            registeredPlayer.should.have.property('chips');
+            registeredPlayer.player.name.should.equal('miki');
+            registeredPlayer.player.should.have.property('chips');
             calling('event');
           });
 

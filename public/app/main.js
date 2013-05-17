@@ -1,11 +1,16 @@
 require.config({
     paths: {
-      io      : '/socket.io/socket.io',
-      knockout: '../js/knockout-2.2.1',
-      jquery  : '../js/jquery-1.9.1.min',
-      text    : '../js/text',
+      io        : '/socket.io/socket.io',
+      knockout  : '../js/knockout-2.2.1',
+      underscore: '../js/underscore-min',
+      jquery    : '../js/jquery-1.9.1.min',
+      text      : '../js/text',
 
-      loadTmpl: 'util/load-tmpl'
+      loadTmpl  : 'util/load-tmpl'
+    },
+    
+    shim: {
+      underscore: {exports: '_'}
     }
 });
 

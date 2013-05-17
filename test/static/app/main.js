@@ -2,11 +2,16 @@ require.config({
     baseUrl: '../../public/app',
 
     paths: {
-      io      : '../../test/static/app/_setup/io-fake',
-      knockout: '../js/knockout-2.2.1',
-      jquery  : '../js/jquery-1.9.1.min',
-      text    : '../js/text',
-      loadTmpl: 'util/load-tmpl'
+      io        : '../../test/static/app/_setup/io-fake',
+      knockout  : '../js/knockout-2.2.1',
+      underscore: '../js/underscore-min',      
+      jquery    : '../js/jquery-1.9.1.min',
+      text      : '../js/text',
+      loadTmpl  : 'util/load-tmpl'
+    },
+    
+    shim: {
+      underscore: {exports: '_'}
     }
 });
 

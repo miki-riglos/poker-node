@@ -62,7 +62,7 @@ Table.prototype.registerPlayer = function(position, name) {
     name : name,
     chips: this.options.initialChips
   };
-  return {success: true};
+  return {success: true, player: this.players[position]};
 };
 
 Table.prototype.addActionsToPlayers = function() {

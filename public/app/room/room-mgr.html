@@ -2,14 +2,27 @@
 
   <div>Table Host: <span data-bind="text: host"></span> </div>
   <div>Started: <span data-bind="text: started"></span> </div>
-  <div>Players: <span data-bind='text: table.players().length'> </div>
 
-  <ul data-bind="foreach: table.players">
-    <li>
-      <span data-bind="text: name"></span>
-      <span data-bind="text: chips"></span>
-    </li>
-  </ul>
+  <table>
+    <thead>
+      <tr>
+        <td>Pos</td>
+        <td>Name</td>
+        <td>Chips</td>
+        <td>Action</td>
+      </tr>
+    </thead>
+    <tbody data-bind='foreach: table.seats'>
+      <tr>
+        <td data-bind='text: position'></td>
+        <td data-bind='text: player.name'></td>
+        <td data-bind='text: player.chips'></td>
+        <td>
+          <button data-bind='click:$parent.register, enable: $parent.user.isLoggedIn() && !player.name()'>Register</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <button data-bind='click:$parent.leave'>Leave</button>
   <hr />

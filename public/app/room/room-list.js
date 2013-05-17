@@ -1,4 +1,4 @@
-define(['knockout', 'socket', 'loadTmpl!room/room-list', 'room/players-to-array', 'room/format-date'], function(ko, socket, roomListTmplId, playersToArray, formatDate) {
+define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-list', 'room/format-date'], function(ko, _, socket, roomListTmplId, formatDate) {
 
   function RoomEntry(roomDTO, user) {
     var self = this;
@@ -10,7 +10,7 @@ define(['knockout', 'socket', 'loadTmpl!room/room-list', 'room/players-to-array'
     
     self.table = {};
     self.table.status      = ko.observable(roomDTO.table.status);
-    self.table.players     = ko.observableArray( playersToArray(roomDTO.table.players) );
+    self.table.players     = ko.observableArray(_.pluck(roomDTO.table.players, 'name')); // array of player names
     self.table.playersList = ko.computed(function() { return self.table.players().join(', '); });
     
     self.hasUserEntered = ko.observable(false);
@@ -83,6 +83,12 @@ define(['knockout', 'socket', 'loadTmpl!room/room-list', 'room/players-to-array'
       var roomRemoved = ko.utils.arrayFirst(self.allRooms(), function(room) { return room.id === roomRemovedId; });
       self.allRooms.remove(roomRemoved);
     });
+    
+    socket.on('room-registered-player', function(registeredPlayer) {
+      var roomToUpdate = ko.utils.arrayFirst(self.allRooms(), function(room) { return room.id === registeredPlayer.roomId; });
+      roomToUpdate.table.players.push( registeredPlayer.player.name );
+    });
+    
   }
 
   return RoomList;

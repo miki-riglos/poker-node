@@ -16,6 +16,8 @@ define(['knockout', 'socket'], function(ko, socket) {
       socket.emit('login', login, function(loginRet) {
         if (loginRet.success) {
           self.isLoggedIn(true);
+          //Reset password
+          self.password('');
         } else {
           //TODO: replace alert
           alert(loginRet.message);
@@ -29,7 +31,6 @@ define(['knockout', 'socket'], function(ko, socket) {
           self.isLoggedIn(false);
           //Reset values
           self.name('');
-          self.password('');
         }
       });
     };
