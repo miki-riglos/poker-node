@@ -27,7 +27,7 @@ define(['knockout', 'socket'], function(ko, socket) {
       });
     };
 
-    self.afterRegister = function() {};
+    self.afterRegister = function(name) {};
   }
 
   return Registration;

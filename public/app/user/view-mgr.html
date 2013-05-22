@@ -1,0 +1,7 @@
+<div data-bind='foreach: actions'>
+  <button data-bind='text: name, click:action, enable: enable'></button>
+</div>
+<hr/>
+<div data-bind='with: activeView'>
+  <div data-bind='template: {name: templateId, data: viewModel}'></div>
+</div>

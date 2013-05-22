@@ -1,4 +1,4 @@
-define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-mgr', 'room/format-date'], function(ko, _, socket, roomsTmplId, formatDate) {
+define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-mgr', 'room/format-date'], function(ko, _, socket, roomMgrTmplId, formatDate) {
 
   function Player(state) {
     var self = this;
@@ -47,7 +47,7 @@ define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-mgr', 'room/form
     var self = this;
     self.user = roomList.user;
     
-    self.templateId = roomsTmplId;
+    self.templateId = roomMgrTmplId;
     self.rooms      = ko.observableArray([]);
 
     self.enter = function(roomEntry) {

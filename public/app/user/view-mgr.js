@@ -1,8 +1,10 @@
-define(['knockout', 'user/user', 'user/registration', 'loadTmpl!user/login', 'loadTmpl!user/register', 'loadTmpl!user/logged-in'],
-function(ko, User, Registration, loginTmplId, registerTmplId, loggedInTmplId) {
+define(['knockout', 'user/user', 'user/registration', 'loadTmpl!user/view-mgr', 'loadTmpl!user/login', 'loadTmpl!user/register', 'loadTmpl!user/logged-in'],
+function(ko, User, Registration, viewMgrTmplId, loginTmplId, registerTmplId, loggedInTmplId) {
 
   function UserViewManager() {
     var self = this;
+
+    self.templateId = viewMgrTmplId;
 
     self.user         = new User();
     self.registration = new Registration();

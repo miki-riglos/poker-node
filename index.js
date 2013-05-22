@@ -29,6 +29,10 @@ var app = {
     userWebRoutes(this.web, this.userMgr);
     
     this.io = this.io || socketIO.listen(this.server);
+
+//TODO: REMOVE: Exclude websockets in the meantime
+this.io.set("transports", ["xhr-polling"]);    
+
     userSocEvents(this.io, this.userMgr);
     roomSocEvents(this.io, this.roomMgr);
     
