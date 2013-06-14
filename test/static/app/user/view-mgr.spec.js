@@ -1,12 +1,12 @@
 /*global describe, it, before, beforeEach, afterEach, after*/
 
-define(['user/view-mgr'], function(UserViewManager) {
+define(['user/view-mgr', 'user/user', 'user/registration'], function(UserViewManager, User, Registration) {
 
   describe('UserViewManager viewmodel', function() {
     var userViewMgr;
 
     beforeEach(function() {
-      userViewMgr = new UserViewManager();
+      userViewMgr = new UserViewManager(new User(), new Registration());
     });
 
     it('should activate login view at start', function() {

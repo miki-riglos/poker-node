@@ -14,7 +14,8 @@ define(['user/registration'], function(Registration) {
       registration.password1('pass');
       registration.password2('pass');
 
-      registration.afterRegister = function(name, password) {
+      registration.afterRegister = function(name) {
+        name.should.equal('giovana');
         done();
       };
 

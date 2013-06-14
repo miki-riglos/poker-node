@@ -9,17 +9,11 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- client: decouple userviews? postalbox?
-
 - socket.io emit list of room too early
 
 - rename socket events with prefix?
   - document sockets events: flow round -> game -> table -> roomMgr -> socket -> client modules
-
-- When logged in
-  - Rooms with open table (not start)
-    - Game flow
-    
+  
 - validate player only registers once
 
 - roomList: remove room

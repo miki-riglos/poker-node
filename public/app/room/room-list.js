@@ -1,4 +1,4 @@
-define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-list', 'room/format-date'], function(ko, _, socket, roomListTmplId, formatDate) {
+define(['knockout', 'underscore', 'socket', 'mediator', 'loadTmpl!room/room-list', 'room/format-date'], function(ko, _, socket, mediator, roomListTmplId, formatDate) {
 
   function RoomEntry(roomDTO, user) {
     var self = this;
@@ -38,6 +38,10 @@ define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-list', 'room/for
     self.user.isLoggedIn.subscribe(function(userIsLoggedIn) {
       if (!userIsLoggedIn) self.onlyUserRooms(false);
     });
+    
+    self.getRoomEntry = function(roomId) {
+      return ko.utils.arrayFirst(self.allRooms(), function(room) { return room.id === roomId; });
+    };
 
     self.add = function() {
       socket.emit('room-add', self.user.name(), function(roomAddRet) {
@@ -66,10 +70,8 @@ define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-list', 'room/for
     };
 
     self.enter = function(roomEntry) {
-      self.onEnter(roomEntry);
+      mediator.emit('room-enter', roomEntry.id);
     };
-    
-    self.onEnter = function(roomEntry) { };
     
     socket.on('room-list', function(rooms) {
       self.allRooms( rooms.map(function(room) { return new RoomEntry(room, self.user); }) );
@@ -80,13 +82,21 @@ define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-list', 'room/for
     });
 
     socket.on('room-removed', function(roomRemovedId) {
-      var roomRemoved = ko.utils.arrayFirst(self.allRooms(), function(room) { return room.id === roomRemovedId; });
+      var roomRemoved = self.getRoomEntry(roomRemovedId);
       self.allRooms.remove(roomRemoved);
     });
     
     socket.on('room-registered-player', function(registeredPlayer) {
       var roomToUpdate = ko.utils.arrayFirst(self.allRooms(), function(room) { return room.id === registeredPlayer.roomId; });
       roomToUpdate.table.players.push( registeredPlayer.player.name );
+    });
+
+    mediator.on('room-entered', function(roomId) {
+      self.getRoomEntry(roomId).hasUserEntered(true);
+    });
+    
+    mediator.on('room-left', function(roomId) {
+      self.getRoomEntry(roomId).hasUserEntered(false);
     });
     
   }

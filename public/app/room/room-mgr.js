@@ -1,4 +1,4 @@
-define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-mgr', 'room/format-date'], function(ko, _, socket, roomMgrTmplId, formatDate) {
+define(['knockout', 'underscore', 'socket', 'mediator', 'loadTmpl!room/room-mgr', 'room/format-date'], function(ko, _, socket, mediator, roomMgrTmplId, formatDate) {
 
   function Player(state) {
     var self = this;
@@ -43,38 +43,43 @@ define(['knockout', 'underscore', 'socket', 'loadTmpl!room/room-mgr', 'room/form
     
   }
 
-  function RoomManager(roomList) {
+  function RoomManager(user) {
     var self = this;
-    self.user = roomList.user;
+    self.user = user;
     
     self.templateId = roomMgrTmplId;
     self.rooms      = ko.observableArray([]);
 
-    self.enter = function(roomEntry) {
-      socket.emit('room-enter', roomEntry.id, function(roomEnterRet) {
+    self.getRoom = function(roomId) {
+      return  ko.utils.arrayFirst(self.rooms(), function(room) { return room.id === roomId; });
+    };
+    
+    self.enter = function(roomId) {
+      socket.emit('room-enter', roomId, function(roomEnterRet) {
         var room = new Room(roomEnterRet.roomEntered, self.user);
         self.rooms.push(room);
-        room.roomEntry = roomEntry;
-        room.roomEntry.hasUserEntered(true);        
+        mediator.emit('room-entered', roomId);
       });
     };
 
     self.leave = function(room) {
       socket.emit('room-leave', room.id, function(roomLeaveRet) {
         self.rooms.remove(room);
-        room.roomEntry.hasUserEntered(false);
+        mediator.emit('room-left', room.id);
       });
     };
 
-    roomList.onEnter = self.enter;
-    
     socket.on('room-registered-player', function(registeredPlayer) {
-      var roomToUpdate = ko.utils.arrayFirst(self.rooms(), function(room) { return room.id === registeredPlayer.roomId; });
+      var roomToUpdate = self.getRoom(registeredPlayer.roomId);
       if (roomToUpdate) {
         var seatToUpdate = ko.utils.arrayFirst(roomToUpdate.table.seats(), function(seat) { return seat.position === registeredPlayer.position; });
         seatToUpdate.player.name(registeredPlayer.player.name);
         seatToUpdate.player.chips(registeredPlayer.player.chips);
       }
+    });
+    
+    mediator.on('room-enter', function(roomId) {
+      self.enter(roomId);
     });
     
   }

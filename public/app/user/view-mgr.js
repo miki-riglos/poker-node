@@ -1,13 +1,15 @@
 define(['knockout', 'user/user', 'user/registration', 'loadTmpl!user/view-mgr', 'loadTmpl!user/login', 'loadTmpl!user/register', 'loadTmpl!user/logged-in'],
 function(ko, User, Registration, viewMgrTmplId, loginTmplId, registerTmplId, loggedInTmplId) {
 
-  function UserViewManager() {
+  function UserViewManager(user, registration) {
     var self = this;
 
     self.templateId = viewMgrTmplId;
 
-    self.user         = new User();
-    self.registration = new Registration();
+    self.user         = user;
+    self.registration = registration;
+    
+    self.activeView = ko.observable();
 
     self.actions = [{
       name: 'Login',
@@ -28,8 +30,6 @@ function(ko, User, Registration, viewMgrTmplId, loginTmplId, registerTmplId, log
       'register': {templateId: registerTmplId, viewModel: self.registration},
       'loggedIn': {templateId: loggedInTmplId, viewModel: self.user}
     };
-
-    self.activeView = ko.observable();
 
     self.activate = function(viewName) {
       self.activeView(self.views[viewName]);
