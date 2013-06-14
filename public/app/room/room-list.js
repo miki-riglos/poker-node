@@ -62,6 +62,7 @@ define(['knockout', 'underscore', 'socket', 'mediator', 'loadTmpl!room/room-list
       socket.emit('room-remove', remove, function(roomRemoveRet) {
         if (roomRemoveRet.success) {
           self.allRooms.remove(roomEntry);
+          mediator.emit('room-removed', roomEntry.id);
         } else {
           //TODO: replace alert
           alert(roomRemoveRet.message);
@@ -96,7 +97,8 @@ define(['knockout', 'underscore', 'socket', 'mediator', 'loadTmpl!room/room-list
     });
     
     mediator.on('room-left', function(roomId) {
-      self.getRoomEntry(roomId).hasUserEntered(false);
+      var roomRemoved = self.getRoomEntry(roomId);
+      if (roomRemoved) roomRemoved.hasUserEntered(false);
     });
     
   }

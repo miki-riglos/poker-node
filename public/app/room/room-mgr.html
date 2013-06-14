@@ -1,7 +1,8 @@
 <div data-bind='foreach: rooms'>
 
-  <div>Table Host: <span data-bind="text: host"></span> </div>
-  <div>Started: <span data-bind="text: started"></span> </div>
+  <div data-bind='if: isRemoved'>*** Host removed this table ***</div>
+  <div>Table Host: <span data-bind='text: host'></span> </div>
+  <div>Started: <span data-bind='text: started'></span> </div>
 
   <table>
     <thead>
@@ -18,7 +19,7 @@
         <td data-bind='text: player.name'></td>
         <td data-bind='text: player.chips'></td>
         <td>
-          <button data-bind='click:$parent.register, enable: $parent.user.isLoggedIn() && !player.name()'>Register</button>
+          <button data-bind='click:$parent.register, enable: $parent.user.isLoggedIn() && !$parent.isRemoved() && !player.name()'>Register</button>
         </td>
       </tr>
     </tbody>
