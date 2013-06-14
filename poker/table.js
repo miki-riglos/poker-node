@@ -52,6 +52,10 @@ Table.prototype.registerPlayer = function(position, name) {
   if (position < 1 || position > this.options.maximumPlayers) {
     return {success: false, message: 'Invalid Position'};
   }
+  //Don't allow double registration of the same player name
+  if (_.contains(_.pluck(this.players, 'name'), name)) {
+    return {success: false, message: 'Player name already registered'};
+  }
 
   //Don't allow registration after table starts (gameCounter > 0)
   if (this.gameCounter) {

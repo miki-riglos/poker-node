@@ -9,19 +9,17 @@ Experimenting using only socket.io for all server/client communication.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 TODO
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-- socket.io emit list of room too early
-
-- rename socket events with prefix?
-  - document sockets events: flow round -> game -> table -> roomMgr -> socket -> client modules
-  
-- validate player only registers once
-
 - roomList: remove room
   - warning if status is open
   - notify clients that have entered room
 
+- rename socket events with prefix?
+  - document sockets events: flow round -> game -> table -> roomMgr -> socket -> client modules
+
 + CLI to manipulate io in server?
-  - c9 blocks REPL with banner
+  => c9 blocks REPL with banner
+
+- test/public: fake app
 
 - web server, validate API
   - return error || emit error event <- TODOs

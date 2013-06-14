@@ -8,7 +8,6 @@ define(['knockout', 'socket'], function(ko, socket) {
     self.isLoggedIn = ko.observable(false);
 
     self.login = function() {
-      var self = this;
       var login = {
         name    : self.name(),
         password: self.password()

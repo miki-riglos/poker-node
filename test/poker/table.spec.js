@@ -34,6 +34,12 @@ describe('Table class', function() {
       table.registerPlayer(1, 'Bianca').message.should.not.be.empty;
     });
 
+    it('should validate name uniqueness', function() {
+      table.registerPlayer(1, 'Sofia').success.should.be.true;
+      table.registerPlayer(2, 'Sofia').success.should.be.false;
+      table.registerPlayer(2, 'Sofia').message.should.not.be.empty;
+    });
+    
     it('should validate position minimum and maximum', function() {
       table.registerPlayer(0, 'Sofia').success.should.be.false;
       table.registerPlayer(11, 'Sofia').success.should.be.false;
